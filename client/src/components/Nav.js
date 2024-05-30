@@ -62,7 +62,7 @@ const Nav = () => {
         </nav>
         
 
-        <Hamburger className="hidden lg:flex whitespace-nowrap items-center font-bold font-palanquin bg-coral-red rounded-full text-white hover:bg-red-400  shadow-lg transition-transform transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75" href="#login">
+        <Hamburger className="hidden bg-red-500 lg:flex whitespace-nowrap items-center font-bold font-palanquin bg-coral-red rounded-full text-white hover:bg-red-400  shadow-lg transition-transform transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75" href="#login">
                 Sign in
             </Hamburger>
             <Hamburger className="ml-auto lg:hidden" px="px-3" onClick={toggleNavigation} >

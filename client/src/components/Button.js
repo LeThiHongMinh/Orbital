@@ -1,7 +1,7 @@
 
 const Button = ({iconURL}) => {
   return (
-    <button className = "flex justify-center items-center gap-2 px-7 py-4 border font-montserrat text-lg leading-none bg-coral-red rounded-full text-white border-coral-red mt-10 hover:bg-red-400   shadow-lg transition-transform transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
+    <button className = "flex justify-center bg-red-600 items-center gap-2 px-7 py-4 border font-montserrat text-lg leading-none bg-coral-red rounded-full text-white border-coral-red mt-10 hover:bg-red-400 shadow-lg transition-transform transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
         Find Now
         <img 
         src = {iconURL}
