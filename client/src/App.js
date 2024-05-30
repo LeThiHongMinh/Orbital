@@ -1,25 +1,20 @@
-import logo from './logo.svg';
+import Nav from './components/Nav';
+import Hero from './components/Hero';
+import Matchmaking from './components/Matchmaking';
+//import { backtem } from './assets/images';
 import './App.css';
-
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <main className = "bg-today bg-cover bg-center relative">
+      <Nav />
+    <section className="xl:padding-l wide:padding-r padding-b">
+      <Hero />
+    </section>
+    <section>
+      <Matchmaking />
+    </section>
+    </main>
+);
 }
 
 export default App;
