@@ -39,12 +39,12 @@ const Nav = () => {
             height = {15}
             />
         </a>
-        <p className=" border-black decoration-double ml-5 font-palanquin justify-between text-2xl max-sm:text-[72px] max-sm:leading-[82] font-bold z-10"> 
+        <p className=" border-black decoration-double ml-5 font-palanquin justify-between text-3xl max-sm:text-[72px] max-sm:leading-[82] font-bold z-10"> 
         NUSTudy Seeker </p>
         <nav className = {`${
             openNavigation ? "flex" : "hidden"
           } fixed top-[5rem] space-x-10 left-0 flex-row right-0 bottom-0 bg-n-8 lg:static lg:flex lg:mx-auto lg:bg-transparent`}>
-            <div className="relative text-red-900 z-10 flex flex-col space-y-20  items-center justify-center m-auto lg:space-x-10  lg:flex-row lg:space-y-0">
+            <div className="relative text-black z-10 flex flex-col space-y-20  items-center justify-center m-auto lg:space-x-10  lg:flex-row lg:space-y-0">
             {navigation.map((item) => (
             <a key={item.label}
                 href={item.href}
@@ -65,7 +65,7 @@ const Nav = () => {
         <Hamburger className="hidden bg-red-500 lg:flex whitespace-nowrap items-center font-bold font-palanquin bg-coral-red rounded-full text-white hover:bg-red-400  shadow-lg transition-transform transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75" href="#login">
                 Sign in
             </Hamburger>
-            <Hamburger className="ml-auto lg:hidden" px="px-3" onClick={toggleNavigation} >
+            <Hamburger className="ml-auto bg-red-400 lg:hidden" px="px-3" onClick={toggleNavigation} >
                 <MenuSvg openNavigation={openNavigation} />
             </Hamburger>
         

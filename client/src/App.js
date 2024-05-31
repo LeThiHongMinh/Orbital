@@ -6,7 +6,7 @@ import { image2vector } from './assets/images';
 //import { backtem } from './assets/images';
 function App() {
   return (
-    <main className = "bg-today bg-cover bg-center relative">
+    <main className = "bg-today bg-red-100 bg-cover bg-center relative">
       <Nav />
     <section className="xl:padding-l wide:padding-r padding-b">
       <Hero />

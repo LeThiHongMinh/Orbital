@@ -8,7 +8,7 @@ const Hero = () => {
     id = "home"
     className=" flex xl:flex-row flex-col min-h-screen gap-10 max-container text-left ml-10">
         <div className = "relative xl:w-2/5 flex flex-col justify-center items-start w-full max-wl:padding-x pt-28">
-        <p className = "text-xl text-left font-semibold font-montserrat text-coral-red text-bold"> Dora The Kids</p> 
+        <p className = "text-4xl text-left font-semibold font-montserrat text-coral-red text-bold"> Dora The Kids</p> 
             <h1 className = "text-black  mt-10 font-palanquin text-8xl max-sm:text-[72px] max-sm:leading-[82] font-bold">
             <span className = "text-black shadow-lg xl:whitespace-nowrap relative z-10 pr-10">The Best Place </span>
             <br/>
@@ -22,7 +22,7 @@ const Hero = () => {
                 <img 
                 src = {study}
                 alt = "Big shoes"
-                width = {300}
+                width = {500}
                 height =  {500}
                 className = "object-contain relative z-10"
                 />
