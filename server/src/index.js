@@ -5,6 +5,8 @@ const cookieParser = require('cookie-parser')
 const passport = require('passport')
 const cors = require('cors')
 
+dotenv.config();
+
 //import passport middleware
 require('./middlewares/passport-middleware')
 
