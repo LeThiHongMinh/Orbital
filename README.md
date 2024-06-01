@@ -3,7 +3,7 @@
 Step to run our application:
 
 Run the server:
-Open a new terminal tab
+- Open a new terminal tab
 cd Orbital/server
 npm install
 npm install -g nodemon
