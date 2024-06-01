@@ -77,12 +77,12 @@ const Nav = () => {
             </NavLink>
           </div>
         ) : (
-          <div>
-            <NavLink to='/login'>
+          <div className={` hidden lg:flex lg:flex-row
+          `}>
+            <NavLink className = " font-palanquin font-bold text-2xl fixed top-[5rem] left-0  right-0 bottom-0 bg-n-8 lg:static lg:flex lg:mx-auto lg:bg-transparent" to='/login'>
               <span>Login</span>
             </NavLink>
-
-            <NavLink to='/register' className='mx-3'>
+            <NavLink to='/register' className=' font-palanquin font-bold  text-2xl fixed top-[5rem] space-x-10 left-0 right-0 bottom-0 bg-n-8 lg:static lg:flex lg:mx-auto lg:bg-transparent'>
               <span>Register</span>
             </NavLink>
           </div>
