@@ -4,12 +4,18 @@ import {useLocation} from 'react-router-dom';
 import { NUSTudy } from '../assets/images';
 //import {hamburger} from '../assets/icons';
 import { useState } from 'react';
-import Hamburger from './Hamburger';
-import MenuSvg from '../assets/svg/MenuSvg';
+// import Hamburger from './Hamburger';
+// import MenuSvg from '../assets/svg/MenuSvg';
 import { HamburgerMenu} from '../design/Header';
 import { navigation } from '../constants';
 import {disablePageScroll, enablePageScroll} from "scroll-lock";
+
+import { useSelector } from 'react-redux'
+import { NavLink } from 'react-router-dom'
+
 const Nav = () => {
+    const { isAuth } = useSelector((state) => state.auth)
+
     const pathname = useLocation();
     const [openNavigation, setOpenNavigation] = useState(false);
     const toggleNavigation = () => {
@@ -62,12 +68,26 @@ const Nav = () => {
         </nav>
         
 
-        <Hamburger className="hidden bg-red-500 lg:flex whitespace-nowrap items-center font-bold font-palanquin bg-coral-red rounded-full text-white hover:bg-red-400  shadow-lg transition-transform transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75" href="#login">
-                Sign in
-            </Hamburger>
-            <Hamburger className="ml-auto bg-red-400 lg:hidden" px="px-3" onClick={toggleNavigation} >
-                <MenuSvg openNavigation={openNavigation} />
-            </Hamburger>
+        <div className='container'>
+
+        {isAuth ? (
+          <div>
+            <NavLink to='/dashboard' className='mx-3'>
+              <span>Dashboard</span>
+            </NavLink>
+          </div>
+        ) : (
+          <div>
+            <NavLink to='/login'>
+              <span>Login</span>
+            </NavLink>
+
+            <NavLink to='/register' className='mx-3'>
+              <span>Register</span>
+            </NavLink>
+          </div>
+        )}
+      </div>
         
         </div>
     </div>

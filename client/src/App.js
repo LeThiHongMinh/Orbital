@@ -1,23 +1,45 @@
-import Nav from './components/Nav';
-import Hero from './components/Hero';
-import Matchmaking from './components/Matchmaking';
-import { image2vector } from './assets/images';
-//import './index';
-//import { backtem } from './assets/images';
-function App() {
-  return (
-    <main className = "bg-today bg-red-100 bg-cover bg-center relative">
-      <Nav />
-    <section className="xl:padding-l wide:padding-r padding-b">
-      <Hero />
-    </section>
-    <section>
-      <Matchmaking />
-    </section>
-    </main>
-);
+import {
+  BrowserRouter,
+  Navigate,
+  Routes,
+  Route,
+  Outlet,
+} from 'react-router-dom'
+import Dashboard from './pages/dashboard'
+import Home from './pages/home'
+import Login from './pages/login'
+import Register from './pages/register'
+import { useSelector } from 'react-redux'
+
+const PrivateRoutes = () => {
+  const { isAuth } = useSelector((state) => state.auth)
+
+  return <>{isAuth ? <Outlet /> : <Navigate to='/login' />}</>
 }
 
+const RestrictedRoutes = () => {
+  const { isAuth } = useSelector((state) => state.auth)
 
+  return <>{!isAuth ? <Outlet /> : <Navigate to='/dashboard' />}</>
+}
+
+const App = () => {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<Home />} />
+
+        <Route element={<PrivateRoutes />}>
+          <Route path='/dashboard' element={<Dashboard />} />
+        </Route>
+
+        <Route element={<RestrictedRoutes />}>
+          <Route path='/register' element={<Register />} />
+          <Route path='/login' element={<Login />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  )
+}
 
 export default App

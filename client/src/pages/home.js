@@ -1,10 +1,22 @@
 import Layout from "../components/layout"
+import Nav from '../components/Nav';
+import Hero from '../components/Hero';
+import Matchmaking from '../components/Matchmaking';
+import { image2vector } from '../assets/images';
+//import './index';
+//import { backtem } from './assets/images';
 
 const Home =  () => {
     return (
-        <Layout> 
-            <h1>Home</h1>
-        </Layout>
+    <main className = "bg-today bg-red-100 bg-cover bg-center relative">
+      <Nav />
+    <section className="xl:padding-l wide:padding-r padding-b">
+      <Hero />
+    </section>
+    <section>
+      <Matchmaking />
+    </section>
+    </main>
     )
   }
   
