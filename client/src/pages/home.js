@@ -8,7 +8,8 @@ import { image2vector } from '../assets/images';
 
 const Home =  () => {
     return (
-    <main className = "bg-today bg-red-100 bg-cover bg-center relative">
+      <Layout >
+        <main className = "bg-today bg-red-100 bg-cover bg-center relative">
       <Nav />
     <section className="xl:padding-l wide:padding-r padding-b">
       <Hero />
@@ -17,6 +18,7 @@ const Home =  () => {
       <Matchmaking />
     </section>
     </main>
+      </Layout>
     )
   }
   
