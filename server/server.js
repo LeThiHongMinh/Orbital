@@ -14,7 +14,7 @@ app.use(cookieParser());
 
 // Configure CORS
 const corsOptions = {
-  origin: 'https://orbital-coral.vercel.app', // Allow requests only from CLIENT_URL
+  origin: 'https://nustudyseeker.vercel.app', // Allow requests only from CLIENT_URL
   credentials: true // Allow cookies to be sent to/from the client
 };
 app.use(cors(corsOptions));
