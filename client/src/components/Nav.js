@@ -82,9 +82,9 @@ const Nav = () => {
 
         {isAuth ? (
           <div>
-            <NavLink to='/dashboard' className='mx-3'>
-              <span>Dashboard</span>
-            </NavLink>
+            <button onClick={() => logout()} className='btn btn-primary'>
+          Logout
+        </button>
           </div>
         ) : (
           <div className={` hidden lg:flex lg:flex-row
