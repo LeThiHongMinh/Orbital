@@ -32,6 +32,16 @@ const Nav = () => {
       enablePageScroll();
       setOpenNavigation(false);
   };
+    const logout = async () => {
+    try {
+      await onLogout()
+
+      dispatch(unauthenticateUser())
+      localStorage.removeItem('isAuth')
+    } catch (error) {
+      console.log(error.response)
+    }
+  }
   return (
     <div className = {`fixed top-0 left-0 w-full bg-red-50  rounded-sm z-50  border-b border-n-6 lg:bg-n-8/90 lg:backdrop-blur-sm ${
         openNavigation ? "bg-n-8" : "bg-n-8/90 backdrop-blur-sm "
