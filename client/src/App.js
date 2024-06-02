@@ -20,7 +20,7 @@ const PrivateRoutes = () => {
 const RestrictedRoutes = () => {
   const { isAuth } = useSelector((state) => state.auth)
 
-  return <>{!isAuth ? <Outlet /> : <Navigate to='/dashboard' />}</>
+  return <>{!isAuth ? <Outlet /> : <Navigate to='/' />}</>
 }
 
 const App = () => {
