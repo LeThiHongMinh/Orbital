@@ -1,21 +1,24 @@
-import axios from 'axios'
-axios.defaults.withCredentials = true
+import axios from 'axios';
+
+axios.defaults.withCredentials = true;
+
+const API = axios.create({
+  baseURL: process.env.SERVER_URL || 'http://localhost:5000',
+  withCredentials: true,
+});
 
 export async function onRegistration(registrationData) {
-  return await axios.post(
-    'http://localhost:5000/api/register',
-    registrationData
-  )
+  return await API.post('/api/register', registrationData);
 }
 
 export async function onLogin(loginData) {
-  return await axios.post('http://localhost:5000/api/login', loginData)
+  return await API.post('/api/login', loginData);
 }
 
 export async function onLogout() {
-  return await axios.get('http://localhost:5000/api/logout')
+  return await API.get('/api/logout');
 }
 
 export async function fetchProtectedInfo() {
-  return await axios.get('http://localhost:5000/api/protected')
+  return await API.get('/api/protected');
 }
