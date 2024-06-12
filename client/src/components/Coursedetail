@@ -1,0 +1,22 @@
+import React from 'react';
+import { useParams } from 'react-router-dom';
+
+const CourseDetail = ({ courses }) => {
+  const { courseCode } = useParams();
+  const course = courses.find(course => course.courseCode === courseCode);
+
+  if (!course) {
+    return <div>Course not found</div>;
+  }
+
+  return (
+    <div className="p-8 bg-white shadow-lg rounded-lg max-w-2xl w-full mx-auto mt-8">
+      <h2 className="text-2xl font-bold mb-4">{course.courseName}</h2>
+      <p><strong>Course Code:</strong> {course.courseCode}</p>
+      <p><strong>Faculty:</strong> {course.faculty}</p>
+      <p><strong>Aimed Level:</strong> {course.aimedLevel}</p>
+    </div>
+  );
+};
+
+export default CourseDetail;

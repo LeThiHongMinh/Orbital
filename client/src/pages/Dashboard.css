@@ -1,0 +1,47 @@
+.app {
+    display: flex;
+}
+
+.sidebar {
+    width: 200px;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+
+.header {
+    background-color: #f8f9fa;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.dashboard {
+    display: flex;
+}
+
+.dashboard-left {
+    flex: 3;
+    margin-right: 20px;
+}
+
+.dashboard-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.progress,
+.status,
+.assignments,
+.calendar,
+.upcoming-events {
+    margin-bottom: 20px;
+}
+
+/* Add additional CSS styling as needed */

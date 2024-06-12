@@ -1,0 +1,48 @@
+/* Container for the entire progress component */
+.progress {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+/* Heading for the progress component */
+.progress h2 {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+/* Container for the progress bar */
+.progress-bar {
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 20px;
+    position: relative;
+}
+
+/* Completed part of the progress bar */
+.progress-completed {
+    background-color: #4caf50;
+    height: 100%;
+    transition: width 0.3s ease-in-out;
+}
+
+/* Information about the progress */
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 1rem;
+    color: #666;
+}
+
+.progress-info span {
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}

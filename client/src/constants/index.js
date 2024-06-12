@@ -10,22 +10,22 @@ export const navigation = [
     {
       id: "0",
       label: "Home",
-      href: "#home",
+      href: "home",
     },
     {
       id: "1",
       label: "Matchmaking",
-      href: "#matchmaking",
+      href: "matchmaking",
     },
     {
       id: "2",
       label: "Dashboard",
-      href: "#dashboard",
+      href: "dashboard",
     },
     {
       id: "3",
       label: "Library",
-      href: "#library",
+      href: "library",
     },
    
     {

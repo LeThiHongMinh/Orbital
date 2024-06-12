@@ -6,7 +6,7 @@ import backtem from './backtem.svg'
 import ppp from './ppp.jpg'
 import image2vector from './image2vector.svg'
 import study from './study.png'
-
+import deve from './deve.png'
 export {
    
     headimg,
@@ -15,5 +15,5 @@ export {
     ppp,
     image2vector,
     study,
-    
+    deve,
 }
