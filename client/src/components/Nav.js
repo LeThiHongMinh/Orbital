@@ -3,19 +3,23 @@ import {useLocation} from 'react-router-dom';
 //import {headimg} from '../assets/images';
 import { NUSTudy } from '../assets/images';
 //import {hamburger} from '../assets/icons';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 // import Hamburger from './Hamburger';
 // import MenuSvg from '../assets/svg/MenuSvg';
 import { HamburgerMenu} from '../design/Header';
 import { navigation } from '../constants';
 import {disablePageScroll, enablePageScroll} from "scroll-lock";
-
+import { fetchProtectedInfo, onLogout } from '../api/auth'
+import { unauthenticateUser } from '../redux/slices/authSlice'
 import { useSelector } from 'react-redux'
 import { NavLink } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 
 const Nav = () => {
     const { isAuth } = useSelector((state) => state.auth)
-
+    const dispatch = useDispatch()
+  const [loading, setLoading] = useState(true)
+  const [protectedData, setProtectedData] = useState(null)
     const pathname = useLocation();
     const [openNavigation, setOpenNavigation] = useState(false);
     const toggleNavigation = () => {
@@ -27,6 +31,16 @@ const Nav = () => {
           disablePageScroll();
       }
   };
+  const logout = async () => {
+    try {
+      await onLogout()
+
+      dispatch(unauthenticateUser())
+      localStorage.removeItem('isAuth')
+    } catch (error) {
+      console.log(error.response)
+    }
+  }
   const handleClick = () => {
       if(!openNavigation) return;
       enablePageScroll();
