@@ -3,6 +3,13 @@
 Step to run our application:
 
 Run the server:
+Database (Local database):
+user: 'postgres',
+  host: 'localhost',
+  database: 'orbital',
+  password: 'Hm:200605',
+  port: 5432,
+
 - Open a new terminal tab
 - cd Orbital/server
 - npm install
