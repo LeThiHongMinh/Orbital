@@ -33,6 +33,8 @@ import { useSelector } from 'react-redux'
 import CourseDetail from './components/Coursedetail';
 import CourseList from './components/Courselist';
 import Matchmaking from './components/Matchmaking';
+import Library from './components/Library';
+import ProfileForm from './components/Profile';
 const PrivateRoutes = () => {
   const { isAuth } = useSelector((state) => state.auth)
 
@@ -60,9 +62,11 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Home />} />
+        <Route path='library' element = {<Library />} />
+        <Route path='profile' element = {<ProfileForm />} />
 
-        <Route >
-          <Route path='/matchmaking' element={<Matchmaking/>} />
+        <Route element={<PrivateRoutes />}>
+        
           <Route path='/dashboard' element={<Dashboard />} />
         </Route>
         <Route path="/" element={<CourseList courses={courses} setCourses={setCourses} />} />

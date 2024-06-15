@@ -6,6 +6,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import Radio from '@mui/material/Radio';
 import { star } from '../assets/icons';
+import { submitForm } from "../api/auth";
 
 const Matchmaking = () => {
   const [formData, setFormData] = useState({
@@ -16,6 +17,8 @@ const Matchmaking = () => {
     studyGoal: 'A- and above'
   });
 
+  const [notification, setNotification] = useState('');
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -23,8 +26,10 @@ const Matchmaking = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/submit-form', formData);
+      await submitForm(formData);
       console.log('Form submitted successfully!');
+      setNotification('Form submitted successfully!');
+
       // Optionally, you can reset the form fields after submission
       setFormData({
         fullName: '',
@@ -33,6 +38,9 @@ const Matchmaking = () => {
         academicLevel: 'not really good',
         studyGoal: 'A- and above'
       });
+
+      // Hide the notification after 3 seconds
+      setTimeout(() => setNotification(''), 3000);
     } catch (err) {
       console.error(err);
     }
@@ -53,10 +61,11 @@ const Matchmaking = () => {
       <section className="text-red-900 font-bold font-palanquin">
         <div className='w-full'>
           <form className="p-2 w-full" onSubmit={handleSubmit}>
-          <span className=""> Full Name </span>
+            <span className=""> Full Name </span>
             <TextField
-            sx={{width:20}} style={{ width: '100%' }} id="outlined-basic" 
-            variant="outlined" 
+              required
+              sx={{ width: 20 }} style={{ width: '100%' }} id="outlined-basic"
+              variant="outlined"
               label="Full Name"
               name="fullName"
               value={formData.fullName}
@@ -66,23 +75,25 @@ const Matchmaking = () => {
             <br />
             <span> Course code you want to find study partner </span>
             <TextField
+              required
               multiline
               rows={2}
               name="courseCode"
               value={formData.courseCode}
               onChange={handleChange}
               id="outlined-basic"
-              variant="outlined" 
-              className="block w-full bg-transparent text-sm border-0 rounded-md focus:outline-none focus:outline-transparent p-2 ring-inset focus:ring-2 focus:ring-inset ring-1 disabled:text-slate-900 disabled:dark:text-slate-900 disabled:bg-slate-200 disabled:dark:bg-slate-800 disabled:cursor-not-allowed text-slate-700 dark:text-slate-900 placeholder:text-slate-900 placeholder:dark:text-slate-900 ring-slate-300 dark:ring-slate-700 focus:ring-red-950 focus:dark:ring-red-900 shadow-xl" 
+              variant="outlined"
+              className="block w-full bg-transparent text-sm border-0 rounded-md focus:outline-none focus:outline-transparent p-2 ring-inset focus:ring-2 focus:ring-inset ring-1 disabled:text-slate-900 disabled:dark:text-slate-900 disabled:bg-slate-200 disabled:dark:bg-slate-800 disabled:cursor-not-allowed text-slate-700 dark:text-slate-900 placeholder:text-slate-900 placeholder:dark:text-slate-900 ring-slate-300 dark:ring-slate-700 focus:ring-red-950 focus:dark:ring-red-900 shadow-xl"
             />
             <br />
             <span className=""> Any expectations </span>
             <br />
             <TextField
+              required
               multiline
               rows={4}
               name="expectations"
-               id="outlined-basic"
+              id="outlined-basic"
               value={formData.expectations}
               onChange={handleChange}
               className="block w-full bg-transparent text-sm border-0 rounded-md focus:outline-none focus:outline-transparent p-2 ring-inset focus:ring-2 focus:ring-inset ring-1 disabled:text-slate-900 disabled:dark:text-slate-900 disabled:bg-slate-200 disabled:dark:bg-slate-800 disabled:cursor-not-allowed text-slate-700 dark:text-slate-900 placeholder:text-slate-900 placeholder:dark:text-slate-900 ring-slate-300 dark:ring-slate-700 focus:ring-red-950 focus:dark:ring-red-900 shadow-xl"
@@ -118,6 +129,11 @@ const Matchmaking = () => {
                 <div>Submit</div>
               </button>
             </div>
+            {notification && (
+              <div className="text-center p-2 w-full mt-4 text-green-500 font-bold">
+                {notification}
+              </div>
+            )}
           </form>
         </div>
       </section>

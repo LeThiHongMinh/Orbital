@@ -22,3 +22,6 @@ export async function onLogout() {
 export async function fetchProtectedInfo() {
   return await API.get('/api/protected');
 }
+export async function submitForm(formData) {
+  return await API.post('/api/submit-form', formData);
+}
