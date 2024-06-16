@@ -28,7 +28,7 @@ exports.register = async (req, res) => {
 
     return res.status(201).json({
       success: true,
-      message: 'The registration was succefull',
+      message: 'The registraion was succefull',
     })
   } catch (error) {
     console.log(error.message)
@@ -51,7 +51,7 @@ exports.login = async (req, res) => {
 
     return res.status(200).cookie('token', token, { httpOnly: true }).json({
       success: true,
-      message: 'Logged in successfully',
+      message: 'Logged in succefully',
     })
   } catch (error) {
     console.log(error.message)
@@ -63,29 +63,13 @@ exports.login = async (req, res) => {
 
 exports.protected = async (req, res) => {
   try {
-    const userId = req.user.user_id;
-    const { rows } = await db.query('SELECT email, full_name, bio FROM users WHERE user_id = $1', [userId]);
-
-    if (rows.length > 0) {
-      const userInfo = rows[0];
-      return res.status(200).json({
-        success: true,
-        info: userInfo,
-      });
-    } else {
-      return res.status(404).json({
-        success: false,
-        message: 'User not found',
-      });
-    }
+    return res.status(200).json({
+      info: 'protected info',
+    })
   } catch (error) {
-    console.log(error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+    console.log(error.message)
   }
-};
+}
 
 exports.logout = async (req, res) => {
   try {
@@ -100,22 +84,25 @@ exports.logout = async (req, res) => {
     })
   }
 }
-// Assuming you have a function to update user profile in auth.js
-
-exports.updateProfile = async (req, res) => {
-  const userId = req.user.user_id;
-  const { fullName, bio } = req.body;
+exports.getProfile = async (req, res) => {
+  const email = req.body;
 
   try {
-    await db.query('UPDATE users SET full_name = $1, bio = $2 WHERE user_id = $3', [
-      fullName,
-      bio,
-      userId,
-    ]);
+    const { rows } = await db.query('SELECT full_name, bio FROM users WHERE email = $1', [email]);
+    const user = rows[0];
+
+    if (!user.full_name && !user.bio) {
+      return res.status(200).json({
+        success: true,
+        message: 'Profile incomplete, please update your profile.',
+        profileComplete: false,
+      });
+    }
 
     return res.status(200).json({
       success: true,
-      message: 'Profile updated successfully',
+      profileComplete: true,
+      user: user,
     });
   } catch (error) {
     console.log(error.message);
@@ -124,21 +111,28 @@ exports.updateProfile = async (req, res) => {
     });
   }
 };
-exports.getProfile = async (req, res) => {
-  const userId = req.user.user_id;
+
+
+exports.updateProfile = async (req, res) => {
+  const { email, full_name, bio } = req.body; // Extract email, full_name, and bio from req.body
 
   try {
-    const { rows } = await db.query('SELECT email, full_name, bio FROM users WHERE user_id = $1', [userId]);
+    const result = await db.query(
+      'UPDATE users SET full_name = $1, bio = $2 WHERE email = $3',
+      [full_name, bio, email]
+    );
 
-    if (rows.length === 0) {
+    if (result.rowCount === 0) {
+      // If no rows were updated, it means the email wasn't found in the database
       return res.status(404).json({
-        error: 'User not found',
+        success: false,
+        message: 'User not found with the provided email.',
       });
     }
 
     return res.status(200).json({
       success: true,
-      profile: rows[0],
+      message: 'Profile updated successfully.',
     });
   } catch (error) {
     console.log(error.message);

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { fetchProtectedInfo, onLogout } from '../api/auth';
 import Layout from '../components/layout';
 import { unauthenticateUser } from '../redux/slices/authSlice';
 import CalendarCom from '../components/Calendar';
@@ -11,30 +11,29 @@ import SearchCourse from '../components/Searchcourse';
 import CourseList from '../components/Courselist';
 import StatusComponent from '../components/Status';
 import ProfileForm from '../components/Profile';
-
+import { profileUpdate } from '../api/auth';
 const Dashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [userInfo, setUserInfo] = useState(null);
+  const [protectedData, setProtectedData] = useState(null);
   const [isProfileFormVisible, setProfileFormVisible] = useState(false);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
 
   const logout = async () => {
     try {
-      await axios.post('http://localhost:5000/api/logout');
+      await onLogout();
       dispatch(unauthenticateUser());
       localStorage.removeItem('isAuth');
-      navigate('/login');  // Redirect to login page after logout
     } catch (error) {
       console.log(error.response);
     }
   };
 
-  const fetchProtectedInfo = async () => {
+  const protectedInfo = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/api/protected');
-      setUserInfo(data.info);
+      const { data } = await fetchProtectedInfo();
+      setProtectedData(data.info);
       setLoading(false);
     } catch (error) {
       logout();
@@ -42,86 +41,87 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    fetchProtectedInfo();
+    protectedInfo();
   }, []);
 
+  // Toggle dropdown visibility
   const toggleDropdown = () => {
     setDropdownVisible(!isDropdownVisible);
   };
 
-  const saveProfile = (event) => {
+  const saveProfile = async (event) => {
     event.preventDefault();
     const fullName = event.target.fullName.value;
     const bio = event.target.bio.value;
 
-    // You can send updated profile data to the server here
-    console.log('Profile Saved:');
-    console.log('Full Name:', fullName);
-    console.log('Bio:', bio);
-
-    event.target.reset();
-    setProfileFormVisible(false);
+    try {
+      await profileUpdate (fullName, bio)
+      // Reload profile data after update
+      protectedInfo();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return loading ? (
-    <Layout className="bg-red-400">
-      {/* Loading State Content */}
+    <Layout>
+      <h1>Loading...</h1>
     </Layout>
   ) : (
     <Layout>
-      {isProfileFormVisible ? (
-        <ProfileForm userInfo={userInfo} saveProfile={saveProfile} />
-      ) : (
+      <div className="relative">
         <div className="bg-red-100 relative">
-          <ProgressBar />
-          <CalendarCom className="flex flex-col right-0" />
-          <ToDoList />
-          <CourseList />
-          <SearchCourse />
-          <StatusComponent numLessons={10} numQuizzes={5} numPrototypes={3} numHours={20} />
-          <div id="dashboard">
-            <h1>Welcome to the Dashboard</h1>
-            <img
-              src="avatar.png"
-              alt="Avatar"
-              className="avatar"
-              onClick={toggleDropdown}
-              style={{
-                width: '50px',
-                height: '50px',
-                borderRadius: '50%',
-                cursor: 'pointer',
-                position: 'absolute',
-                top: '10px',
-                right: '10px'
-              }}
-            />
-            {isDropdownVisible && (
-              <div style={dropdownMenuStyle}>
-                <ul style={ulStyle}>
-                  <li style={liStyle} onClick={() => {
-                    setProfileFormVisible(true);
-                    setDropdownVisible(false);
-                  }}>
-                    Account Settings
-                  </li>
-                  <li style={liStyle} onClick={() => {
-                    logout();
-                    setDropdownVisible(false);
-                  }}>
-                    Logout
-                  </li>
-                </ul>
+          {isProfileFormVisible ? (
+            <ProfileForm protectedData={protectedData} saveProfile={saveProfile} />
+          ) : (
+            <>
+              <ProgressBar />
+              <CalendarCom className="flex flex-col right-0" />
+              <ToDoList />
+              <CourseList />
+              <SearchCourse />
+              <StatusComponent numLessons={10} numQuizzes={5} numPrototypes={3} numHours={20} />
+              <div id="dashboard">
+                <h1>Welcome to the Dashboard</h1>
+                <div className="absolute top-0 right-0 mt-4 mr-4">
+                  <img
+                    src="avatar.png"
+                    alt="Avatar"
+                    className="avatar rounded-full cursor-pointer"
+                    onClick={toggleDropdown}
+                    style={{
+                      width: '50px',
+                      height: '50px',
+                    }}
+                  />
+                  {isDropdownVisible && (
+                    <div style={dropdownMenuStyle}>
+                      <ul style={ulStyle}>
+                        <li style={liStyle} onClick={() => {
+                          setProfileFormVisible(true);
+                          setDropdownVisible(false);
+                        }}>
+                          Account Settings
+                        </li>
+                        <li style={liStyle} onClick={() => {
+                          logout();
+                          setDropdownVisible(false);
+                        }}>
+                          Logout
+                        </li>
+                      </ul>
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
-          </div>
+            </>
+          )}
         </div>
-      )}
+      </div>
     </Layout>
   );
 };
 
-// Inline styles for the dropdown menu
 const dropdownMenuStyle = {
   position: 'absolute',
   top: '60px',

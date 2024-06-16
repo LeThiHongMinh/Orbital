@@ -66,9 +66,9 @@ const App = () => {
         <Route path='profile' element = {<ProfileForm />} />
 
         <Route element={<PrivateRoutes />}>
-        
           <Route path='/dashboard' element={<Dashboard />} />
         </Route>
+        
         <Route path="/" element={<CourseList courses={courses} setCourses={setCourses} />} />
         <Route path="/course/:courseCode" element={<CourseDetail courses={courses} />} />
 
