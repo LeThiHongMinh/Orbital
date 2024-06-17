@@ -26,8 +26,8 @@ export async function submitForm(formData) {
   return await API.post('/api/submit-form', formData);
 }
 
-export async function profileUpdate (fullName, bio) {
-  return await API.post('/api/profileupdate', {fullName, bio });
+export async function profileUpdate (profileData) {
+  return await API.put('/api/profileupdate', profileData);
 }
 export async function profileCheck () {
   return await API.get('/api/profile');

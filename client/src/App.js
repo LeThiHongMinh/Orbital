@@ -62,11 +62,12 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Home />} />
-        <Route path='library' element = {<Library />} />
-        <Route path='profile' element = {<ProfileForm />} />
+        <Route path='/library' element = {<Library />} />
+        
 
         <Route element={<PrivateRoutes />}>
           <Route path='/dashboard' element={<Dashboard />} />
+          <Route path='/profile' element={<ProfileForm />} />
         </Route>
         
         <Route path="/" element={<CourseList courses={courses} setCourses={setCourses} />} />

@@ -21,5 +21,6 @@ router.post('/register', registerValidation, validationMiddleware, register)
 router.post('/login', loginValidation, validationMiddleware, login)
 router.get('/logout', logout)
 router.get('/profile', getProfile)
-router.post('/profileupdate', updateProfile)
+router.put('/profileupdate', updateProfile)
+
 module.exports = router

@@ -12,12 +12,12 @@ import CourseList from '../components/Courselist';
 import StatusComponent from '../components/Status';
 import ProfileForm from '../components/Profile';
 import { profileUpdate } from '../api/auth';
+
 const Dashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [protectedData, setProtectedData] = useState(null);
-  const [isProfileFormVisible, setProfileFormVisible] = useState(false);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
 
   const logout = async () => {
@@ -25,6 +25,7 @@ const Dashboard = () => {
       await onLogout();
       dispatch(unauthenticateUser());
       localStorage.removeItem('isAuth');
+      navigate('/login'); // Navigate to login page after logout
     } catch (error) {
       console.log(error.response);
     }
@@ -55,7 +56,7 @@ const Dashboard = () => {
     const bio = event.target.bio.value;
 
     try {
-      await profileUpdate (fullName, bio)
+      await profileUpdate({ full_name: fullName, bio: bio, email: protectedData.email });
       // Reload profile data after update
       protectedInfo();
     } catch (error) {
@@ -71,51 +72,42 @@ const Dashboard = () => {
     <Layout>
       <div className="relative">
         <div className="bg-red-100 relative">
-          {isProfileFormVisible ? (
-            <ProfileForm protectedData={protectedData} saveProfile={saveProfile} />
-          ) : (
-            <>
-              <ProgressBar />
-              <CalendarCom className="flex flex-col right-0" />
-              <ToDoList />
-              <CourseList />
-              <SearchCourse />
-              <StatusComponent numLessons={10} numQuizzes={5} numPrototypes={3} numHours={20} />
-              <div id="dashboard">
-                <h1>Welcome to the Dashboard</h1>
-                <div className="absolute top-0 right-0 mt-4 mr-4">
-                  <img
-                    src="avatar.png"
-                    alt="Avatar"
-                    className="avatar rounded-full cursor-pointer"
-                    onClick={toggleDropdown}
-                    style={{
-                      width: '50px',
-                      height: '50px',
-                    }}
-                  />
-                  {isDropdownVisible && (
-                    <div style={dropdownMenuStyle}>
-                      <ul style={ulStyle}>
-                        <li style={liStyle} onClick={() => {
-                          setProfileFormVisible(true);
-                          setDropdownVisible(false);
-                        }}>
-                          Account Settings
-                        </li>
-                        <li style={liStyle} onClick={() => {
-                          logout();
-                          setDropdownVisible(false);
-                        }}>
-                          Logout
-                        </li>
-                      </ul>
-                    </div>
-                  )}
+          <ProgressBar />
+          <CalendarCom className="flex flex-col right-0" />
+          <ToDoList />
+          <CourseList />
+          <SearchCourse />
+          <StatusComponent numLessons={10} numQuizzes={5} numPrototypes={3} numHours={20} />
+          <div id="dashboard">
+            <h1>Welcome to the Dashboard</h1>
+            <div className="absolute top-0 right-0 mt-4 mr-4">
+              <img
+                src="avatar.png"
+                alt="Avatar"
+                className="avatar rounded-full cursor-pointer"
+                onClick={toggleDropdown}
+                style={{
+                  width: '50px',
+                  height: '50px',
+                }}
+              />
+              {isDropdownVisible && (
+                <div style={dropdownMenuStyle}>
+                  <ul style={ulStyle}>
+                    <li style={liStyle} onClick={() => navigate('/profile')}>
+                      Account Settings
+                    </li>
+                    <li style={liStyle} onClick={() => {
+                      logout();
+                      setDropdownVisible(false);
+                    }}>
+                      Logout
+                    </li>
+                  </ul>
                 </div>
-              </div>
-            </>
-          )}
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </Layout>
