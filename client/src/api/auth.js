@@ -6,13 +6,27 @@ const API = axios.create({
   baseURL: 'http://localhost:5000',
   withCredentials: true,
 });
+const getAuthHeader = () => {
+  const token = localStorage.getItem('token');
+  return {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  };
+};
 
 export async function onRegistration(registrationData) {
   return await API.post('/api/register', registrationData);
 }
 
 export async function onLogin(loginData) {
-  return await API.post('/api/login', loginData);
+  try {
+    const response = await API.post('/api/login', loginData);
+    localStorage.setItem('token', response.data.token);
+    return response;
+  } catch (error) {
+    console.error('Login error:', error);
+  }
 }
 
 export async function onLogout() {
@@ -27,8 +41,8 @@ export async function submitForm(formData) {
 }
 
 export async function profileUpdate (profileData) {
-  return await API.put('/api/profileupdate', profileData);
+  return await API.put('/api/profileupdate', profileData, getAuthHeader());
 }
-export async function profileCheck () {
-  return await API.get('/api/profile');
+export async function profileCheck() {
+  return await API.get('/api/profile', getAuthHeader());
 }

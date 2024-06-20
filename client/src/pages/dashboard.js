@@ -12,6 +12,7 @@ import CourseList from '../components/Courselist';
 import StatusComponent from '../components/Status';
 import ProfileForm from '../components/Profile';
 import { profileUpdate } from '../api/auth';
+import { profilepic } from '../assets';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -82,7 +83,7 @@ const Dashboard = () => {
             <h1>Welcome to the Dashboard</h1>
             <div className="absolute top-0 right-0 mt-4 mr-4">
               <img
-                src="avatar.png"
+                src={profilepic}
                 alt="Avatar"
                 className="avatar rounded-full cursor-pointer"
                 onClick={toggleDropdown}
@@ -101,7 +102,7 @@ const Dashboard = () => {
                       logout();
                       setDropdownVisible(false);
                     }}>
-                      Logout
+                      Log Out
                     </li>
                   </ul>
                 </div>
@@ -115,6 +116,7 @@ const Dashboard = () => {
 };
 
 const dropdownMenuStyle = {
+  width: '180px',
   position: 'absolute',
   top: '60px',
   right: '10px',

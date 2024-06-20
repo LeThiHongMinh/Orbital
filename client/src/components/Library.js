@@ -1,67 +1,80 @@
+// LibraryForm.js
+
 import React, { useState } from 'react';
+import axios from 'axios';
 
-const Library = () => {
-  const [isProfileFormVisible, setProfileFormVisible] = useState(false);
+const LibraryForm = () => {
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [file, setFile] = useState(null);
 
-  const showProfileForm = () => {
-    setProfileFormVisible(true);
+  const handleNameChange = (event) => {
+    setName(event.target.value);
   };
 
-  const saveProfile = (event) => {
+  const handleDescriptionChange = (event) => {
+    setDescription(event.target.value);
+  };
+
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const fullName = event.target.fullName.value;
-    const email = event.target.email.value;
-    const bio = event.target.bio.value;
 
-    console.log('Profile Saved:');
-    console.log('Full Name:', fullName);
-    console.log('Email:', email);
-    console.log('Bio:', bio);
+    if (!name || !description || !file) {
+      alert('Please fill in all fields');
+      return;
+    }
 
-    // Optionally clear the form (if needed)
-    event.target.reset();
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('description', description);
+    formData.append('file', file);
 
-    // Hide the profile form and show the dashboard
-    setProfileFormVisible(false);
+    try {
+      const response = await axios.post('http://localhost:5000/api/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.data.success) {
+        alert('File uploaded successfully');
+        // Optionally reset form fields after successful upload
+        setName('');
+        setDescription('');
+        setFile(null);
+      } else {
+        alert('File upload failed');
+      }
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      alert('Error uploading file');
+    }
   };
 
   return (
     <div>
-      {isProfileFormVisible ? (
-        <ProfileForm saveProfile={saveProfile} />
-      ) : (
-        <Dashboard showProfileForm={showProfileForm} />
-      )}
+      <h2>Upload PDF Form</h2>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Name:</label>
+          <input type="text" value={name} onChange={handleNameChange} />
+        </div>
+        <div>
+          <label>Description:</label>
+          <textarea value={description} onChange={handleDescriptionChange} />
+        </div>
+        <div>
+          <label>Upload PDF:</label>
+          <input type="file" accept="application/pdf" onChange={handleFileChange} />
+        </div>
+        <button type="submit">Upload</button>
+      </form>
     </div>
   );
 };
 
-const Dashboard = ({ showProfileForm }) => (
-  <div id="dashboard">
-    <h1>Welcome to the Dashboard</h1>
-    <img
-      src="avatar.png"
-      alt="Avatar"
-      className="avatar"
-      onClick={showProfileForm}
-      style={{ width: '50px', height: '50px', borderRadius: '50%', cursor: 'pointer' }}
-    />
-  </div>
-);
-
-const ProfileForm = ({ saveProfile }) => (
-  <div id="profileForm">
-    <h2>Create Your Profile</h2>
-    <form onSubmit={saveProfile}>
-      <label htmlFor="fullName">Full Name:</label>
-      <input type="text" id="fullName" name="fullName" required />
-      <label htmlFor="email">Email:</label>
-      <input type="email" id="email" name="email" required />
-      <label htmlFor="bio">Bio:</label>
-      <textarea id="bio" name="bio" required></textarea>
-      <button type="submit">Save Profile</button>
-    </form>
-  </div>
-);
-
-export default Library;
+export default LibraryForm;

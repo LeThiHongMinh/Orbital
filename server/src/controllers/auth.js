@@ -2,7 +2,7 @@ const db = require('../db')
 const { hash } = require('bcryptjs')
 const { sign } = require('jsonwebtoken')
 const { SECRET } = require('../constants')
-
+const jwt = require('jsonwebtoken');
 exports.getUsers = async (req, res) => {
   try {
     const { rows } = await db.query('select user_id, email from users')
@@ -47,12 +47,14 @@ exports.login = async (req, res) => {
   }
 
   try {
-    const token = await sign(payload, SECRET)
+    const token = await jwt.sign(payload, SECRET, { expiresIn: '1h' });
 
     return res.status(200).cookie('token', token, { httpOnly: true }).json({
       success: true,
       message: 'Logged in succefully',
+      token,
     })
+    res
   } catch (error) {
     console.log(error.message)
     return res.status(500).json({
@@ -84,18 +86,20 @@ exports.logout = async (req, res) => {
     })
   }
 }
+
 exports.getProfile = async (req, res) => {
-  const email = req.body;
+  const email = req.user.email; // Use email from decoded JWT token
 
   try {
-    const { rows } = await db.query('SELECT full_name, bio FROM users WHERE email = $1', [email]);
-    const user = rows[0];
+    const { rows } = await db.query('SELECT full_name, email, bio FROM users WHERE email = $1', [email]);
+    const user = rows[0] || { email };
 
-    if (!user.full_name && !user.bio) {
+    if (!user.full_name || !user.bio) {
       return res.status(200).json({
         success: true,
         message: 'Profile incomplete, please update your profile.',
         profileComplete: false,
+        user: user,
       });
     }
 
@@ -105,12 +109,14 @@ exports.getProfile = async (req, res) => {
       user: user,
     });
   } catch (error) {
-    console.log(error.message);
+    console.error('Error fetching profile:', error.message);
     return res.status(500).json({
       error: error.message,
     });
   }
 };
+
+
 
 
 exports.updateProfile = async (req, res) => {
@@ -141,3 +147,16 @@ exports.updateProfile = async (req, res) => {
     });
   }
 };
+
+exports.authenticateToken = (req, res, next) => {
+  const token = req.headers['authorization']?.split(' ')[1];
+
+  if (!token) return res.sendStatus(401);
+
+  jwt.verify(token, SECRET, (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.user = user;
+    next();
+  });
+};
+

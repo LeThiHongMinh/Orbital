@@ -62,6 +62,8 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Home />} />
+        <Route path = '/home' element={<Home />} />
+        <Route path = '/matchmaking' element={<Matchmaking />} />
         <Route path='/library' element = {<Library />} />
         
 
