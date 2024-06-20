@@ -1,80 +1,33 @@
-// LibraryForm.js
-
 import React, { useState } from 'react';
-import axios from 'axios';
+import LibDisplay from './LibDisplay';
+import SearchBar from './SearchBarLib';
 
-const LibraryForm = () => {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [file, setFile] = useState(null);
+const Library = () => {
+  const [isFormVisible, setFormVisible] = useState(false);
 
-  const handleNameChange = (event) => {
-    setName(event.target.value);
+  const handleShowForm = () => {
+    setFormVisible(true);
   };
 
-  const handleDescriptionChange = (event) => {
-    setDescription(event.target.value);
-  };
-
-  const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    if (!name || !description || !file) {
-      alert('Please fill in all fields');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('description', description);
-    formData.append('file', file);
-
-    try {
-      const response = await axios.post('http://localhost:5000/api/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      if (response.data.success) {
-        alert('File uploaded successfully');
-        // Optionally reset form fields after successful upload
-        setName('');
-        setDescription('');
-        setFile(null);
-      } else {
-        alert('File upload failed');
-      }
-    } catch (error) {
-      console.error('Error uploading file:', error);
-      alert('Error uploading file');
-    }
+  const handleCloseForm = () => {
+    setFormVisible(false);
   };
 
   return (
-    <div>
-      <h2>Upload PDF Form</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Name:</label>
-          <input type="text" value={name} onChange={handleNameChange} />
-        </div>
-        <div>
-          <label>Description:</label>
-          <textarea value={description} onChange={handleDescriptionChange} />
-        </div>
-        <div>
-          <label>Upload PDF:</label>
-          <input type="file" accept="application/pdf" onChange={handleFileChange} />
-        </div>
-        <button type="submit">Upload</button>
-      </form>
+    <div className="container mx-auto p-4">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Library</h1>
+        <button
+          onClick={handleShowForm}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        >
+          Upload Notes
+        </button>
+      </div>
+      <SearchBar />
+      <LibDisplay visible={isFormVisible} onClose={handleCloseForm} />
     </div>
   );
 };
 
-export default LibraryForm;
+export default Library;

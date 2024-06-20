@@ -21,3 +21,18 @@ exports.uploadLibrary = async (req, res) => {
     }
   };
   
+  exports.searchFiles = async (req, res) => {
+    try {
+      const { query } = req.query;
+      const client = await db.connect();
+      const result = await client.query(
+        'SELECT id, name, description FROM files WHERE name ILIKE $1 OR description ILIKE $1',
+        [`%${query}%`]
+      );
+      client.release();
+      res.json(result.rows);
+    } catch (error) {
+      console.error('Error searching files:', error);
+      res.status(500).json({ success: false, error: 'Error searching files' });
+    }
+  };
