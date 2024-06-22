@@ -1,16 +1,23 @@
--- users table
-create table users(
-    user_id serial primary key,
-    email varchar(255) unique not null,
-    password varchar(255) not null,
-    created_at date default current_date
-    full_name varchar(255) not null,
-    bio TEXT not null,
+CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at DATE DEFAULT CURRENT_DATE,
+    verified BOOLEAN DEFAULT FALSE
 );
+
+CREATE TABLE tokens (
+    token_id SERIAL PRIMARY KEY,
+    user_id SERIAL REFERENCES users(user_id) ON DELETE CASCADE,
+    token VARCHAR(255) NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMPTZ
+);
+
 -- matchform table
 CREATE TABLE matchform (
 id SERIAL PRIMARY KEY,
-ullname VARCHAR(100) NOT NULL,
+fullname VARCHAR(100) NOT NULL,
 coursecode VARCHAR(50) NOT NULL,
 expectations TEXT,
 academiclevel VARCHAR(50) NOT NULL,
@@ -25,3 +32,15 @@ CREATE TABLE files (
   description TEXT,
   file_data BYTEA
 );
+
+CREATE TABLE study_activities (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  activity_type VARCHAR(255),
+  activity_description TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  start_time TIMESTAMP,
+  end_time TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+

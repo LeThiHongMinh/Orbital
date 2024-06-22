@@ -23,11 +23,13 @@ app.use(express.urlencoded({ extended: true }));
 const authRoutes = require('./routes/auth')
 const formRoutes = require('./routes/matchmaking')
 const uploadRouter = require('./routes/uploadRouter')
+const studyActivitiesRoutes = require('./routes/study-activities');
 
 //initialize routes
 app.use('/api', authRoutes)
 app.use('/api', formRoutes)
 app.use('/api', uploadRouter)
+app.use('/api', studyActivitiesRoutes);
 
 
 //app start

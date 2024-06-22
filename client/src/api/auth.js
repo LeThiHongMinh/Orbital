@@ -19,6 +19,10 @@ export async function onRegistration(registrationData) {
   return await API.post('/api/register', registrationData);
 }
 
+export const verifyEmail = (token) => {
+  return axios.get(`/api/verify-email?token=${token}`);
+};
+
 export async function onLogin(loginData) {
   try {
     const response = await API.post('/api/login', loginData);
@@ -45,4 +49,24 @@ export async function profileUpdate (profileData) {
 }
 export async function profileCheck() {
   return await API.get('/api/profile', getAuthHeader());
+}
+
+export async function createStudyActivity(activityData) {
+  return await API.post('/api/study-activities', activityData, getAuthHeader());
+}
+
+export async function getStudyActivities() {
+  return await API.get('/api/study-activities', getAuthHeader());
+}
+
+export async function getStudyActivity(id) {
+  return await API.get(`/api/study-activities/${id}`, getAuthHeader());
+}
+
+export async function updateStudyActivity(id, activityData) {
+  return await API.put(`/api/study-activities/${id}`, activityData, getAuthHeader());
+}
+
+export async function deleteStudyActivity(id) {
+  return await API.delete(`/api/study-activities/${id}`, getAuthHeader());
 }
