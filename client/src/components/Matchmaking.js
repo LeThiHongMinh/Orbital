@@ -7,6 +7,7 @@ import FormControl from '@mui/material/FormControl';
 import Radio from '@mui/material/Radio';
 import { star } from '../assets/icons';
 import { submitForm } from "../api/auth";
+import Nav from './Nav';
 
 const Matchmaking = () => {
   const [formData, setFormData] = useState({
@@ -24,7 +25,7 @@ const Matchmaking = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); 
     try {
       await submitForm(formData);
       console.log('Form submitted successfully!');
@@ -48,6 +49,7 @@ const Matchmaking = () => {
 
   return (
     <div className='ml-3 flex flex-col justify-center bg-cover min-h-screen bg-red-100 bg-center relative'>
+      <Nav />
       <div className="ml-10 py-10 flex items-center">
         <img 
           src={star}
@@ -79,6 +81,7 @@ const Matchmaking = () => {
               multiline
               rows={2}
               name="courseCode"
+              label="E.g. CS1231, GEC1030,... Alert: Fill in only 1 course per submission"
               value={formData.courseCode}
               onChange={handleChange}
               id="outlined-basic"
@@ -94,6 +97,7 @@ const Matchmaking = () => {
               rows={4}
               name="expectations"
               id="outlined-basic"
+              label = "The duration you want to study/ Method of learning that appeals to you"
               value={formData.expectations}
               onChange={handleChange}
               className="block w-full bg-transparent text-sm border-0 rounded-md focus:outline-none focus:outline-transparent p-2 ring-inset focus:ring-2 focus:ring-inset ring-1 disabled:text-slate-900 disabled:dark:text-slate-900 disabled:bg-slate-200 disabled:dark:bg-slate-800 disabled:cursor-not-allowed text-slate-700 dark:text-slate-900 placeholder:text-slate-900 placeholder:dark:text-slate-900 ring-slate-300 dark:ring-slate-700 focus:ring-red-950 focus:dark:ring-red-900 shadow-xl"

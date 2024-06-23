@@ -32,7 +32,7 @@ export const BackgroundCircles = () => {
 export const HamburgerMenu = () => {
   return (
     <div className="absolute inset-0 pointer-events-none lg:hidden">
-      <div className="absolute bg-red-300 inset-0 opacity-[.3] z-10  ">
+      <div className="absolute bg-red-600 inset-0 opacity-[.3] z-10  ">
       <img
           className="w-full h-full object-cover "
           src={image2vector}

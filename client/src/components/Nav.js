@@ -9,6 +9,7 @@ import { onLogout } from '../api/auth'; // Import onLogout function
 import { unauthenticateUser } from '../redux/slices/authSlice'; // Import unauthenticateUser action
 import { HamburgerMenu } from '../design/Header';
 import { navigation } from '../constants';
+import Hamburger from './Hamburger';
 
 const Nav = () => {
   const { isAuth } = useSelector((state) => state.auth);
@@ -99,7 +100,10 @@ const Nav = () => {
             </div>
           )}
         </div>
-
+            <Hamburger
+            className="lg:hidden" onClick={toggleNavigation} >
+              Menu 
+              </Hamburger>
       </div>
     </div>
 

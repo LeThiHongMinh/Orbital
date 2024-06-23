@@ -31,7 +31,7 @@ export const navigation = [
     {
       id: "5",
       label: "New Account",
-      href: "#login",
+      href: "login",
       onlyMobile: true,
     },
   ];

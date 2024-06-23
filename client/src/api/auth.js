@@ -46,3 +46,16 @@ export async function profileUpdate (profileData) {
 export async function profileCheck() {
   return await API.get('/api/profile', getAuthHeader());
 }
+export async function getNotes() {
+  return await API.get('/api/files');
+}
+export async function downloadNotes(fileId) {
+  try {
+    const response = await API.get(`/api/files/${fileId}/download`, {
+      responseType: 'blob'
+    });
+    return response.data; // Return the blob data
+  } catch (error) {
+    throw error; // Throw error to be handled in calling component
+  }
+}
