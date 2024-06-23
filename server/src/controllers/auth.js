@@ -3,6 +3,9 @@ const { hash } = require('bcryptjs')
 const { sign } = require('jsonwebtoken')
 const { SECRET } = require('../constants')
 const jwt = require('jsonwebtoken');
+const sendEmail = require('../utils/sendEmail')
+
+
 exports.getUsers = async (req, res) => {
   try {
     const { rows } = await db.query('select user_id, email from users')
@@ -17,26 +20,60 @@ exports.getUsers = async (req, res) => {
 }
 
 exports.register = async (req, res) => {
-  const { email, password } = req.body
-  try {
-    const hashedPassword = await hash(password, 10)
+  const { email, password } = req.body;
 
-    await db.query('insert into users(email,password) values ($1 , $2)', [
+  try {
+    // Check if email already exists
+    const checkUserQuery = 'SELECT * FROM users WHERE email = $1';
+    const { rows } = await db.query(checkUserQuery, [email]);
+
+    if (rows.length > 0) {
+      return res.status(400).json({
+        errors: [
+          {
+            type: 'field',
+            value: email,
+            msg: 'Email already exists.',
+            path: 'email',
+            location: 'body',
+          },
+        ],
+      });
+    }
+
+    // Hash the password
+    const hashedPassword = await hash(password, 10);
+
+    // Insert user into database
+    const insertUserQuery = 'INSERT INTO users(email, password) VALUES ($1 , $2) RETURNING user_id';
+    const result = await db.query(insertUserQuery, [
       email,
       hashedPassword,
-    ])
+    ]);
+
+    const user_id = result.rows[0].user_id;
+
+    // Generate JWT token
+    const token = sign({ user_id, email }, SECRET, { expiresIn: '10m' });
+
+    // Construct verification URL (assuming BASE_URL is defined in environment variables)
+    const url = `${process.env.BASE_URL}/verify-email?token=${token}`;
+
+    // Send verification email
+    await sendEmail(email, 'Verify Email', `Hi there! Thank you for registering for our website, please click the link below to verify your email: ${url}`);
 
     return res.status(201).json({
       success: true,
-      message: 'The registraion was succefull',
-    })
+      message: 'Registration successful. Verification email sent.',
+    });
   } catch (error) {
-    console.log(error.message)
+    console.error('Registration error:', error.message);
     return res.status(500).json({
       error: error.message,
-    })
+    });
   }
-}
+};
+
 
 exports.login = async (req, res) => {
   let user = req.user
