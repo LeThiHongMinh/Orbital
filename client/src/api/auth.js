@@ -70,3 +70,16 @@ export async function updateStudyActivity(id, activityData) {
 export async function deleteStudyActivity(id) {
   return await API.delete(`/api/study-activities/${id}`, getAuthHeader());
 }
+export async function getNotes() {
+  return await API.get('/api/files');
+}
+export async function downloadNotes(fileId) {
+  try {
+    const response = await API.get(`/api/files/${fileId}/download`, {
+      responseType: 'blob'
+    });
+    return response.data; // Return the blob data
+  } catch (error) {
+    throw error; // Throw error to be handled in calling component
+  }
+}

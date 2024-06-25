@@ -7,6 +7,7 @@ import FormControl from '@mui/material/FormControl';
 import Radio from '@mui/material/Radio';
 import { star } from '../assets/icons';
 import { submitForm } from "../api/auth";
+import Nav from './Nav';
 
 const Matchmaking = () => {
   const [formData, setFormData] = useState({
@@ -48,6 +49,7 @@ const Matchmaking = () => {
 
   return (
     <div className='ml-3 flex flex-col justify-center bg-cover min-h-screen bg-red-100 bg-center relative'>
+      <Nav />
       <div className="ml-10 py-10 flex items-center">
         <img 
           src={star}
