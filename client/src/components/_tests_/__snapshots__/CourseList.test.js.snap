@@ -1,0 +1,86 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<div
+  className="fixed bottom-0 left-0 right-0 flex flex-col items-center justify-center p-8 bg-white shadow-lg rounded-t-lg max-w-3xl w-full mx-auto"
+>
+  <h3
+    className="text-xl mb-4"
+  >
+    Course List
+  </h3>
+  <div
+    className="flex w-full justify-between"
+  >
+    <form
+      className="w-full max-w-md space-y-4 mr-4"
+      onSubmit={[Function]}
+    >
+      <input
+        className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+        name="courseName"
+        onChange={[Function]}
+        placeholder="Course Name"
+        required={true}
+        type="text"
+        value=""
+      />
+      <input
+        className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+        name="courseCode"
+        onChange={[Function]}
+        placeholder="Course Code"
+        required={true}
+        type="text"
+        value=""
+      />
+      <input
+        className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+        name="faculty"
+        onChange={[Function]}
+        placeholder="Faculty"
+        required={true}
+        type="text"
+        value=""
+      />
+      <input
+        className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+        name="aimedLevel"
+        onChange={[Function]}
+        placeholder="Aimed Level"
+        required={true}
+        type="text"
+        value=""
+      />
+      <button
+        className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300"
+        type="submit"
+      >
+        Add Course
+      </button>
+    </form>
+    <ul
+      className="w-full max-w-md"
+    />
+  </div>
+  <div
+    className="fixed mt-1 left-0 p-4 bg-gray-200 shadow-lg rounded-lg max-w-md w-full"
+  >
+    <h3
+      className="text-lg mb-4"
+    >
+      Search Courses by Course Code
+    </h3>
+    <input
+      className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+      onChange={[Function]}
+      placeholder="Enter course code..."
+      type="text"
+      value=""
+    />
+    <ul
+      className="mt-4"
+    />
+  </div>
+</div>
+`;

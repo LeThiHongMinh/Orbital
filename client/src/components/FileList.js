@@ -15,7 +15,9 @@ const FileList = () => {
         const response = await getNotes();
         const data = response.data;
         if (data.success) {
-          setFiles(data.files);
+          // Ensure the date is parsed correctly and sort in descending order
+          const sortedFiles = data.files.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+          setFiles(sortedFiles);
         } else {
           console.error('Error fetching files');
         }

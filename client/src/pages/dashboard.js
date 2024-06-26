@@ -13,6 +13,7 @@ import StatusComponent from '../components/Status';
 import ProfileForm from '../components/Profile';
 import { profileUpdate } from '../api/auth';
 import { profilepic } from '../assets';
+import Nav from '../components/Nav';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -72,6 +73,7 @@ const Dashboard = () => {
   ) : (
     <Layout>
       <div className="relative">
+        <Nav />
         <div className="bg-red-100 relative">
           <ProgressBar />
           <CalendarCom className="flex flex-col right-0" />
