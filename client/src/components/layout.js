@@ -1,12 +1,19 @@
-import Navbar from './navbar'
+import React from 'react';
+import Navbar from './Nav';
+import Sidebar from './Sidebar';
+import { useSelector } from 'react-redux';
 
 const Layout = ({ children }) => {
-  return (
-    <div>
-      <Navbar />
-      <div >{children}</div>
-    </div>
-  )
-}
+  const { isAuth } = useSelector((state) => state.auth);
 
-export default Layout
+  return (
+    <div className="flex h-screen">
+      {isAuth ? <Sidebar /> : <Navbar />}
+      <div className="flex-grow">
+        <main className="p-6">{children}</main>
+      </div>
+    </div>
+  );
+};
+
+export default Layout;

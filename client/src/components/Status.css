@@ -1,0 +1,33 @@
+.dashboard {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 8px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+  flex: 1 1 calc(33.333% - 32px); /* Three cards in a row with some margin */
+  max-width: 200px; /* Ensure a max width to keep cards square-like */
+  min-width: 150px; /* Ensure a min width for better layout on small screens */
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.card-content {
+  font-size: 16px;
+}

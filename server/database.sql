@@ -41,6 +41,7 @@ CREATE TABLE study_activities (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   start_time TIMESTAMP,
   end_time TIMESTAMP,
+  status BOOLEAN DEFAULT false, --Pending
   FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 

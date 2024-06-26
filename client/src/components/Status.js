@@ -1,31 +1,80 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { getStudyActivities } from '../api/auth'; // Adjust import as per your API setup
+import './Status.css'; // Import the CSS file
 
-const StatusComponent = ({ numLessons, numQuizzes, numPrototypes, numHours }) => {
+const StatusComponent = () => {
+  const [studyActivities, setStudyActivities] = useState([]);
+  const [completedCount, setCompletedCount] = useState(0);
+  const [incompleteCount, setIncompleteCount] = useState(0);
+  const [totalHoursStudied, setTotalHoursStudied] = useState(0);
+
+  useEffect(() => {
+    // Fetch study activities from backend or API
+    const fetchData = async () => {
+      try {
+        const response = await getStudyActivities(); // Implement fetchStudyActivities as per your API
+        setStudyActivities(response.data); // Assuming response.data is an array of study activities
+
+        // Calculate task stats and total hours studied
+        const { completedCount, incompleteCount } = calculateTaskStats(response.data);
+        const totalHours = calculateTotalHoursStudied(response.data);
+
+        setCompletedCount(completedCount);
+        setIncompleteCount(incompleteCount);
+        setTotalHoursStudied(totalHours);
+      } catch (error) {
+        console.error('Error fetching study activities:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
-    <div className="status-component fixed left-0 bottom-0 p-4 bg-white shadow-lg rounded-lg w-full max-w-md">
-      <h3 className="text-lg font-semibold mb-60">Your Progress</h3>
-      <div className="flex justify-between">
-        <div>
-          <p className="text-sm font-medium text-gray-600">Lessons Completed</p>
-          <p className="text-xl font-semibold text-gray-900">{numLessons}</p>
+    <div>
+      <h2>Study Activities Dashboard</h2>
+      <div className="dashboard">
+        <div className="card">
+          <div className="card-title">Completed Tasks</div>
+          <div className="card-content">{completedCount}</div>
         </div>
-        <div>
-          <p className="text-sm font-medium text-gray-600">Quizzes Completed</p>
-          <p className="text-xl font-semibold text-gray-900">{numQuizzes}</p>
+        <div className="card">
+          <div className="card-title">Incomplete Tasks</div>
+          <div className="card-content">{incompleteCount}</div>
         </div>
-      </div>
-      <div className="flex justify-between mt-60">
-        <div>
-          <p className="text-sm font-medium text-gray-600">Prototypes Completed</p>
-          <p className="text-xl font-semibold text-gray-900">{numPrototypes}</p>
-        </div>
-        <div>
-          <p className="text-sm font-medium text-gray-600">Hours Learned</p>
-          <p className="text-xl font-semibold text-gray-900">{numHours}</p>
+        <div className="card">
+          <div className="card-title">Total Hours Studied</div>
+          <div className="card-content">{totalHoursStudied} hours</div>
         </div>
       </div>
+      {/* Render study activities list or other components as needed */}
     </div>
   );
+};
+
+const calculateTaskStats = (studyActivities) => {
+  let completedCount = 0;
+  let incompleteCount = 0;
+
+  studyActivities.forEach(activity => {
+    if (activity.status === 'completed') {
+      completedCount++;
+    } else if (activity.status === 'incomplete') {
+      incompleteCount++;
+    }
+  });
+
+  return { completedCount, incompleteCount };
+};
+
+const calculateTotalHoursStudied = (studyActivities) => {
+  let totalHours = 0;
+
+  studyActivities.forEach(activity => {
+    totalHours += activity.hoursStudied;
+  });
+
+  return totalHours;
 };
 
 export default StatusComponent;

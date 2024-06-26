@@ -9,5 +9,6 @@ router.get('/study-activities/:id', userAuth, studyActivitiesController.getStudy
 router.put('/study-activities/:id', userAuth, studyActivitiesController.updateStudyActivity);
 router.delete('/study-activities/:id', userAuth, studyActivitiesController.deleteStudyActivity);
 router.get('/study-activities', userAuth, studyActivitiesController.getTasksForDate);
+router.patch('/study-activities/:id/toggle-status', userAuth, studyActivitiesController.toggleActivityStatus);
 
 module.exports = router;

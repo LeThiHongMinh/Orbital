@@ -2,12 +2,12 @@ const db = require('../db');
 
 exports.createStudyActivity = async (req, res) => {
   const { activity_type, activity_description, start_time, end_time } = req.body;
-  const user_id = req.user.id; // User ID from authenticated user
+  const user_id = req.user.id;
 
   try {
     const result = await db.query(
-      'INSERT INTO study_activities(user_id, activity_type, activity_description, start_time, end_time) VALUES($1, $2, $3, $4, $5) RETURNING *',
-      [user_id, activity_type, activity_description, start_time, end_time]
+      'INSERT INTO study_activities(user_id, activity_type, activity_description, start_time, end_time, status) VALUES($1, $2, $3, $4, $5, $6) RETURNING *',
+      [user_id, activity_type, activity_description, start_time, end_time, false]
     );
     res.status(201).json({ success: true, activity: result.rows[0] });
   } catch (error) {
@@ -17,7 +17,7 @@ exports.createStudyActivity = async (req, res) => {
 };
 
 exports.getStudyActivities = async (req, res) => {
-  const user_id = req.user.id; // User ID from authenticated user
+  const user_id = req.user.id;
 
   try {
     const result = await db.query('SELECT * FROM study_activities WHERE user_id = $1', [user_id]);
@@ -30,7 +30,7 @@ exports.getStudyActivities = async (req, res) => {
 
 exports.getStudyActivity = async (req, res) => {
   const { id } = req.params;
-  const user_id = req.user.id; // User ID from authenticated user
+  const user_id = req.user.id;
 
   try {
     const result = await db.query('SELECT * FROM study_activities WHERE id = $1 AND user_id = $2', [id, user_id]);
@@ -47,10 +47,9 @@ exports.getStudyActivity = async (req, res) => {
 exports.updateStudyActivity = async (req, res) => {
   const { id } = req.params;
   const { activity_type, activity_description, start_time, end_time } = req.body;
-  const user_id = req.user.id; // User ID from authenticated user
+  const user_id = req.user.id;
 
   try {
-    // Fetch the existing activity first
     const fetchResult = await db.query(
       'SELECT * FROM study_activities WHERE id = $1 AND user_id = $2',
       [id, user_id]
@@ -62,7 +61,6 @@ exports.updateStudyActivity = async (req, res) => {
 
     const existingActivity = fetchResult.rows[0];
 
-    // Update only the provided fields, keeping the existing values if not provided
     const updatedActivity = {
       activity_type: activity_type || existingActivity.activity_type,
       activity_description: activity_description || existingActivity.activity_description,
@@ -70,7 +68,6 @@ exports.updateStudyActivity = async (req, res) => {
       end_time: end_time || existingActivity.end_time,
     };
 
-    // Perform the update query
     const updateResult = await db.query(
       'UPDATE study_activities SET activity_type = $1, activity_description = $2, start_time = $3, end_time = $4 WHERE id = $5 AND user_id = $6 RETURNING *',
       [updatedActivity.activity_type, updatedActivity.activity_description, updatedActivity.start_time, updatedActivity.end_time, id, user_id]
@@ -80,7 +77,6 @@ exports.updateStudyActivity = async (req, res) => {
       return res.status(404).json({ error: 'Activity not found' });
     }
 
-    // Return the updated activity
     res.status(200).json({ success: true, activity: updateResult.rows[0] });
 
   } catch (error) {
@@ -89,10 +85,9 @@ exports.updateStudyActivity = async (req, res) => {
   }
 };
 
-
 exports.deleteStudyActivity = async (req, res) => {
   const { id } = req.params;
-  const user_id = req.user.id; // User ID from authenticated user
+  const user_id = req.user.id;
 
   try {
     const result = await db.query('DELETE FROM study_activities WHERE id = $1 AND user_id = $2 RETURNING *', [id, user_id]);
@@ -107,8 +102,8 @@ exports.deleteStudyActivity = async (req, res) => {
 };
 
 exports.getTasksForDate = async (req, res) => {
-  const { selectedDate } = req.query; // Assuming selectedDate is provided in ISO format, e.g., '2024-05-15'
-  const user_id = req.user.id; // User ID from authenticated user
+  const { selectedDate } = req.query;
+  const user_id = req.user.id;
 
   try {
     const result = await db.query(
@@ -117,6 +112,36 @@ exports.getTasksForDate = async (req, res) => {
     );
 
     res.status(200).json({ success: true, activities: result.rows });
+
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+exports.toggleActivityStatus = async (req, res) => {
+  const { id } = req.params;
+  const user_id = req.user.id;
+
+  try {
+    const fetchResult = await db.query(
+      'SELECT status FROM study_activities WHERE id = $1 AND user_id = $2',
+      [id, user_id]
+    );
+
+    if (fetchResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Activity not found' });
+    }
+
+    const currentStatus = fetchResult.rows[0].status;
+    const newStatus = !currentStatus;
+
+    const updateResult = await db.query(
+      'UPDATE study_activities SET status = $1 WHERE id = $2 AND user_id = $3 RETURNING *',
+      [newStatus, id, user_id]
+    );
+
+    res.status(200).json({ success: true, activity: updateResult.rows[0] });
 
   } catch (error) {
     console.error(error.message);

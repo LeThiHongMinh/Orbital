@@ -3,17 +3,16 @@ import { useLocation } from 'react-router-dom';
 import { NUSTudy } from '../assets/images';
 import { useState } from 'react';
 import { disablePageScroll, enablePageScroll } from "scroll-lock";
-import { useSelector, useDispatch } from 'react-redux'; // Import useDispatch
+import { useSelector, useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
-import { onLogout } from '../api/auth'; // Import onLogout function
-import { unauthenticateUser } from '../redux/slices/authSlice'; // Import unauthenticateUser action
+import { onLogout } from '../api/auth';
+import { unauthenticateUser } from '../redux/slices/authSlice';
 import { HamburgerMenu } from '../design/Header';
 import { navigation } from '../constants';
 
 const Nav = () => {
   const { isAuth } = useSelector((state) => state.auth);
-  const dispatch = useDispatch(); // Define dispatch
-
+  const dispatch = useDispatch();
   const pathname = useLocation();
   const [openNavigation, setOpenNavigation] = useState(false);
 
@@ -35,9 +34,8 @@ const Nav = () => {
 
   const logout = async () => {
     try {
-      await onLogout(); // Call onLogout function
-
-      dispatch(unauthenticateUser()); // Dispatch unauthenticateUser action
+      await onLogout();
+      dispatch(unauthenticateUser());
       localStorage.removeItem('isAuth');
     } catch (error) {
       console.log(error.response);
@@ -45,9 +43,7 @@ const Nav = () => {
   };
 
   return (
-    <div className={`fixed top-0 left-0 w-full bg-red-50  rounded-sm z-50  border-b border-n-6 lg:bg-n-8/90 lg:backdrop-blur-sm ${
-      openNavigation ? "bg-n-8" : "bg-n-8/90 backdrop-blur-sm "
-    }`}>
+    <div className={`fixed top-0 left-0 w-full bg-red-50 rounded-sm z-50 border-b border-n-6 lg:bg-n-8/90 lg:backdrop-blur-sm ${openNavigation ? "bg-n-8" : "bg-n-8/90 backdrop-blur-sm "}`}>
       <div className="flex items-center px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
         <a href="/">
           <img className='block xl:mr-8'
@@ -80,7 +76,6 @@ const Nav = () => {
         </nav>
 
         <div className='container'>
-
           {isAuth ? (
             <div>
               <button onClick={() => logout()} className='btn btn-primary'>
@@ -88,8 +83,7 @@ const Nav = () => {
               </button>
             </div>
           ) : (
-            <div className={` hidden lg:flex lg:flex-row
-          `}>
+            <div className="hidden lg:flex lg:flex-row">
               <NavLink className=" font-palanquin font-bold text-2xl fixed top-[5rem] left-0  right-0 bottom-0 bg-n-8 lg:static lg:flex lg:mx-auto lg:bg-transparent" to='/login'>
                 <span>Login</span>
               </NavLink>
@@ -99,10 +93,8 @@ const Nav = () => {
             </div>
           )}
         </div>
-
       </div>
     </div>
-
   );
 };
 

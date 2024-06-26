@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { createStudyActivity, getStudyActivities, updateStudyActivity, deleteStudyActivity } from '../api/auth';
+import { createStudyActivity, getStudyActivities, updateStudyActivity, deleteStudyActivity, toggleStudyActivityStatus } from '../api/auth';
 import Layout from '../components/layout';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
@@ -31,6 +31,10 @@ const StudyActivities = () => {
         start: new Date(activity.start_time),
         end: new Date(activity.end_time),
         title: activity.activity_type,
+        status: activity.status,
+        style: {
+          backgroundColor: activity.status ? 'green' : 'pink',
+        }
       }));
       setActivities(formattedActivities);
     } catch (error) {
@@ -103,6 +107,15 @@ const StudyActivities = () => {
     }
   };
 
+  const handleToggleStatus = async (id) => {
+    try {
+      await toggleStudyActivityStatus(id);
+      fetchActivities();
+    } catch (error) {
+      console.error('Error toggling activity status:', error);
+    }
+  };
+
   return (
     <Layout>
       <Container>
@@ -121,6 +134,9 @@ const StudyActivities = () => {
           endAccessor="end"
           style={{ height: 500, margin: '50px 0' }}
           onSelectEvent={(event) => handleOpen(event)}
+          eventPropGetter={(event) => ({
+            style: event.style,
+          })}
         />
 
         <Modal open={open} onClose={handleClose}>
@@ -177,9 +193,22 @@ const StudyActivities = () => {
               {selectedActivity ? 'Update Activity' : 'Create Activity'}
             </Button>
             {selectedActivity && (
-              <Button variant="contained" color="secondary" onClick={() => handleDelete(selectedActivity.id)}>
-                Delete Activity
-              </Button>
+              <>
+                <Button variant="contained" color="secondary" onClick={() => handleDelete(selectedActivity.id)}>
+                  Delete Activity
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => handleToggleStatus(selectedActivity.id)}
+                  style={{
+                    marginLeft: '10px',
+                    backgroundColor: selectedActivity.status ? 'green' : 'pink',
+                    color: 'white',
+                  }}
+                >
+                  {selectedActivity.status ? 'Unmark as Complete' : 'Mark as Complete'}
+                </Button>
+              </>
             )}
           </Box>
         </Modal>

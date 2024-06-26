@@ -12,12 +12,8 @@ const Home =  () => {
       <Layout >
         <main className = " bg-cover min-h-screen bg-red-100 bg-center relative">
         
-      <Nav />
     <section className="xl:padding-l wide:padding-r padding-b">
       <Hero />
-    </section>
-    <section className="bg-cover min-h-screen bg-red-100 bg-center relative">
-      <Matchmaking />
     </section>
     </main>
     </Layout>

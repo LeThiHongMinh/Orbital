@@ -70,3 +70,7 @@ export async function updateStudyActivity(id, activityData) {
 export async function deleteStudyActivity(id) {
   return await API.delete(`/api/study-activities/${id}`, getAuthHeader());
 }
+
+export async function toggleStudyActivityStatus(id) {
+  return await API.patch(`/api/study-activities/${id}/toggle-status`, {}, getAuthHeader());
+}
