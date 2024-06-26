@@ -32,9 +32,9 @@ import Register from './pages/register'
 import { useSelector } from 'react-redux'
 import CourseDetail from './components/Coursedetail';
 import CourseList from './components/Courselist';
-import Matchmaking from './components/Matchmaking';
-import Library from './components/Library';
-import ProfileForm from './components/Profile';
+import Matchmaking from './pages/Matchmaking';
+import Library from './pages/Library';
+import ProfileForm from './pages/Profile';
 import StudyActivities from './pages/studyActivities';
 
 const PrivateRoutes = () => {

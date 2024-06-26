@@ -1,7 +1,7 @@
 import Layout from "../components/layout"
 import Nav from '../components/Nav';
 import Hero from '../components/Hero';
-import Matchmaking from '../components/Matchmaking';
+import Matchmaking from '../pages/Matchmaking';
 import { image2vector } from '../assets/images';
 //import './index';
 //import { backtem } from './assets/images';

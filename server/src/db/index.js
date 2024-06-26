@@ -7,6 +7,11 @@ const pool = new Pool({
   port: 5432,
 })
 
+const connect = async () => {
+  const client = await pool.connect();
+  return client;
+};
+
 module.exports = {
   query: (text, params) => pool.query(text, params),
 }
