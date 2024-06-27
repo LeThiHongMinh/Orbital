@@ -69,11 +69,11 @@ const App = () => {
         <Route path='/library' element = {<Library />} />
         
 
-        <Route element={<PrivateRoutes />}>
+        {/* <Route element={<PrivateRoutes />}> */}
           <Route path='/dashboard' element={<Dashboard />} />
           <Route path='/profile' element={<ProfileForm />} />
           <Route path='/studyActivities' element={<StudyActivities />} />
-        </Route>
+        {/* </Route> */}
         
         <Route path="/" element={<CourseList courses={courses} setCourses={setCourses} />} />
         <Route path="/course/:courseCode" element={<CourseDetail courses={courses} />} />
