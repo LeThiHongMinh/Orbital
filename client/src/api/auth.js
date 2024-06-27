@@ -3,7 +3,7 @@ import axios from 'axios';
 axios.defaults.withCredentials = true;
 
 const API = axios.create({
-  baseURL: 'https://orbital-kq4q.onrender.com',
+  baseURL: 'http://localhost:5000',
   withCredentials: true,
 });
 const getAuthHeader = () => {
@@ -24,7 +24,13 @@ export const verifyEmail = (token) => {
 };
 
 export async function onLogin(loginData) {
-  return await API.post('/api/login', loginData);
+  try {
+    const response = await API.post('/api/login', loginData);
+    localStorage.setItem('token', response.data.token);
+    return response;
+  } catch (error) {
+    console.error('Login error:', error);
+  }
 }
 
 export async function onLogout() {
@@ -39,36 +45,11 @@ export async function submitForm(formData) {
 }
 
 export async function profileUpdate (profileData) {
-  return await API.put('/api/profileupdate', profileData);
+  return await API.put('/api/profileupdate', profileData, getAuthHeader());
 }
 export async function profileCheck() {
-  return await API.get('/api/profile');
+  return await API.get('/api/profile', getAuthHeader());
 }
-
-export async function createStudyActivity(activityData) {
-  return await API.post('/api/study-activities', activityData);
-}
-
-export async function getStudyActivities() {
-  return await API.get('/api/study-activities');
-}
-
-export async function getStudyActivity(id) {
-  return await API.get(`/api/study-activities/${id}`);
-}
-
-export async function updateStudyActivity(id, activityData) {
-  return await API.put(`/api/study-activities/${id}`, activityData);
-}
-
-export async function deleteStudyActivity(id) {
-  return await API.delete(`/api/study-activities/${id}`);
-}
-
-export async function toggleStudyActivityStatus(id) {
-  return await API.patch(`/api/study-activities/${id}/toggle-status`, {});
-}
-
 export async function getNotes() {
   return await API.get('/api/files');
 }
@@ -81,4 +62,24 @@ export async function downloadNotes(fileId) {
   } catch (error) {
     throw error; // Throw error to be handled in calling component
   }
+}
+
+export async function createStudyActivity(activityData) {
+  return await API.post('/api/study-activities', activityData, getAuthHeader());
+}
+
+export async function getStudyActivities() {
+  return await API.get('/api/study-activities', getAuthHeader());
+}
+
+export async function getStudyActivity(id) {
+  return await API.get(`/api/study-activities/${id}`, getAuthHeader());
+}
+
+export async function updateStudyActivity(id, activityData) {
+  return await API.put(`/api/study-activities/${id}`, activityData, getAuthHeader());
+}
+
+export async function deleteStudyActivity(id) {
+  return await API.delete(`/api/study-activities/${id}`, getAuthHeader());
 }

@@ -24,11 +24,18 @@ import NotificationsIcon from '@mui/icons-material/Notifications'; // Notificati
 
 import { onLogout } from '../api/auth';
 import { unauthenticateUser } from '../redux/slices/authSlice';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchProtectedInfo } from '../api/auth';
+import { profileUpdate } from '../api/auth';
+import { getStudyActivities } from '../api/auth';
 
 const Sidebar = () => {
+  const { isAuth } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [protectedData, setProtectedData] = useState(null);
+  const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [notifications, setNotifications] = useState([]);
 
   const handleNavigation = (path) => {
@@ -45,7 +52,18 @@ const Sidebar = () => {
     }
   };
 
+  const protectedInfo = async () => {
+    try {
+      const { data } = await fetchProtectedInfo();
+      setProtectedData(data.info);
+      setLoading(false);
+    } catch (error) {
+      handleLogout();
+    }
+  };
+
   useEffect(() => {
+    protectedInfo();
     fetchNotifications(); // Fetch notifications on component mount
   }, []);
 
@@ -58,14 +76,18 @@ const Sidebar = () => {
     }
   };
 
-  const NotificationIcon = ({ count }) => {
-    return (
-      <IconButton color="inherit">
-        <Badge badgeContent={count} color="error">
-          <NotificationsIcon />
-        </Badge>
-      </IconButton>
-    );
+  const saveProfile = async (event) => {
+    event.preventDefault();
+    const fullName = event.target.fullName.value;
+    const bio = event.target.bio.value;
+
+    try {
+      await profileUpdate({ full_name: fullName, bio: bio, email: protectedData.email });
+      // Reload profile data after update
+      protectedInfo();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -135,22 +157,23 @@ const Sidebar = () => {
       </List>
       <Box sx={{ position: 'absolute', bottom: 16, left: '50%', transform: 'translateX(-50%)' }}>
         <Tooltip title="Notifications">
-          <NotificationIcon count={notifications.length} />
+          <IconButton color="inherit">
+            <Badge badgeContent={notifications.length} color="error">
+              <NotificationsIcon />
+            </Badge>
+          </IconButton>
         </Tooltip>
       </Box>
     </Drawer>
   );
 };
 
+
 // Function to get upcoming study activities as notifications
-const getNotifications = async () => {
+export const getNotifications = async () => {
   try {
-    // Mock data or replace with your actual API call
-    const activities = [
-      { id: 1, title: 'Upcoming Study Activity 1', date: '2024-07-05' },
-      { id: 2, title: 'Upcoming Study Activity 2', date: '2024-07-08' },
-      { id: 3, title: 'Upcoming Study Activity 3', date: '2024-07-10' },
-    ];
+    const response = await getStudyActivities();
+    const activities = response.data;
 
     // Filter activities based on upcoming conditions (e.g., within next 7 days)
     const upcomingActivities = activities.filter(activity => {
@@ -166,6 +189,16 @@ const getNotifications = async () => {
     console.error('Failed to fetch study activities:', error);
     throw new Error('Failed to fetch study activities');
   }
+};
+
+const NotificationIcon = ({ count }) => {
+  return (
+    <IconButton color="inherit">
+      <Badge badgeContent={count} color="error">
+        <NotificationsIcon />
+      </Badge>
+    </IconButton>
+  );
 };
 
 export default Sidebar;
