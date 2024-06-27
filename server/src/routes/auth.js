@@ -21,7 +21,7 @@ const { registerValidation, loginValidation } = require('../validators/auth')
 const { userAuth } = require('../middlewares/auth-middleware')
 
 router.get('/get-users', getUsers)
-router.get('/protected', userAuth, protected)
+router.get('/protected', authenticateToken, protected)
 router.post('/register', registerValidation, validationMiddleware, register)
 router.post('/login', loginValidation, validationMiddleware, login)
 router.get('/logout', logout)
