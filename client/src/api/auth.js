@@ -3,7 +3,7 @@ import axios from 'axios';
 axios.defaults.withCredentials = true;
 
 const API = axios.create({
-  baseURL: 'http://localhost:5000',
+  baseURL: 'https://orbital-kq4q.onrender.com',
   withCredentials: true,
 });
 const getAuthHeader = () => {
@@ -50,19 +50,6 @@ export async function profileUpdate (profileData) {
 export async function profileCheck() {
   return await API.get('/api/profile', getAuthHeader());
 }
-export async function getNotes() {
-  return await API.get('/api/files');
-}
-export async function downloadNotes(fileId) {
-  try {
-    const response = await API.get(`/api/files/${fileId}/download`, {
-      responseType: 'blob'
-    });
-    return response.data; // Return the blob data
-  } catch (error) {
-    throw error; // Throw error to be handled in calling component
-  }
-}
 
 export async function createStudyActivity(activityData) {
   return await API.post('/api/study-activities', activityData, getAuthHeader());
@@ -82,4 +69,22 @@ export async function updateStudyActivity(id, activityData) {
 
 export async function deleteStudyActivity(id) {
   return await API.delete(`/api/study-activities/${id}`, getAuthHeader());
+}
+
+export async function toggleStudyActivityStatus(id) {
+  return await API.patch(`/api/study-activities/${id}/toggle-status`, {}, getAuthHeader());
+}
+
+export async function getNotes() {
+  return await API.get('/api/files');
+}
+export async function downloadNotes(fileId) {
+  try {
+    const response = await API.get(`/api/files/${fileId}/download`, {
+      responseType: 'blob'
+    });
+    return response.data; // Return the blob data
+  } catch (error) {
+    throw error; // Throw error to be handled in calling component
+  }
 }
