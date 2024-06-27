@@ -2,6 +2,7 @@ const db = require('../db')
 const { hash } = require('bcryptjs')
 const { sign } = require('jsonwebtoken')
 const { SECRET } = require('../constants')
+const jwt = require('jsonwebtoken');
 
 exports.getUsers = async (req, res) => {
   try {

@@ -4,6 +4,7 @@ const { Router } = require('express')
 const router = Router();
 const db = require('../db'); // Assuming db is your PostgreSQL client instance
 
+
 const {
   getUsers,
   register,
