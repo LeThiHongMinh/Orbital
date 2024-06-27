@@ -67,7 +67,7 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <div className="dashboard-container">
+      <div className="dashboard-container bg-red-100">
         <Grid container spacing={3}>
           {/* Top Section */}
           <Grid item xs={12}>

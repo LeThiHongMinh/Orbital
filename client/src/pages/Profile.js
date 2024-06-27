@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { profileUpdate, profileCheck } from '../api/auth';
-import Layout from './layout'; // Import the Layout component
-import Nav from './Nav';
+import Layout from '../components/layout'; // Import the Layout component
+import Nav from '../components/Nav';
 
 const ProfilePage = () => {
   const [profileData, setProfileData] = useState({ full_name: '', email: '', bio: '' });

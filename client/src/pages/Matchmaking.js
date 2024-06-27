@@ -7,7 +7,7 @@ import FormControl from '@mui/material/FormControl';
 import Radio from '@mui/material/Radio';
 import { star } from '../assets/icons';
 import { submitForm } from "../api/auth";
-import Layout from './layout'; // Adjust the path as necessary
+import Layout from '../components/layout'; // Adjust the path as necessary
 
 const Matchmaking = () => {
   const [formData, setFormData] = useState({

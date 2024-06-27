@@ -7,10 +7,10 @@ const Layout = ({ children }) => {
   const { isAuth } = useSelector((state) => state.auth);
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen bg-red-100">
       {isAuth ? <Sidebar /> : <Navbar />}
       <div className="flex-grow">
-        <main className="p-6">{children}</main>
+        <main className="p-6 bg-red-100" >{children}</main>
       </div>
     </div>
   );
