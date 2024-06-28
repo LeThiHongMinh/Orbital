@@ -1,5 +1,4 @@
 import axios from 'axios';
-import jwt_decode from 'jwt-decode';
 
 axios.defaults.withCredentials = true;
 
@@ -21,16 +20,6 @@ const getAuthHeader = () => {
   };
 };
 
-const isTokenExpired = (token) => {
-  try {
-    const decoded = jwt_decode(token);
-    const currentTime = Date.now() / 1000; // Current time in seconds
-    return decoded.exp < currentTime;
-  } catch (error) {
-    console.error('Error decoding token:', error);
-    return true;
-  }
-};
 
 export async function onRegistration(registrationData) {
   return await API.post('/api/register', registrationData);
