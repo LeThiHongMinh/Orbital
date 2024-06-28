@@ -12,8 +12,8 @@ const localizer = momentLocalizer(moment);
 const StudyActivities = () => {
   const { isAuth } = useSelector((state) => state.auth);
 
-  // Example of checking isAuth
   console.log('Current isAuth state:', isAuth);
+
   const [activities, setActivities] = useState([]);
   const [formValues, setFormValues] = useState({
     activity_type: '',
@@ -23,6 +23,12 @@ const StudyActivities = () => {
   });
   const [selectedActivity, setSelectedActivity] = useState(null);
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (isAuth) {
+      fetchActivities();
+    }
+  }, [isAuth]);
 
   const fetchActivities = async () => {
     try {
@@ -116,7 +122,6 @@ const StudyActivities = () => {
       console.error('Error toggling activity status:', error);
     }
   };
-
 
   return (
     <Layout>

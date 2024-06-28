@@ -30,16 +30,6 @@ app.use('/api', formRoutes)
 app.use('/api', uploadRouter)
 app.use('/api', studyActivitiesRoutes);
 
-app.use((req, res, next) => {
-  console.log('Cookies:', req.cookies);
-  next();
-});
-
-app.use((req, res, next) => {
-  console.log('User ID:', req.user ? req.user.id : 'No user');
-  next();
-});
-
 //app start
 const appStart = () => {
   try {
