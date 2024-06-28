@@ -27,7 +27,7 @@ const Login = () => {
     email: '',
     password: '',
   });
-  const [error, setError] = useState(false);
+  const [error, setError] = useState('');
 
   const onChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
