@@ -40,27 +40,27 @@ exports.register = async (req, res) => {
 }
 
 exports.login = async (req, res) => {
-  let user = req.user
+  let user = req.user;
 
   let payload = {
     id: user.user_id,
     email: user.email,
-  }
+  };
 
   try {
-    const token = await sign(payload, SECRET)
+    const token = await sign(payload, SECRET, { expiresIn: '30d' }); // Set token expiration to 30 days
 
     return res.status(200).cookie('token', token, { httpOnly: true }).json({
       success: true,
-      message: 'Logged in succefully',
-    })
+      message: 'Logged in successfully',
+    });
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
     return res.status(500).json({
       error: error.message,
-    })
+    });
   }
-}
+};
 
 exports.protected = async (req, res) => {
   try {
@@ -147,15 +147,20 @@ exports.updateProfile = async (req, res) => {
   }
 };
 
+
 exports.authenticateToken = (req, res, next) => {
   const token = req.headers['authorization']?.split(' ')[1];
 
   if (!token) return res.sendStatus(401);
 
   jwt.verify(token, SECRET, (err, user) => {
-    if (err) return res.sendStatus(403);
+    if (err) {
+      if (err.name === 'TokenExpiredError') {
+        return res.status(401).json({ error: 'Token expired' });
+      }
+      return res.sendStatus(403); // Other JWT verification errors
+    }
     req.user = user;
     next();
   });
 };
-
