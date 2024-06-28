@@ -20,7 +20,6 @@ const {
 } = require('../middlewares/validations-middleware')
 const { registerValidation, loginValidation } = require('../validators/auth')
 const { userAuth } = require('../middlewares/auth-middleware')
-const { authenticateToken } = require('../controllers/auth')
 
 router.get('/get-users', getUsers)
 router.get('/protected', userAuth, protected)

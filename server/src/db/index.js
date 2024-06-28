@@ -10,4 +10,5 @@ const connect = async () => {
 
 module.exports = {
   query: (text, params) => pool.query(text, params),
+  connect: connect, 
 }
