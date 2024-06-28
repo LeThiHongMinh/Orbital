@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'; 
-import { onRegistration, verifyEmail } from '../api/auth'; // Add verifyEmail API call
+import { onRegistration } from '../api/auth'; // Add verifyEmail API call
 import Layout from '../components/layout';
 import { TextField, Button, Alert, Container, Typography, Box } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -27,7 +27,6 @@ const Register = () => {
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [verificationMessage, setVerificationMessage] = useState('');
 
   const navigate = useNavigate(); // Initialize navigate hook
   const location = useLocation(); // Initialize location hook
@@ -50,26 +49,6 @@ const Register = () => {
       setSuccess('');
     }
   };
-
-  const handleVerification = async (token) => {
-    try {
-      const { data } = await verifyEmail(token);
-      setVerificationMessage(data.message);
-      setError('');
-    } catch (error) {
-      setError('Verification failed. Please try again.');
-      setVerificationMessage('');
-    }
-  };
-
-  // Check for verification token in URL
-  useEffect(() => {
-    const query = new URLSearchParams(location.search);
-    const token = query.get('token');
-    if (token) {
-      handleVerification(token);
-    }
-  }, [location]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -109,7 +88,6 @@ const Register = () => {
 
               {error && <Alert severity="error">{error}</Alert>}
               {success && <Alert severity="success">{success}</Alert>}
-              {verificationMessage && <Alert severity="success">{verificationMessage}</Alert>}
 
               <Button type="submit" variant="contained" color="secondary" fullWidth>
                 Submit
