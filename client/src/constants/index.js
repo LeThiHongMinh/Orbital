@@ -34,4 +34,9 @@ export const navigation = [
       href: "#login",
       onlyMobile: true,
     },
+    {
+      id: "3",
+      label: "Study Activities",
+      href: "studyActivities",
+    },
   ];
