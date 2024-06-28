@@ -1,5 +1,5 @@
 const passport = require('passport');
-const { Strategy, ExtractJwt } = require('passport-jwt');
+const { Strategy } = require('passport-jwt');
 const { SECRET } = require('../constants');
 const db = require('../db');
 
@@ -15,27 +15,27 @@ const cookieExtractor = function (req) {
 // Passport strategy options
 const opts = {
   secretOrKey: SECRET,
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  jwtFromRequest: cookieExtractor,
 };
 
 // Passport strategy definition
 passport.use(
-  new Strategy(opts, async (jwt_payload, done) => {
+  new Strategy(opts, async ({ id }, done) => {
     try {
       const { rows } = await db.query(
         'SELECT user_id, email FROM users WHERE user_id = $1',
-        [jwt_payload.id]
+        [id]
       );
 
       if (!rows.length) {
-        return done(null, false);
+        throw new Error('401 not authorized');
       }
 
       const user = { id: rows[0].user_id, email: rows[0].email };
-      return done(null, user);
+      return await done(null, user);
     } catch (error) {
-      console.error('Error in JWT strategy:', error.message);
-      return done(error, false);
+      console.log(error.message);
+      return done(null, false);
     }
   })
 );
