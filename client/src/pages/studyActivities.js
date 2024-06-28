@@ -10,6 +10,10 @@ import { Modal, TextField, Button, Container, Typography, Box } from '@mui/mater
 const localizer = momentLocalizer(moment);
 
 const StudyActivities = () => {
+  const { isAuth } = useSelector((state) => state.auth);
+
+  // Example of checking isAuth
+  console.log('Current isAuth state:', isAuth);
   const [activities, setActivities] = useState([]);
   const [formValues, setFormValues] = useState({
     activity_type: '',
