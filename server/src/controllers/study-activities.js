@@ -101,23 +101,6 @@ exports.deleteStudyActivity = async (req, res) => {
   }
 };
 
-exports.getTasksForDate = async (req, res) => {
-  const { selectedDate } = req.query;
-  const user_id = req.user.id;
-
-  try {
-    const result = await db.query(
-      'SELECT * FROM study_activities WHERE user_id = $1 AND ($2 BETWEEN start_time::date AND end_time::date)',
-      [user_id, selectedDate]
-    );
-
-    res.status(200).json({ success: true, activities: result.rows });
-
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
 
 exports.toggleActivityStatus = async (req, res) => {
   const { id } = req.params;
