@@ -1,4 +1,5 @@
 import axios from 'axios';
+import jwt_decode from 'jwt-decode';
 
 axios.defaults.withCredentials = true;
 
@@ -6,13 +7,29 @@ const API = axios.create({
   baseURL: 'https://orbital-kq4q.onrender.com',
   withCredentials: true,
 });
+
 const getAuthHeader = () => {
   const token = localStorage.getItem('token');
+  if (!token || isTokenExpired(token)) {
+    window.location.href = '/login';
+    return null;
+  }
   return {
     headers: {
       'Authorization': `Bearer ${token}`,
     },
   };
+};
+
+const isTokenExpired = (token) => {
+  try {
+    const decoded = jwt_decode(token);
+    const currentTime = Date.now() / 1000; // Current time in seconds
+    return decoded.exp < currentTime;
+  } catch (error) {
+    console.error('Error decoding token:', error);
+    return true;
+  }
 };
 
 export async function onRegistration(registrationData) {
@@ -26,7 +43,6 @@ export const verifyEmail = (token) => {
 export async function onLogin(loginData) {
   try {
     const response = await API.post('/api/login', loginData);
-    localStorage.setItem('token', response.data.token);
     return response;
   } catch (error) {
     console.error('Login error:', error);
@@ -34,57 +50,62 @@ export async function onLogin(loginData) {
 }
 
 export async function onLogout() {
+  localStorage.removeItem('token');
   return await API.get('/api/logout');
 }
 
 export async function fetchProtectedInfo() {
   return await API.get('/api/protected');
 }
+
 export async function submitForm(formData) {
   return await API.post('/api/submit-form', formData);
 }
 
-export async function profileUpdate (profileData) {
-  return await API.put('/api/profileupdate', profileData, getAuthHeader());
+export async function profileUpdate(profileData) {
+  return await API.put('/api/profileupdate', profileData);
 }
+
 export async function profileCheck() {
-  return await API.get('/api/profile', getAuthHeader());
+  return await API.get('/api/profile');
 }
 
 export async function createStudyActivity(activityData) {
-  return await API.post('/api/study-activities', activityData, getAuthHeader());
+  return await API.post('/api/study-activities', activityData);
 }
 
 export async function getStudyActivities() {
-  return await API.get('/api/study-activities', getAuthHeader());
+  return await API.get('/api/study-activities');
 }
 
 export async function getStudyActivity(id) {
-  return await API.get(`/api/study-activities/${id}`, getAuthHeader());
+  return await API.get(`/api/study-activities/${id}`);
 }
 
 export async function updateStudyActivity(id, activityData) {
-  return await API.put(`/api/study-activities/${id}`, activityData, getAuthHeader());
+  return await API.put(`/api/study-activities/${id}`, activityData);
 }
 
 export async function deleteStudyActivity(id) {
-  return await API.delete(`/api/study-activities/${id}`, getAuthHeader());
+  return await API.delete(`/api/study-activities/${id}`);
 }
 
 export async function toggleStudyActivityStatus(id) {
-  return await API.patch(`/api/study-activities/${id}/toggle-status`, {}, getAuthHeader());
+  return await API.patch(`/api/study-activities/${id}/toggle-status`, {});
 }
 
 export async function getNotes() {
   return await API.get('/api/files');
 }
+
 export async function downloadNotes(fileId) {
   try {
     const response = await API.get(`/api/files/${fileId}/download`, {
-      responseType: 'blob'
+      responseType: 'blob',
+      headers: getAuthHeader().headers,
     });
     return response.data; // Return the blob data
   } catch (error) {
-    throw error; // Throw error to be handled in calling component
+    throw error; // Throw error to be handled in the calling component
   }
 }
