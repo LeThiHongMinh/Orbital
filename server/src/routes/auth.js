@@ -20,13 +20,14 @@ const {
 } = require('../middlewares/validations-middleware')
 const { registerValidation, loginValidation } = require('../validators/auth')
 const { userAuth } = require('../middlewares/auth-middleware')
+const { authenticateToken } = require('../controllers/auth')
 
 router.get('/get-users', getUsers)
 router.get('/protected', userAuth, protected)
 router.post('/register', registerValidation, validationMiddleware, register)
 router.post('/login', loginValidation, validationMiddleware, login)
 router.get('/logout', logout)
-router.get('/profile', userAuth, getProfile)
+router.get('/profile', authenticateToken, getProfile)
 router.put('/profileupdate',  updateProfile)
 router.get("/:id/verify/:token/", async (req, res) => {
 	try {

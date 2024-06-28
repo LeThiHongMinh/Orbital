@@ -22,7 +22,13 @@ export async function onRegistration(registrationData) {
 }
 
 export async function onLogin(loginData) {
-  return await API.post('/api/login', loginData);
+  try {
+    const response = await API.post('/api/login', loginData);
+    localStorage.setItem('token', response.data.token);
+    return response;
+  } catch (error) {
+    console.error('Login error:', error);
+  }
 }
 
 export async function onLogout() {
@@ -38,35 +44,35 @@ export async function submitForm(formData) {
 }
 
 export async function profileUpdate(profileData) {
-  return await API.put('/api/profileupdate', profileData);
+  return await API.put('/api/profileupdate', profileData, getAuthHeader);
 }
 
 export async function profileCheck() {
-  return await API.get('/api/profile');
+  return await API.get('/api/profile', getAuthHeader);
 }
 
 export async function createStudyActivity(activityData) {
-  return await API.post('/api/study-activities', activityData);
+  return await API.post('/api/study-activities', activityData, getAuthHeader);
 }
 
 export async function getStudyActivities() {
-  return await API.get('/api/study-activities');
+  return await API.get('/api/study-activities', getAuthHeader);
 }
 
 export async function getStudyActivity(id) {
-  return await API.get(`/api/study-activities/${id}`);
+  return await API.get(`/api/study-activities/${id}`, getAuthHeader);
 }
 
 export async function updateStudyActivity(id, activityData) {
-  return await API.put(`/api/study-activities/${id}`, activityData);
+  return await API.put(`/api/study-activities/${id}`, activityData, getAuthHeader);
 }
 
 export async function deleteStudyActivity(id) {
-  return await API.delete(`/api/study-activities/${id}`);
+  return await API.delete(`/api/study-activities/${id}`, getAuthHeader);
 }
 
 export async function toggleStudyActivityStatus(id) {
-  return await API.patch(`/api/study-activities/${id}/toggle-status`, {});
+  return await API.patch(`/api/study-activities/${id}/toggle-status`, {}, getAuthHeader);
 }
 
 export async function getNotes() {
