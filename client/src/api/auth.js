@@ -9,10 +9,6 @@ const API = axios.create({
 
 const getAuthHeader = () => {
   const token = localStorage.getItem('token');
-  if (!token || isTokenExpired(token)) {
-    window.location.href = '/login';
-    return null;
-  }
   return {
     headers: {
       'Authorization': `Bearer ${token}`,
