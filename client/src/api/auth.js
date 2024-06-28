@@ -22,16 +22,10 @@ export async function onRegistration(registrationData) {
 }
 
 export async function onLogin(loginData) {
-  try {
-    const response = await API.post('/api/login', loginData);
-    return response;
-  } catch (error) {
-    console.error('Login error:', error);
-  }
+  return await API.post('/api/login', loginData);
 }
 
 export async function onLogout() {
-  localStorage.removeItem('token');
   return await API.get('/api/logout');
 }
 

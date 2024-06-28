@@ -25,8 +25,8 @@ const Register = () => {
     email: '',
     password: '',
   });
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const navigate = useNavigate(); // Initialize navigate hook
   const location = useLocation(); // Initialize location hook

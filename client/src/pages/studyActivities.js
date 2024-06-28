@@ -10,7 +10,6 @@ import { Modal, TextField, Button, Container, Typography, Box } from '@mui/mater
 const localizer = momentLocalizer(moment);
 
 const StudyActivities = () => {
-  const { isAuth } = useSelector((state) => state.auth);
   const [activities, setActivities] = useState([]);
   const [formValues, setFormValues] = useState({
     activity_type: '',
@@ -20,12 +19,6 @@ const StudyActivities = () => {
   });
   const [selectedActivity, setSelectedActivity] = useState(null);
   const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    if (isAuth) {
-      fetchActivities();
-    }
-  }, [isAuth]);
 
   const fetchActivities = async () => {
     try {
@@ -120,9 +113,6 @@ const StudyActivities = () => {
     }
   };
 
-  if (!isAuth) {
-    return null; // or render a component indicating unauthorized access
-  }
 
   return (
     <Layout>
