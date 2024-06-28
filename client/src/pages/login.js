@@ -42,6 +42,8 @@ const Login = () => {
       await onLogin(values);
       dispatch(authenticateUser());
       localStorage.setItem('isAuth', 'true');
+      localStorage.setItem('token', accessToken);
+      localStorage.setItem('tokenExpiry', tokenExpiry);
     } catch (error) {
       console.log(error.response.data.errors[0].msg);
       setError(error.response.data.errors[0].msg);
