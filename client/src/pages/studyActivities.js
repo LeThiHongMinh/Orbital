@@ -25,7 +25,8 @@ const StudyActivities = () => {
 
   const fetchActivities = async () => {
     try {
-      const { data } = await getStudyActivities();
+      const token = localStorage.getItem('token'); // assuming token stored in localStorage
+      const { data } = await getStudyActivities(token); // pass token to API call
       const formattedActivities = data.activities.map(activity => ({
         ...activity,
         start: new Date(activity.start_time),
