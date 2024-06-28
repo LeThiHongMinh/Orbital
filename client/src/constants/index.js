@@ -35,7 +35,7 @@ export const navigation = [
       onlyMobile: true,
     },
     {
-      id: "3",
+      id: "4",
       label: "Study Activities",
       href: "studyActivities",
     },
