@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { createStudyActivity, getStudyActivities, updateStudyActivity, deleteStudyActivity, toggleStudyActivityStatus } from '../api/auth';
+import { useSelector } from 'react-redux';
 import Layout from '../components/layout';
+import { createStudyActivity, getStudyActivities, updateStudyActivity, deleteStudyActivity, toggleStudyActivityStatus } from '../api/auth';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -9,6 +10,7 @@ import { Modal, TextField, Button, Container, Typography, Box } from '@mui/mater
 const localizer = momentLocalizer(moment);
 
 const StudyActivities = () => {
+  const { isAuth } = useSelector((state) => state.auth);
   const [activities, setActivities] = useState([]);
   const [formValues, setFormValues] = useState({
     activity_type: '',
@@ -20,13 +22,14 @@ const StudyActivities = () => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    fetchActivities();
-  }, []);
+    if (isAuth) {
+      fetchActivities();
+    }
+  }, [isAuth]);
 
   const fetchActivities = async () => {
     try {
-      const token = localStorage.getItem('token'); // assuming token stored in localStorage
-      const { data } = await getStudyActivities(token); // pass token to API call
+      const { data } = await getStudyActivities();
       const formattedActivities = data.activities.map(activity => ({
         ...activity,
         start: new Date(activity.start_time),
@@ -116,6 +119,10 @@ const StudyActivities = () => {
       console.error('Error toggling activity status:', error);
     }
   };
+
+  if (!isAuth) {
+    return null; // or render a component indicating unauthorized access
+  }
 
   return (
     <Layout>

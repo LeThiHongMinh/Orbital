@@ -16,18 +16,14 @@ const getAuthHeader = () => {
   };
 };
 
+
 export async function onRegistration(registrationData) {
   return await API.post('/api/register', registrationData);
 }
 
-export const verifyEmail = (token) => {
-  return axios.get(`/api/verify-email?token=${token}`);
-};
-
 export async function onLogin(loginData) {
   try {
     const response = await API.post('/api/login', loginData);
-    localStorage.setItem('token', response.data.token); // Store token in localStorage
     return response;
   } catch (error) {
     console.error('Login error:', error);
@@ -40,47 +36,47 @@ export async function onLogout() {
 }
 
 export async function fetchProtectedInfo() {
-  return await API.get('/api/protected', getAuthHeader());
+  return await API.get('/api/protected');
 }
 
 export async function submitForm(formData) {
-  return await API.post('/api/submit-form', formData, getAuthHeader());
+  return await API.post('/api/submit-form', formData);
 }
 
 export async function profileUpdate(profileData) {
-  return await API.put('/api/profileupdate', profileData, getAuthHeader());
+  return await API.put('/api/profileupdate', profileData);
 }
 
 export async function profileCheck() {
-  return await API.get('/api/profile', getAuthHeader());
+  return await API.get('/api/profile');
 }
 
 export async function createStudyActivity(activityData) {
-  return await API.post('/api/study-activities', activityData, getAuthHeader());
+  return await API.post('/api/study-activities', activityData);
 }
 
 export async function getStudyActivities() {
-  return await API.get('/api/study-activities', getAuthHeader());
+  return await API.get('/api/study-activities');
 }
 
 export async function getStudyActivity(id) {
-  return await API.get(`/api/study-activities/${id}`, getAuthHeader());
+  return await API.get(`/api/study-activities/${id}`);
 }
 
 export async function updateStudyActivity(id, activityData) {
-  return await API.put(`/api/study-activities/${id}`, activityData, getAuthHeader());
+  return await API.put(`/api/study-activities/${id}`, activityData);
 }
 
 export async function deleteStudyActivity(id) {
-  return await API.delete(`/api/study-activities/${id}`, getAuthHeader());
+  return await API.delete(`/api/study-activities/${id}`);
 }
 
 export async function toggleStudyActivityStatus(id) {
-  return await API.patch(`/api/study-activities/${id}/toggle-status`, {}, getAuthHeader());
+  return await API.patch(`/api/study-activities/${id}/toggle-status`, {});
 }
 
 export async function getNotes() {
-  return await API.get('/api/files', getAuthHeader());
+  return await API.get('/api/files');
 }
 
 export async function downloadNotes(fileId) {

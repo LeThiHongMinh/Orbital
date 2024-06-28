@@ -11,7 +11,7 @@ const Layout = ({ children }) => {
       <Navbar />
       {/* {isAuth ? <Sidebar /> : <Navbar />} */}
       <div className="flex-grow">
-        <main className="p-6 bg-red-100" >{children}</main>
+        <main className="p-6 bg-red-100">{children}</main>
       </div>
     </div>
   );
