@@ -11,13 +11,6 @@ const localizer = momentLocalizer(moment);
 
 const StudyActivities = () => {
   const { isAuth } = useSelector((state) => state.auth);
-  // Retrieve token from localStorage
-const token = localStorage.getItem('token');
-console.log('Authentication Token:', token);
-
-// Retrieve expiry if available
-const tokenExpiry = localStorage.getItem('tokenExpiry');
-console.log('Token Expiry:', tokenExpiry);
 
   // Example of checking isAuth
   console.log('Current isAuth state:', isAuth);
