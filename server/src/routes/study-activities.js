@@ -4,6 +4,7 @@ const studyActivitiesController = require('../controllers/study-activities');
 const { userAuth } = require('../middlewares/passport-middleware');
 const { authenticateToken } = require('../controllers/auth');
 
+
 router.post('/study-activities', userAuth, studyActivitiesController.createStudyActivity);
 router.get('/study-activities', userAuth, studyActivitiesController.getStudyActivities);
 router.get('/study-activities/:id', userAuth, studyActivitiesController.getStudyActivity);
