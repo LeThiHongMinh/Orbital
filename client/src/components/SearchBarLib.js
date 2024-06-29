@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { searchBooks } from '../api/auth'; // Assuming a function searchBooks is defined in your auth API
+import axios from 'axios';
 
 const SearchBarLib = () => {
   const [query, setQuery] = useState('');
