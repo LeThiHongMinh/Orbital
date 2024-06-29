@@ -24,8 +24,8 @@ router.get('/protected', userAuth, protected)
 router.post('/register', registerValidation, validationMiddleware, register)
 router.post('/login', loginValidation, validationMiddleware, login)
 router.get('/logout', logout)
-router.get('/profile', authenticateToken, getProfile)
-router.put('/profileupdate',  updateProfile)
+router.get('/profile', userAuth, getProfile)
+router.put('/profileupdate', userAuth,  updateProfile)
 router.get("/:id/verify/:token/", async (req, res) => {
 	try {
 	  const userId = req.params.id;
