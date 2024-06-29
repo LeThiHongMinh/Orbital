@@ -80,7 +80,7 @@ export async function downloadNotes(fileId) {
   }
 }
 
-export async function searchBook() {
+export async function searchBooks() {
   try {
     const response = await axios.get(`/api/search?query=${query}`);
     return response.data;

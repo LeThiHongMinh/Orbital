@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { LinearProgress, Typography, Grid, Paper } from '@mui/material';
-import Layout from '../components/layout'; // Assuming Layout component structure
+import Layout from '../components/Layout'; // Assuming Layout component structure
 import CalendarComponent from '../components/Calendar'; // Custom Calendar component
-import CourseListSearch from '../components/Courselist'; // Custom Course List search component
+import CourseListSearch from '../components/CourseListSearch'; // Custom Course List search component
+// Replace with mock data or define a placeholder function for getStudyActivities
 import { getStudyActivities } from '../api/auth'; // Import getStudyActivities function
 import './Dashboard.css'; // Custom CSS for styling
 
@@ -16,18 +17,22 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchStudyActivitiesData = async () => {
       try {
-        const { data } = await getStudyActivities(); // Fetch study activities using the imported function
+        // Simulating fetch with mock data or placeholder function
+        const activities = await getStudyActivities();
 
-        const activities = Array.isArray(data.activities) ? data.activities : [];
+        // Update state with fetched activities
         setStudyActivities(activities);
 
+        // Calculate task stats and total hours studied
         const { completedCount, incompleteCount } = calculateTaskStats(activities);
         const totalHours = calculateTotalHoursStudied(activities);
 
+        // Set state for completed, incomplete tasks, and total hours studied
         setCompletedCount(completedCount);
         setIncompleteCount(incompleteCount);
         setTotalHoursStudied(totalHours);
 
+        // Calculate progress percentage
         const totalTasks = completedCount + incompleteCount;
         if (totalTasks > 0) {
           const progressPercentage = (completedCount / totalTasks) * 100;
@@ -41,6 +46,7 @@ const Dashboard = () => {
     fetchStudyActivitiesData();
   }, []);
 
+  // Function to calculate completed and incomplete task counts
   const calculateTaskStats = (tasks) => {
     let completed = 0;
     let incomplete = 0;
@@ -56,6 +62,7 @@ const Dashboard = () => {
     return { completedCount: completed, incompleteCount: incomplete };
   };
 
+  // Function to calculate total hours studied
   const calculateTotalHoursStudied = (tasks) => {
     let totalHours = 0;
 
