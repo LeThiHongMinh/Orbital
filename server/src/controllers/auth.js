@@ -124,13 +124,27 @@ exports.updateProfile = async (req, res) => {
 
   try {
     // Update profile table
-    await db.query(
-      'UPDATE profile SET full_name = $1, bio = $2, username = $3 WHERE email = $4',
+    const result = await db.query(
+      'UPDATE profile SET full_name = $1, bio = $2, username = $3 WHERE email = $4 RETURNING *',
       [full_name, bio, username, reqEmail]
     );
 
-    // Update users table if email or password is updated
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found with the provided email.',
+      });
+    }
+
+    // Determine if email or password needs updating in users table
+    let updateUser = false;
+
     if (reqEmail !== req.user.email || password) {
+      updateUser = true;
+    }
+
+    // Update users table if necessary
+    if (updateUser) {
       await db.query(
         'UPDATE users SET email = $1, password = $2 WHERE email = $3',
         [reqEmail, password, req.user.email]

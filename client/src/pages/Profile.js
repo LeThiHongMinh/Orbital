@@ -1,29 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import Layout from '../components/layout'; // Assuming the correct path to Layout component
+import Layout from '../components/Layout'; // Assuming the correct path to Layout component
 import { profileUpdate, profileCheck } from '../api/auth'; // Import profileUpdate and profileCheck from API
 import Nav from '../components/Nav';
 
 const ProfilePage = () => {
-  const [profileData, setProfileData] = useState({ full_name: '', email: '', bio: '', username: '', password: '' });
+  const [profileData, setProfileData] = useState({
+    full_name: '',
+    email: '',
+    bio: '',
+    username: '',
+    password: '',
+  });
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [error, setError] = useState(null); // State to hold error messages
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const { data } = await profileCheck(); // Fetch profile data from API
-        if (data.user) {
+        if (data && data.user) {
           setProfileData({
-            full_name: data.user.full_name,
-            email: data.user.email,
-            bio: data.user.bio,
-            username: data.user.username,
+            full_name: data.user.full_name || '',
+            email: data.user.email || '',
+            bio: data.user.bio || '',
+            username: data.user.username || '',
             password: '', // Initially hide the password for security reasons
           });
         }
         setLoading(false); // Update loading state
       } catch (error) {
         console.error('Error fetching profile:', error);
+        setError('Failed to fetch profile data'); // Set error state if fetching fails
         setLoading(false);
       }
     };
@@ -48,12 +56,20 @@ const ProfilePage = () => {
       setIsEditing(false); // Exit edit mode
     } catch (error) {
       console.error('Error updating profile:', error);
-      alert('Error updating profile'); // Display error message
+      setError('Failed to update profile'); // Set error state if updating fails
     }
   };
 
   if (loading) {
     return <div className="flex justify-center items-center h-screen text-lg font-semibold">Loading...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-screen text-lg font-semibold text-red-600">
+        {error}
+      </div>
+    );
   }
 
   if (!isEditing) {
