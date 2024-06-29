@@ -153,8 +153,20 @@ const ProfilePage = () => {
                 {isEditing ? 'Update Profile' : 'Create Profile'}
               </button>
             </form>
-            {!isEditing && (
+            {!profileExists && (
               <div className="text-center mt-4">
+                <p>No profile found.</p>
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="inline-flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                >
+                  Create Profile
+                </button>
+              </div>
+            )}
+            {profileExists && !isEditing && (
+              <div className="text-center mt-4">
+                <p>Profile found.</p>
                 <button
                   onClick={() => setIsEditing(true)}
                   className="inline-flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"

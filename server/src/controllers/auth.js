@@ -153,11 +153,10 @@ exports.updateProfile = async (req, res) => {
   }
 };
 
-
 exports.checkProfile = async (req, res) => {
-  const email = req.user.email; // Extract email from authenticated user
+  const userId = req.user.user_id; // Extract user ID from authenticated user
   try {
-    const { rows } = await db.query('SELECT * FROM profile WHERE email = $1', [email]);
+    const { rows } = await db.query('SELECT * FROM profile WHERE user_id = $1', [userId]);
     const profile = rows[0];
     if (profile) {
       // Profile exists, return profile data
@@ -180,6 +179,7 @@ exports.checkProfile = async (req, res) => {
     });
   }
 };
+
 
 // Create profile
 exports.createProfile = async (req, res) => {
