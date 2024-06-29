@@ -8,15 +8,10 @@ const SearchBarLib = () => {
 
   const handleSearch = async () => {
     try {
-      setLoading(true);
-      const { data } = await searchBooks(query); // Replace with your actual search function
-
-      // Assuming data is an array of search results
-      setResults(data);
+      const response = await axios.get(`https://orbital-kq4q.onrender.com/api/search?query=${query}`);
+      setResults(response.data);
     } catch (error) {
-      console.error('Error searching books:', error);
-    } finally {
-      setLoading(false);
+      console.error('Error searching for files:', error);
     }
   };
 
