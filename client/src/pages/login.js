@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { onLogin } from '../api/auth';
-import Layout from '../components/Layout'; // Assuming Layout is in './Layout'
+import Layout from '../components/layout'; // Assuming Layout is in './Layout'
 import { useDispatch } from 'react-redux';
 import { authenticateUser } from '../redux/slices/authSlice';
 import { TextField, Button, Alert, Container, Typography, Box } from '@mui/material';
