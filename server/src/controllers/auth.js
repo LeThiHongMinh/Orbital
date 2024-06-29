@@ -94,10 +94,10 @@ exports.getProfile = async (req, res) => {
   const email = req.user.email; // Use email from decoded JWT token
 
   try {
-    const { rows } = await db.query('SELECT full_name, email, bio FROM users WHERE email = $1', [email]);
+    const { rows } = await db.query('SELECT full_name, email, bio, username FROM profile WHERE email = $1', [email]);
     const user = rows[0] || { email };
 
-    if (!user.full_name || !user.bio) {
+    if (!user.full_name || !user.bio || !user.username) {
       return res.status(200).json({
         success: true,
         message: 'Profile incomplete, please update your profile.',
@@ -119,24 +119,22 @@ exports.getProfile = async (req, res) => {
   }
 };
 
-
-
-
 exports.updateProfile = async (req, res) => {
-  const { email, full_name, bio } = req.body; // Extract email, full_name, and bio from req.body
+  const { email: reqEmail, full_name, bio, username, password } = req.body; // Extract fields from req.body
 
   try {
-    const result = await db.query(
-      'UPDATE users SET full_name = $1, bio = $2 WHERE email = $3',
-      [full_name, bio, email]
+    // Update profile table
+    await db.query(
+      'UPDATE profile SET full_name = $1, bio = $2, username = $3 WHERE email = $4',
+      [full_name, bio, username, reqEmail]
     );
 
-    if (result.rowCount === 0) {
-      // If no rows were updated, it means the email wasn't found in the database
-      return res.status(404).json({
-        success: false,
-        message: 'User not found with the provided email.',
-      });
+    // Update users table if email or password is updated
+    if (reqEmail !== req.user.email || password) {
+      await db.query(
+        'UPDATE users SET email = $1, password = $2 WHERE email = $3',
+        [reqEmail, password, req.user.email]
+      );
     }
 
     return res.status(200).json({
@@ -144,13 +142,12 @@ exports.updateProfile = async (req, res) => {
       message: 'Profile updated successfully.',
     });
   } catch (error) {
-    console.log(error.message);
+    console.error('Error updating profile:', error.message);
     return res.status(500).json({
       error: error.message,
     });
   }
 };
-
 
 exports.authenticateToken = (req, res, next) => {
   const token = req.headers['authorization']?.split(' ')[1];

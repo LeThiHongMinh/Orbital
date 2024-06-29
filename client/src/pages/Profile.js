@@ -1,28 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { profileUpdate, profileCheck } from '../api/auth';
-import Layout from '../components/layout'; // Import the Layout component
+import Layout from '../components/Layout'; // Assuming the correct path to Layout component
+import { profileUpdate, profileCheck } from '../api/auth'; // Import profileUpdate and profileCheck from API
 import Nav from '../components/Nav';
 
 const ProfilePage = () => {
-  const [profileData, setProfileData] = useState({ full_name: '', email: '', bio: '' });
+  const [profileData, setProfileData] = useState({ full_name: '', email: '', bio: '', username: '', password: '' });
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const { data } = await profileCheck();
+        const { data } = await profileCheck(); // Fetch profile data from API
         if (data.user) {
-          setProfileData(data.user);
+          setProfileData({
+            full_name: data.user.full_name,
+            email: data.user.email,
+            bio: data.user.bio,
+            username: data.user.username,
+            password: '', // Initially hide the password for security reasons
+          });
         }
-        setLoading(false);
+        setLoading(false); // Update loading state
       } catch (error) {
         console.error('Error fetching profile:', error);
         setLoading(false);
       }
     };
 
-    fetchProfile();
+    fetchProfile(); // Invoke fetchProfile function on component mount
   }, []);
 
   const handleChange = (event) => {
@@ -37,12 +43,12 @@ const ProfilePage = () => {
     event.preventDefault();
 
     try {
-      await profileUpdate(profileData);
-      alert('Profile updated successfully');
-      setIsEditing(false);
+      await profileUpdate(profileData); // Call profileUpdate API with updated profile data
+      alert('Profile updated successfully'); // Display success message
+      setIsEditing(false); // Exit edit mode
     } catch (error) {
       console.error('Error updating profile:', error);
-      alert('Error updating profile');
+      alert('Error updating profile'); // Display error message
     }
   };
 
@@ -61,6 +67,10 @@ const ProfilePage = () => {
                 <div>
                   <label className="block text-3xl font-medium text-gray-700">Full Name:</label>
                   <p className="mt-1 text-lg">{profileData.full_name}</p>
+                </div>
+                <div>
+                  <label className="block text-3xl font-medium text-gray-700">Username:</label>
+                  <p className="mt-1 text-lg">{profileData.username}</p>
                 </div>
                 <div>
                   <label className="block text-3xl font-medium text-gray-700">Email:</label>
@@ -105,6 +115,18 @@ const ProfilePage = () => {
                 />
               </div>
               <div>
+                <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username:</label>
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  value={profileData.username}
+                  onChange={handleChange}
+                  required
+                  className="mt-1 block w-full px-3 py-2 border border-red-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                />
+              </div>
+              <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email:</label>
                 <input
                   type="email"
@@ -114,6 +136,7 @@ const ProfilePage = () => {
                   onChange={handleChange}
                   required
                   className="mt-1 block w-full px-3 py-2 border border-red-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                  disabled // Disabled to prevent editing email directly
                 />
               </div>
               <div>
@@ -126,6 +149,18 @@ const ProfilePage = () => {
                   required
                   className="mt-1 block w-full px-3 py-2 border border-red-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
                 ></textarea>
+              </div>
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password:</label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={profileData.password}
+                  onChange={handleChange}
+                  required
+                  className="mt-1 block w-full px-3 py-2 border border-red-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                />
               </div>
               <div className="text-center">
                 <button type="submit" className="inline-flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
