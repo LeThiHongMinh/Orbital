@@ -23,7 +23,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import GroupIcon from '@mui/icons-material/Group';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 
-import { onLogout, profileCheck, getStudyActivities } from '../api/auth'; // Import the getStudyActivities function
+import { onLogout, profileCheck, getStudyActivities } from '../api/auth'; // Import getStudyActivities
 import { unauthenticateUser } from '../redux/slices/authSlice';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -49,16 +49,17 @@ const Sidebar = () => {
 
     const fetchNotifications = async () => {
       try {
-        const { data } = await getStudyActivities(); // Fetch all study activities
-        const today = new Date();
-        today.setHours(0, 0, 0, 0); // Set the time to midnight for comparison
+        const { data } = await getStudyActivities();
+        const activities = Array.isArray(data.activities) ? data.activities : [];
 
-        const todayNotifications = data.filter((activity) => {
-          const activityDate = new Date(activity.end_time);
-          activityDate.setHours(0, 0, 0, 0);
-          return activityDate.getTime() === today.getTime();
+        const today = new Date().toISOString().split('T')[0];
+        const todayNotifications = activities.filter(activity => {
+          if (activity.endTime) {
+            const activityEndTime = new Date(activity.endTime).toISOString().split('T')[0];
+            return activityEndTime === today;
+          }
+          return false;
         });
-
         setNotifications(todayNotifications);
       } catch (error) {
         console.error('Error fetching notifications:', error);
@@ -117,14 +118,16 @@ const Sidebar = () => {
           sx={{ width: 100, height: 100, mb: 2 }}
         />
         <Typography variant="h6">{fullName}</Typography>
-        <IconButton onClick={() => handleNavigation('/profile')}>
-          <SettingsIcon />
-        </IconButton>
-        <IconButton onClick={handleNotificationClick}>
-          <Badge badgeContent={notifications.length} color="secondary">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <IconButton onClick={() => handleNavigation('/profile')}>
+            <SettingsIcon />
+          </IconButton>
+          <IconButton onClick={handleNotificationClick}>
+            <Badge badgeContent={notifications.length} color="secondary">
+              <NotificationsIcon />
+            </Badge>
+          </IconButton>
+        </Box>
       </Box>
       <List>
         <ListItem button onClick={() => handleNavigation('/')}>
@@ -186,7 +189,7 @@ const Sidebar = () => {
                 </ListItemAvatar>
                 <ListItemText
                   primary={notification.activity_type}
-                  secondary={`Due: ${new Date(notification.end_time).toLocaleString()}`}
+                  secondary={`Due: ${new Date(notification.endTime).toLocaleString()}`}
                 />
               </ListItem>
             ))

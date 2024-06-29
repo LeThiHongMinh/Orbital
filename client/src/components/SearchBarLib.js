@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { searchBooks } from '../api/auth'; // Assuming a function searchBooks is defined in your auth API
 
 const SearchBarLib = () => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleSearch = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/search?query=${query}`);
-      setResults(response.data);
+      setLoading(true);
+      const { data } = await searchBooks(query); // Replace with your actual search function
+
+      // Assuming data is an array of search results
+      setResults(data);
     } catch (error) {
-      console.error('Error searching for files:', error);
+      console.error('Error searching books:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -28,11 +34,11 @@ const SearchBarLib = () => {
           onClick={handleSearch}
           className="mt-4 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
         >
-          Search
+          {loading ? 'Searching...' : 'Search'}
         </button>
       </div>
       <div>
-        {results.length > 0 && (
+        {results.length > 0 ? (
           <ul>
             {results.map((result) => (
               <li key={result.id} className="mb-2">
@@ -40,6 +46,8 @@ const SearchBarLib = () => {
               </li>
             ))}
           </ul>
+        ) : (
+          <p className="text-center">No results found.</p>
         )}
       </div>
     </div>
