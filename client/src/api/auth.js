@@ -34,11 +34,11 @@ export async function submitForm(formData) {
 }
 
 export async function profileUpdate(profileData) {
-  return await API.put('/api/profileupdate', profileData);
+  return await API.put('/api/profile', profileData);
 }
 
 export async function profileCreate(profileData) {
-  return await API.put('/api/profileupdate', profileData);
+  return await API.post('/api/profile', profileData);
 }
 
 export async function profileCheck() {
