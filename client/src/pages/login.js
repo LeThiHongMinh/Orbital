@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { onLogin } from '../api/auth';
-import Layout from '../components/layout'; // Assuming Layout is in './Layout'
+import Layout from '../components/Layout';
 import { useDispatch } from 'react-redux';
 import { authenticateUser } from '../redux/slices/authSlice';
 import { TextField, Button, Alert, Container, Typography, Box } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { teal, red } from '@mui/material/colors';
-import { NUSTudy } from '../assets/images';
 
 const theme = createTheme({
   palette: {
@@ -14,7 +13,7 @@ const theme = createTheme({
       main: teal[500],
     },
     secondary: {
-      main: red[500], // Light red color
+      main: red[500],
     },
   },
   typography: {
@@ -51,65 +50,44 @@ const Login = () => {
   return (
     <ThemeProvider theme={theme}>
       <Layout>
-        <Box
-          bgcolor="rgba(255, 0, 0, 0.1)"
-          minHeight="100vh"
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          mt={8} // Add margin to the top
-        >
-          <Container maxWidth="sm">
+        <Box bgcolor="rgba(255, 0, 0, 0.1)" minHeight="100vh" pt={10}>
+          <Container maxWidth="sm" className="flex items-center justify-center h-screen">
             <Box
-              bgcolor="white"
-              p={6}
-              borderRadius={8}
-              boxShadow={3}
-              textAlign="center"
-              sx={{ position: 'relative', top: '50%', transform: 'translateY(-50%)' }}
+              component="form"
+              onSubmit={onSubmit}
+              className="flex flex-col space-y-6 bg-white p-6 rounded-lg shadow-md"
             >
-              <Typography variant="h4" component="h1" gutterBottom>
+              <Typography variant="h4" component="h1" className="text-center mb-4">
                 Login
               </Typography>
 
-              <form onSubmit={onSubmit} noValidate>
-                <TextField
-                  onChange={onChange}
-                  type="email"
-                  name="email"
-                  value={values.email}
-                  label="Email address"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  required
-                />
+              <TextField
+                onChange={onChange}
+                type="email"
+                name="email"
+                value={values.email}
+                label="Email address"
+                variant="outlined"
+                required
+                fullWidth
+              />
 
-                <TextField
-                  onChange={onChange}
-                  type="password"
-                  name="password"
-                  value={values.password}
-                  label="Password"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  required
-                />
+              <TextField
+                onChange={onChange}
+                type="password"
+                name="password"
+                value={values.password}
+                label="Password"
+                variant="outlined"
+                required
+                fullWidth
+              />
 
-                {error && <Alert severity="error">{error}</Alert>}
+              {error && <Alert severity="error">{error}</Alert>}
 
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="secondary"
-                  fullWidth
-                  size="large"
-                  sx={{ mt: 3 }}
-                >
-                  Submit
-                </Button>
-              </form>
+              <Button type="submit" variant="contained" color="secondary" fullWidth>
+                Submit
+              </Button>
             </Box>
           </Container>
         </Box>
