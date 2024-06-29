@@ -34,19 +34,11 @@ export async function submitForm(formData) {
 }
 
 export async function profileUpdate(profileData) {
-  return await API.put('/api/profile', profileData);
-}
-
-export async function profileCreate(profileData) {
-  return await API.post('/api/profile', profileData);
+  return await API.put('/api/profileupdate', profileData);
 }
 
 export async function profileCheck() {
   return await API.get('/api/profile');
-}
-
-export async function profileExist() {
-  return await API.get('/api/profile-check');
 }
 
 export async function createStudyActivity(activityData) {

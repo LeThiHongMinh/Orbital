@@ -1,39 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import Layout from '../components/layout';
-import { profileCheck, profileUpdate, profileCreate, profileExist } from '../api/auth';
+import { profileUpdate, profileCheck } from '../api/auth';
+import Layout from '../components/layout'; // Import the Layout component
+import Nav from '../components/Nav';
 
 const ProfilePage = () => {
-  const [profileData, setProfileData] = useState({
-    full_name: '',
-    email: '',
-    password: '',
-    username: '',
-    bio: '',
-  });
+  const [profileData, setProfileData] = useState({ full_name: '', email: '', bio: '' });
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const [profileExists, setProfileExists] = useState(false); // Track if profile exists
 
   useEffect(() => {
-    const fetchProfileData = async () => {
+    const fetchProfile = async () => {
       try {
-        const { data } = await profileExist(); // Check if profile exists
-        setProfileExists(data.profileExists);
-
-        if (data.profileExists) {
-          const profileResponse = await profileCheck(); // Fetch profile data if exists
-          setProfileData(profileResponse.data.profile);
-          setIsEditing(true); // Enable editing mode when profile exists
+        const { data } = await profileCheck();
+        if (data.user) {
+          setProfileData(data.user);
         }
-
-        setLoading(false); // Set loading to false after data fetching
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching profile:', error);
-        setLoading(false); // Set loading to false in case of error
+        setLoading(false);
       }
     };
 
-    fetchProfileData();
+    fetchProfile();
   }, []);
 
   const handleChange = (event) => {
@@ -48,17 +37,12 @@ const ProfilePage = () => {
     event.preventDefault();
 
     try {
-      if (isEditing) {
-        await profileUpdate(profileData); // Update profile if editing
-        alert('Profile updated successfully');
-      } else {
-        await profileCreate(profileData); // Create profile if not editing
-        alert('Profile created successfully');
-        setIsEditing(true); // Enable editing mode after profile creation
-      }
+      await profileUpdate(profileData);
+      alert('Profile updated successfully');
+      setIsEditing(false);
     } catch (error) {
-      console.error('Error updating/creating profile:', error);
-      alert('Error updating/creating profile');
+      console.error('Error updating profile:', error);
+      alert('Error updating profile');
     }
   };
 
@@ -66,19 +50,50 @@ const ProfilePage = () => {
     return <div className="flex justify-center items-center h-screen text-lg font-semibold">Loading...</div>;
   }
 
+  if (!isEditing) {
+    return (
+      <Layout> {/* Wrap the profile page content in Layout */}
+        <div className="bg-red-100 min-h-screen">
+          <div className="max-w-lg mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div className="bg-red-100 rounded-lg p-6">
+              <h2 className="text-4xl mt-8 font-bold mb-6 text-center text-red-700">User Profile</h2>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-3xl font-medium text-gray-700">Full Name:</label>
+                  <p className="mt-1 text-lg">{profileData.full_name}</p>
+                </div>
+                <div>
+                  <label className="block text-3xl font-medium text-gray-700">Email:</label>
+                  <p className="mt-1 text-lg">{profileData.email}</p>
+                </div>
+                <div>
+                  <label className="block text-3xl font-medium text-gray-700">Bio:</label>
+                  <p className="mt-1 text-lg">{profileData.bio}</p>
+                </div>
+              </div>
+              <div className="text-center mt-6">
+                <button 
+                  onClick={() => setIsEditing(true)} 
+                  className="inline-flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                  Edit Profile
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
-    <Layout>
+    <Layout> {/* Wrap the edit profile form in Layout */}
       <div className="bg-gray-100 min-h-screen">
         <div className="max-w-lg mx-auto py-12 px-4 sm:px-6 lg:px-8">
           <div className="bg-red-100 rounded-lg p-6">
-            <h2 className="text-2xl font-bold mb-6 text-center text-red-700">
-              {isEditing ? 'Update Profile' : 'Create Profile'}
-            </h2>
+            <h2 className="text-2xl font-bold mb-6 text-center text-red-700">Edit Profile</h2>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
-                  Full Name:
-                </label>
+                <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">Full Name:</label>
                 <input
                   type="text"
                   id="fullName"
@@ -90,53 +105,19 @@ const ProfilePage = () => {
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                  Email:
-                </label>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email:</label>
                 <input
                   type="email"
                   id="email"
                   name="email"
                   value={profileData.email}
                   onChange={handleChange}
-                  required={!isEditing} // Required only when creating a profile
-                  disabled={isEditing} // Disable editing email when updating profile
-                  className="mt-1 block w-full px-3 py-2 border border-red-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-                />
-              </div>
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                  Password:
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={profileData.password}
-                  onChange={handleChange}
-                  required={!isEditing} // Required only when creating a profile
-                  disabled={isEditing} // Disable editing password when updating profile
-                  className="mt-1 block w-full px-3 py-2 border border-red-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-                />
-              </div>
-              <div>
-                <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                  Username:
-                </label>
-                <input
-                  type="text"
-                  id="username"
-                  name="username"
-                  value={profileData.username}
-                  onChange={handleChange}
                   required
                   className="mt-1 block w-full px-3 py-2 border border-red-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
                 />
               </div>
               <div>
-                <label htmlFor="bio" className="block text-sm font-medium text-gray-700">
-                  Bio:
-                </label>
+                <label htmlFor="bio" className="block text-sm font-medium text-gray-700">Bio:</label>
                 <textarea
                   id="bio"
                   name="bio"
@@ -144,37 +125,14 @@ const ProfilePage = () => {
                   onChange={handleChange}
                   required
                   className="mt-1 block w-full px-3 py-2 border border-red-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-                />
+                ></textarea>
               </div>
-              <button
-                type="submit"
-                className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-              >
-                {isEditing ? 'Update Profile' : 'Create Profile'}
-              </button>
+              <div className="text-center">
+                <button type="submit" className="inline-flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                  Save Profile
+                </button>
+              </div>
             </form>
-            {!profileExists && (
-              <div className="text-center mt-4">
-                <p>No profile found.</p>
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="inline-flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                >
-                  Create Profile
-                </button>
-              </div>
-            )}
-            {profileExists && !isEditing && (
-              <div className="text-center mt-4">
-                <p>Profile found.</p>
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="inline-flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                >
-                  Edit Profile
-                </button>
-              </div>
-            )}
           </div>
         </div>
       </div>

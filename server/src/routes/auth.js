@@ -11,8 +11,7 @@ const {
   logout,
   getProfile,
   updateProfile,
-  createProfile,
-  checkProfile,
+  authenticateToken,
 } = require('../controllers/auth')
 const {
   validationMiddleware,
@@ -25,10 +24,8 @@ router.get('/protected', userAuth, protected)
 router.post('/register', registerValidation, validationMiddleware, register)
 router.post('/login', loginValidation, validationMiddleware, login)
 router.get('/logout', logout)
-router.get('/profile', userAuth, getProfile)
-router.post('/profile', userAuth, createProfile)
-router.put('/profile', userAuth,  updateProfile)
-router.get('/profile-check', userAuth, checkProfile)
+router.get('/profile', authenticateToken, getProfile)
+router.put('/profileupdate',  updateProfile)
 router.get("/:id/verify/:token/", async (req, res) => {
 	try {
 	  const userId = req.params.id;
