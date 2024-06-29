@@ -26,7 +26,7 @@ const Login = () => {
     email: '',
     password: '',
   });
-  const [error, setError] = useState(false);
+  const [error, setError] = useState('');
 
   const onChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
@@ -38,12 +38,17 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      await onLogin(values);
-      dispatch(authenticateUser());
-      localStorage.setItem('isAuth', 'true');
+      const response = await onLogin(values);
+      if (response.data && response.data.success) {
+        dispatch(authenticateUser());
+        localStorage.setItem('isAuth', 'true');
+        setError(''); // Clear any previous error
+      } else {
+        setError(response.data.message || 'Login failed. Please try again.');
+      }
     } catch (error) {
-      console.log(error.response.data.errors[0].msg);
-      setError(error.response.data.errors[0].msg);
+      console.error('Login error:', error.response?.data?.errors[0]?.msg || error.message);
+      setError(error.response?.data?.errors[0]?.msg || 'Login failed. Please try again.');
     }
   };
 

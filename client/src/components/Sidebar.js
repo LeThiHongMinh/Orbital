@@ -28,7 +28,6 @@ const Sidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [fullName, setFullName] = useState('');
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -37,10 +36,8 @@ const Sidebar = () => {
         if (data.user) {
           setFullName(data.user.full_name);
         }
-        setLoading(false);
       } catch (error) {
         console.error('Error fetching profile:', error);
-        setLoading(false);
       }
     };
 
@@ -60,10 +57,6 @@ const Sidebar = () => {
       console.log(error.response);
     }
   };
-
-  if (loading) {
-    return <div>Loading...</div>; // Placeholder for loading state
-  }
 
   return (
     <Drawer
