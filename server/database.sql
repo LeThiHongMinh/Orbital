@@ -23,8 +23,6 @@ CREATE TABLE profile (
     bio TEXT
 );
 
-
-
 -- matchform table
 CREATE TABLE matchform (
 id SERIAL PRIMARY KEY,

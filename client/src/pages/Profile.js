@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Layout from '../components/layout'; // Assuming the correct path to Layout component
+import Layout from '../components/Layout'; // Assuming the correct path to Layout component
 import { profileUpdate, profileCheck } from '../api/auth'; // Import profileUpdate and profileCheck from API
 import Nav from '../components/Nav';
 
@@ -59,7 +59,7 @@ const ProfilePage = () => {
   if (!isEditing) {
     return (
       <Layout> {/* Wrap the profile page content in Layout */}
-        <div className="bg-red-100 min-h-screen">
+        <div className="bg-white min-h-screen"> {/* Set background color to white */}
           <div className="max-w-lg mx-auto py-12 px-4 sm:px-6 lg:px-8">
             <div className="bg-red-100 rounded-lg p-6">
               <h2 className="text-4xl mt-8 font-bold mb-6 text-center text-red-700">User Profile</h2>
@@ -136,7 +136,6 @@ const ProfilePage = () => {
                   onChange={handleChange}
                   required
                   className="mt-1 block w-full px-3 py-2 border border-red-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-                  disabled // Disabled to prevent editing email directly
                 />
               </div>
               <div>
@@ -158,8 +157,8 @@ const ProfilePage = () => {
                   name="password"
                   value={profileData.password}
                   onChange={handleChange}
-                  required
                   className="mt-1 block w-full px-3 py-2 border border-red-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                  placeholder="Leave blank to keep current password"
                 />
               </div>
               <div className="text-center">
