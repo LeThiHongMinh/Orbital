@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Layout from '../components/Layout'; // Assuming the correct path to Layout component
+import Layout from '../components/layout'; // Assuming the correct path to Layout component
 import { profileUpdate, profileCheck } from '../api/auth'; // Import profileUpdate and profileCheck from API
 import Nav from '../components/Nav';
 
