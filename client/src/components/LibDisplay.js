@@ -32,7 +32,7 @@ const LibDisplay= ({ visible, onClose }) => {
     formData.append('file', file);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/upload', formData, {
+      const response = await axios.post('https://orbital-kq4q.onrender.com/api/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
