@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/layout';
-import { profileCheck, profileUpdate, createProfile } from '../api';
+import { profileCheck, profileUpdate, createProfile } from '../api/auth';
 
 const ProfilePage = () => {
   const [profileData, setProfileData] = useState({
