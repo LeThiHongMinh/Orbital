@@ -50,17 +50,21 @@ const Dashboard = () => {
   const calculateTaskStats = (tasks) => {
     let completed = 0;
     let incomplete = 0;
-
-    tasks.forEach((task) => {
-      if (task.status === 'completed') {
-        completed++;
-      } else if (task.status === 'incomplete') {
-        incomplete++;
-      }
-    });
-
+  
+    if (Array.isArray(tasks)) {
+      tasks.forEach((task) => {
+        if (task.status === 'completed') {
+          completed++;
+        } else if (task.status === 'incomplete') {
+          incomplete++;
+        }
+      });
+    } else {
+      console.error('Error: Tasks is not an array:', tasks);
+    }
+  
     return { completedCount: completed, incompleteCount: incomplete };
-  };
+  };  
 
   // Function to calculate total hours studied
   const calculateTotalHoursStudied = (tasks) => {
@@ -133,7 +137,7 @@ const Dashboard = () => {
               <Typography variant="h6" gutterBottom>
                 Course List
               </Typography>
-              <SearchCourse />
+              {/* <SearchCourse /> */}
             </Paper>
           </Grid>
         </Grid>
