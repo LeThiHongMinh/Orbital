@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { LinearProgress, Typography, Grid, Paper } from '@mui/material';
 import Layout from '../components/layout'; // Assuming Layout component structure
 import CalendarComponent from '../components/Calendar'; // Custom Calendar component
-import CourseListSearch from '../components/CourseListSearch'; // Custom Course List search component
+import SearchCourse from '../components/Searchcourse'; // Custom Course List search component
 // Replace with mock data or define a placeholder function for getStudyActivities
 import { getStudyActivities } from '../api/auth'; // Import getStudyActivities function
 import './Dashboard.css'; // Custom CSS for styling
@@ -133,7 +133,7 @@ const Dashboard = () => {
               <Typography variant="h6" gutterBottom>
                 Course List
               </Typography>
-              <CourseListSearch />
+              <SearchCourse />
             </Paper>
           </Grid>
         </Grid>
