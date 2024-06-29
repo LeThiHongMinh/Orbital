@@ -45,6 +45,10 @@ export async function profileCheck() {
   return await API.get('/api/profile');
 }
 
+export async function profileExist() {
+  return await API.get('/api/profile-check');
+}
+
 export async function createStudyActivity(activityData) {
   return await API.post('/api/study-activities', activityData);
 }

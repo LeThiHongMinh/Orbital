@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/layout';
-import { profileCheck, profileUpdate, profileCreate } from '../api/auth';
+import { profileCheck, profileUpdate, profileCreate, profileExist } from '../api/auth';
 
 const ProfilePage = () => {
   const [profileData, setProfileData] = useState({
@@ -16,9 +16,11 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const { data } = await profileCheck();
-        if (data.profile) {
-          setProfileData(data.profile);
+        const { data } = await profileExist();
+        if (data.profileExists) {
+          const profileResponse = await profileCheck();
+          setProfileData(profileResponse.data.profile);
+          setIsEditing(true); // Enable editing mode when profile exists
         }
         setLoading(false);
       } catch (error) {
@@ -48,8 +50,8 @@ const ProfilePage = () => {
       } else {
         await profileCreate(profileData);
         alert('Profile created successfully');
+        setIsEditing(true); // Enable editing mode after profile creation
       }
-      setIsEditing(false);
     } catch (error) {
       console.error('Error updating/creating profile:', error);
       alert('Error updating/creating profile');
