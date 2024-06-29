@@ -16,8 +16,9 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchStudyActivitiesData = async () => {
       try {
-        const activities = await getStudyActivities(); // Fetch study activities using the imported function
+        const { data } = await getStudyActivities(); // Fetch study activities using the imported function
 
+        const activities = Array.isArray(data.activities) ? data.activities : [];
         setStudyActivities(activities);
 
         const { completedCount, incompleteCount } = calculateTaskStats(activities);

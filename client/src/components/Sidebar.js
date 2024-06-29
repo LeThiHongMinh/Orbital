@@ -23,7 +23,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import GroupIcon from '@mui/icons-material/Group';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 
-import { onLogout, profileCheck, getTodayDeadlines } from '../api/auth';
+import { onLogout, profileCheck, getStudyActivities } from '../api/auth'; // Import the getStudyActivities function
 import { unauthenticateUser } from '../redux/slices/authSlice';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -49,8 +49,17 @@ const Sidebar = () => {
 
     const fetchNotifications = async () => {
       try {
-        const { data } = await getTodayDeadlines();
-        setNotifications(data.activities);
+        const { data } = await getStudyActivities(); // Fetch all study activities
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Set the time to midnight for comparison
+
+        const todayNotifications = data.filter((activity) => {
+          const activityDate = new Date(activity.end_time);
+          activityDate.setHours(0, 0, 0, 0);
+          return activityDate.getTime() === today.getTime();
+        });
+
+        setNotifications(todayNotifications);
       } catch (error) {
         console.error('Error fetching notifications:', error);
       }
@@ -177,7 +186,7 @@ const Sidebar = () => {
                 </ListItemAvatar>
                 <ListItemText
                   primary={notification.activity_type}
-                  secondary={`Due: ${new Date(notification.deadline).toLocaleString()}`}
+                  secondary={`Due: ${new Date(notification.end_time).toLocaleString()}`}
                 />
               </ListItem>
             ))
