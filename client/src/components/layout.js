@@ -9,7 +9,7 @@ const Layout = ({ children }) => {
   return (
     <div className="flex h-screen bg-red-100">
       {isAuth ? <Sidebar /> : <Navbar />}
-      <div className="flex-grow pt-16">
+      <div className="flex-grow pt-16"> {/* Added top padding */}
         <main className="p-6 bg-red-100">{children}</main>
       </div>
     </div>

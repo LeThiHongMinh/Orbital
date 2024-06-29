@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react'; 
-import { onRegistration } from '../api/auth'; // Add verifyEmail API call
+import { useState } from 'react';
+import { onRegistration } from '../api/auth';
 import Layout from '../components/layout';
 import { TextField, Button, Alert, Container, Typography, Box } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { teal, red } from '@mui/material/colors';
-import { useLocation, useNavigate } from 'react-router-dom'; // Import hooks for routing
+import { useNavigate } from 'react-router-dom';
 
 const theme = createTheme({
   palette: {
@@ -28,8 +28,7 @@ const Register = () => {
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const navigate = useNavigate(); // Initialize navigate hook
-  const location = useLocation(); // Initialize location hook
+  const navigate = useNavigate();
 
   const onChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
@@ -50,15 +49,14 @@ const Register = () => {
     }
   };
 
-
   return (
     <ThemeProvider theme={theme}>
       <Layout>
-        <Box bgcolor="rgba(255, 0, 0, 0.1)" minHeight="100vh">
-          <Container maxWidth="sm" className="flex items-center justify-center h-screen">
+        <Box bgcolor="rgba(255, 0, 0, 0.1)" minHeight="100vh" pt={10}> {/* Added padding-top */}
+          <Container maxWidth="sm">
             <Box
               component="form"
-              onSubmit={(e) => onSubmit(e)}
+              onSubmit={onSubmit}
               className="flex flex-col space-y-6 bg-white p-6 rounded-lg shadow-md"
             >
               <Typography variant="h4" component="h1" className="text-center mb-4">
@@ -66,7 +64,7 @@ const Register = () => {
               </Typography>
 
               <TextField
-                onChange={(e) => onChange(e)}
+                onChange={onChange}
                 type="email"
                 name="email"
                 value={values.email}
@@ -77,7 +75,7 @@ const Register = () => {
               />
 
               <TextField
-                onChange={(e) => onChange(e)}
+                onChange={onChange}
                 type="password"
                 name="password"
                 value={values.password}
