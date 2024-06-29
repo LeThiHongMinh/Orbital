@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Drawer,
@@ -19,7 +19,7 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import HomeIcon from '@mui/icons-material/Home';
 import GroupIcon from '@mui/icons-material/Group'; // Import the Matchmaking icon
 
-import { onLogout } from '../api/auth';
+import { onLogout, profileCheck } from '../api/auth'; // Import profileCheck function
 import { unauthenticateUser } from '../redux/slices/authSlice';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -27,6 +27,25 @@ const Sidebar = () => {
   const { isAuth } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [fullName, setFullName] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const { data } = await profileCheck();
+        if (data.profileExists) {
+          setFullName(data.profile.full_name);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   const handleNavigation = (path) => {
     navigate(path);
@@ -41,6 +60,10 @@ const Sidebar = () => {
       console.log(error.response);
     }
   };
+
+  if (loading) {
+    return <div>Loading...</div>; // Placeholder for loading state
+  }
 
   return (
     <Drawer
@@ -64,7 +87,7 @@ const Sidebar = () => {
           src="/path/to/profile/image.jpg" // replace with the path to your profile image
           sx={{ width: 100, height: 100, mb: 2 }}
         />
-        <Typography variant="h6">Your Name</Typography>
+        <Typography variant="h6">{fullName}</Typography>
         <IconButton onClick={() => handleNavigation('/profile')}>
           <SettingsIcon />
         </IconButton>
