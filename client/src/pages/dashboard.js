@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { LinearProgress, Typography, Grid, Paper } from '@mui/material';
-import Layout from '../components/Layout'; // Assuming Layout component structure
+import Layout from '../components/layout'; // Assuming Layout component structure
 import CalendarComponent from '../components/Calendar'; // Custom Calendar component
 import CourseListSearch from '../components/CourseListSearch'; // Custom Course List search component
 // Replace with mock data or define a placeholder function for getStudyActivities
