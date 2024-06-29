@@ -12,24 +12,28 @@ const ProfilePage = () => {
   });
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [profileExists, setProfileExists] = useState(false); // Track if profile exists
 
   useEffect(() => {
-    const fetchProfile = async () => {
+    const fetchProfileData = async () => {
       try {
-        const { data } = await profileExist();
+        const { data } = await profileExist(); // Check if profile exists
+        setProfileExists(data.profileExists);
+
         if (data.profileExists) {
-          const profileResponse = await profileCheck();
+          const profileResponse = await profileCheck(); // Fetch profile data if exists
           setProfileData(profileResponse.data.profile);
           setIsEditing(true); // Enable editing mode when profile exists
         }
-        setLoading(false);
+
+        setLoading(false); // Set loading to false after data fetching
       } catch (error) {
         console.error('Error fetching profile:', error);
-        setLoading(false);
+        setLoading(false); // Set loading to false in case of error
       }
     };
 
-    fetchProfile();
+    fetchProfileData();
   }, []);
 
   const handleChange = (event) => {
@@ -45,10 +49,10 @@ const ProfilePage = () => {
 
     try {
       if (isEditing) {
-        await profileUpdate(profileData);
+        await profileUpdate(profileData); // Update profile if editing
         alert('Profile updated successfully');
       } else {
-        await profileCreate(profileData);
+        await profileCreate(profileData); // Create profile if not editing
         alert('Profile created successfully');
         setIsEditing(true); // Enable editing mode after profile creation
       }
