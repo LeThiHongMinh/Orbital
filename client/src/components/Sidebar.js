@@ -34,8 +34,8 @@ const Sidebar = () => {
     const fetchProfile = async () => {
       try {
         const { data } = await profileCheck();
-        if (data.profileExists) {
-          setFullName(data.profile.full_name);
+        if (data.user) {
+          setFullName(data.user.full_name);
         }
         setLoading(false);
       } catch (error) {
