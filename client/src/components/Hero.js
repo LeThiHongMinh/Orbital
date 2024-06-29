@@ -1,18 +1,18 @@
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom'; // or 'next/router' if you're using Next.js
+import { useNavigate } from 'react-router-dom'; // or 'next/router' if you're using Next.js
 import Button from "../components/Button";
 import { arrowRight } from "../assets/icons";
 import { study } from "../assets/images";
 
 const Hero = () => {
   const isAuth = useSelector((state) => state.auth.isAuth); // Accessing isAuth from Redux store
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleButtonClick = () => {
     if (isAuth) {
-      history.push("/matchmaking");
+      navigate("/matchmaking");
     } else {
-      history.push("/login");
+      navigate("/login");
     }
   };
 
