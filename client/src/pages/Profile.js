@@ -46,7 +46,7 @@ const ProfilePage = () => {
         await profileUpdate(profileData);
         alert('Profile updated successfully');
       } else {
-        await createProfile(profileData);
+        await profileCreate(profileData);
         alert('Profile created successfully');
       }
       setIsEditing(false);
