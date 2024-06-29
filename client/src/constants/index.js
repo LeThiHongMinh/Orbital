@@ -29,14 +29,9 @@ export const navigation = [
     },
    
     {
-      id: "5",
+      id: "4",
       label: "New Account",
       href: "#login",
       onlyMobile: true,
-    },
-    {
-      id: "4",
-      label: "Study Activities",
-      href: "studyActivities",
     },
   ];
