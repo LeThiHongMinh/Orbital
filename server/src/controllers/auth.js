@@ -48,9 +48,13 @@ exports.login = async (req, res) => {
   };
 
   try {
-    const token = await sign(payload, SECRET, { expiresIn: '30d' }); // Set token expiration to 30 days
+    const token = await jwt.sign(payload, SECRET, { expiresIn: '30d' }); // Set token expiration to 30 days
 
-    return res.status(200).cookie('token', token, { httpOnly: true }).json({
+    return res.status(200).cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'None'
+    }).json({
       success: true,
       message: 'Logged in successfully',
     });
