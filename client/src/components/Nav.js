@@ -44,19 +44,21 @@ const Nav = () => {
 
   return (
     <div className="fixed top-0 left-0 w-full bg-red-50 z-50 border-b border-n-6 lg:bg-n-8/90 lg:backdrop-blur-sm">
-      <div className="flex items-center px-5 lg:px-7.5 xl:px-10 py-2"> {/* Adjusted padding for height */}
-        <a href="/">
-          <img
-            className="block xl:mr-8"
-            src={NUSTudy}
-            alt="Logo"
-            width={50}
-            height={15}
-          />
-        </a>
-        <p className="ml-5 font-palanquin text-2xl font-bold z-10"> {/* Reduced font size */}
-          NUSTudy Seeker
-        </p>
+      <div className="flex items-center justify-between px-5 lg:px-7.5 xl:px-10 py-2"> {/* Adjusted padding for height */}
+        <div className="flex items-center">
+          <a href="/">
+            <img
+              className="block xl:mr-8"
+              src={NUSTudy}
+              alt="Logo"
+              width={50}
+              height={15}
+            />
+          </a>
+          <p className="ml-5 font-palanquin text-2xl font-bold z-10"> {/* Reduced font size */}
+            NUSTudy Seeker
+          </p>
+        </div>
         <nav
           className={`${
             openNavigation ? 'flex' : 'hidden'
@@ -81,15 +83,13 @@ const Nav = () => {
           </div>
           <HamburgerMenu />
         </nav>
-        <div className="container">
+        <div className="flex items-center space-x-4">
           {isAuth ? (
-            <div>
-              <button onClick={logout} className="btn btn-primary">
-                Logout
-              </button>
-            </div>
+            <button onClick={logout} className="btn btn-primary">
+              Logout
+            </button>
           ) : (
-            <div className="hidden lg:flex lg:flex-row">
+            <div className="hidden lg:flex lg:flex-row space-x-4">
               <NavLink
                 className="font-palanquin font-bold text-xl lg:flex lg:mx-auto"
                 to="/login"
