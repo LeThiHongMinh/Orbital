@@ -79,12 +79,3 @@ export async function downloadNotes(fileId) {
     throw error; // Throw error to be handled in the calling component
   }
 }
-
-export async function searchBooks() {
-  try {
-    const response = await axios.get(`/api/search?query=${query}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error searching for files:', error);
-  }
-};
