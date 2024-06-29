@@ -37,6 +37,10 @@ export async function profileUpdate(profileData) {
   return await API.put('/api/profileupdate', profileData);
 }
 
+export async function profileCreate(profileData) {
+  return await API.put('/api/profileupdate', profileData);
+}
+
 export async function profileCheck() {
   return await API.get('/api/profile');
 }
