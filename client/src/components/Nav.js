@@ -45,7 +45,7 @@ const Nav = () => {
   return (
     <div className="fixed top-0 left-0 w-full bg-red-50 z-50 border-b border-n-6 lg:bg-n-8/90 lg:backdrop-blur-sm">
       <div className="flex items-center justify-between px-5 lg:px-7.5 xl:px-10 py-2"> {/* Adjusted padding for height */}
-        <div className="flex items-center">
+        <div className="flex items-center space-x-3"> {/* Added space-x-3 for closer spacing */}
           <a href="/">
             <img
               className="block xl:mr-8"
@@ -55,7 +55,7 @@ const Nav = () => {
               height={15}
             />
           </a>
-          <p className="ml-5 font-palanquin text-2xl font-bold z-10"> {/* Reduced font size */}
+          <p className="font-palanquin text-2xl font-bold z-10"> {/* Removed ml-5 */}
             NUSTudy Seeker
           </p>
         </div>
@@ -91,14 +91,14 @@ const Nav = () => {
           ) : (
             <div className="hidden lg:flex lg:flex-row space-x-4">
               <NavLink
-                className="font-palanquin font-bold text-xl lg:flex lg:mx-auto"
+                className="font-palanquin font-bold text-xl lg:flex lg:mx-auto bg-pink-600 text-white px-4 py-2 rounded-[5px]" // Added button styles
                 to="/login"
               >
                 <span>Login</span>
               </NavLink>
               <NavLink
                 to="/register"
-                className="font-palanquin font-bold text-xl lg:flex lg:mx-auto"
+                className="font-palanquin font-bold text-xl lg:flex lg:mx-auto bg-pink-600 text-white px-4 py-2 rounded-[5px]" // Added button styles
               >
                 <span>Register</span>
               </NavLink>
