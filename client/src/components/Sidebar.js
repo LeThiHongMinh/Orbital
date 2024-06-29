@@ -10,6 +10,9 @@ import {
   Avatar,
   Box,
   Typography,
+  Badge,
+  Popover,
+  ListItemAvatar,
 } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
@@ -17,9 +20,10 @@ import SchoolIcon from '@mui/icons-material/School';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import HomeIcon from '@mui/icons-material/Home';
-import GroupIcon from '@mui/icons-material/Group'; // Import the Matchmaking icon
+import GroupIcon from '@mui/icons-material/Group';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
-import { onLogout, profileCheck } from '../api/auth'; // Import profileCheck function
+import { onLogout, profileCheck, getTodayDeadlines } from '../api/auth';
 import { unauthenticateUser } from '../redux/slices/authSlice';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -28,6 +32,8 @@ const Sidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [fullName, setFullName] = useState('');
+  const [notifications, setNotifications] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -41,7 +47,17 @@ const Sidebar = () => {
       }
     };
 
+    const fetchNotifications = async () => {
+      try {
+        const { data } = await getTodayDeadlines();
+        setNotifications(data.activities);
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+      }
+    };
+
     fetchProfile();
+    fetchNotifications();
   }, []);
 
   const handleNavigation = (path) => {
@@ -57,6 +73,17 @@ const Sidebar = () => {
       console.log(error.response);
     }
   };
+
+  const handleNotificationClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
 
   return (
     <Drawer
@@ -83,6 +110,11 @@ const Sidebar = () => {
         <Typography variant="h6">{fullName}</Typography>
         <IconButton onClick={() => handleNavigation('/profile')}>
           <SettingsIcon />
+        </IconButton>
+        <IconButton onClick={handleNotificationClick}>
+          <Badge badgeContent={notifications.length} color="secondary">
+            <NotificationsIcon />
+          </Badge>
         </IconButton>
       </Box>
       <List>
@@ -123,6 +155,37 @@ const Sidebar = () => {
           <ListItemText primary="Logout" />
         </ListItem>
       </List>
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+      >
+        <Box sx={{ p: 2 }}>
+          <Typography variant="h6">Notifications</Typography>
+          {notifications.length > 0 ? (
+            notifications.map((notification) => (
+              <ListItem key={notification.id}>
+                <ListItemAvatar>
+                  <Avatar>
+                    <SchoolIcon />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                  primary={notification.activity_type}
+                  secondary={`Due: ${new Date(notification.deadline).toLocaleString()}`}
+                />
+              </ListItem>
+            ))
+          ) : (
+            <Typography variant="body2">No notifications</Typography>
+          )}
+        </Box>
+      </Popover>
     </Drawer>
   );
 };
