@@ -73,7 +73,7 @@ const FileList = () => {
       {selectedFile && (
         <div className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-75 flex justify-center items-center z-50">
           <div className="bg-white p-4 rounded shadow-lg max-w-3xl w-full h-full overflow-auto">
-            <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.11.338/build/pdf.worker.min.js">
+            <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
               <Viewer fileUrl={URL.createObjectURL(new Blob([selectedFile], { type: 'application/pdf' }))} />
             </Worker>
             <button
