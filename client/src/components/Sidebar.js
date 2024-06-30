@@ -114,7 +114,7 @@ const Sidebar = () => {
       >
         <Avatar
           alt="Profile Image"
-          src="/path/to/profile/image.jpg" // replace with the path to your profile image
+          src="https://i.pinimg.com/564x/40/27/ef/4027ef3433c0541374a41c841d9c26eb.jpg" // replace with the path to your profile image
           sx={{ width: 100, height: 100, mb: 2 }}
         />
         <Typography variant="h6">{fullName}</Typography>
