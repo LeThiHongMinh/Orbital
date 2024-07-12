@@ -40,7 +40,8 @@ const StudyActivities = () => {
         title: activity.activity_type,
         status: activity.status,
         style: {
-          backgroundColor: activity.status ? 'green' : 'pink',
+          backgroundColor: activity.status ? '#4caf50' : '#e91e63',
+          color: 'white'
         }
       }));
       setActivities(formattedActivities);
@@ -118,6 +119,7 @@ const StudyActivities = () => {
     try {
       await toggleStudyActivityStatus(id);
       fetchActivities();
+      handleClose(); // Close the modal after toggling status
     } catch (error) {
       console.error('Error toggling activity status:', error);
     }
@@ -130,7 +132,7 @@ const StudyActivities = () => {
           Study Activities
         </Typography>
 
-        <Button variant="contained" color="primary" onClick={() => handleOpen()}>
+        <Button variant="contained" color="primary" onClick={() => handleOpen()} style={{ marginBottom: '20px' }}>
           Create Activity
         </Button>
 
@@ -139,10 +141,13 @@ const StudyActivities = () => {
           events={activities}
           startAccessor="start"
           endAccessor="end"
-          style={{ height: 500, margin: '50px 0' }}
+          style={{ height: 500, margin: '50px 0', backgroundColor: 'white' }}
           onSelectEvent={(event) => handleOpen(event)}
           eventPropGetter={(event) => ({
-            style: event.style,
+            style: {
+              backgroundColor: event.status ? '#4caf50' : '#e91e63',
+              color: 'white',
+            },
           })}
         />
 
@@ -209,7 +214,7 @@ const StudyActivities = () => {
                   onClick={() => handleToggleStatus(selectedActivity.id)}
                   style={{
                     marginLeft: '10px',
-                    backgroundColor: selectedActivity.status ? 'green' : 'pink',
+                    backgroundColor: selectedActivity.status ? '#4caf50' : '#e91e63',
                     color: 'white',
                   }}
                 >

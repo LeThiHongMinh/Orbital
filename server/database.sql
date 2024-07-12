@@ -17,13 +17,15 @@ CREATE TABLE tokens (
 
 -- matchform table
 CREATE TABLE matchform (
-id SERIAL PRIMARY KEY,
-fullname VARCHAR(100) NOT NULL,
-coursecode VARCHAR(50) NOT NULL,
-expectations TEXT,
-academiclevel VARCHAR(50) NOT NULL,
-studygoal VARCHAR(50) NOT NULL,
-createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    fullname VARCHAR(100) NOT NULL,
+    coursecode VARCHAR(50) NOT NULL,
+    expectations TEXT,
+    academiclevel VARCHAR(50) NOT NULL,
+    studygoal VARCHAR(50) NOT NULL,
+    createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 -- Create a table in PostgreSQL to store files in library
@@ -37,11 +39,28 @@ CREATE TABLE files (
 CREATE TABLE study_activities (
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL,
+  partner_id INTEGER NOT NULL,
+  course_code VARCHAR(255),
   activity_type VARCHAR(255),
   activity_description TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   start_time TIMESTAMP,
   end_time TIMESTAMP,
   status BOOLEAN DEFAULT false, --Pending
+  file_data BYTEA,
   FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE course (
+  id SERIAL PRIMARY KEY,
+  course_code VARCHAR(255),
+  course_name VARCHAR(255)
+);
+
+CREATE TABLE partners (
+  id SERIAL PRIMARY KEY,
+  course_code VARCHAR(255),
+  partner_1_id INTEGER NOT NULL,
+  partner_2_id INTEGER NOT NULL,
+  status BOOLEAN DEFAULT true
 );

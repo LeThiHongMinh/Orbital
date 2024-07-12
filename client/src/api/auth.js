@@ -3,7 +3,7 @@ import axios from 'axios';
 axios.defaults.withCredentials = true;
 
 const API = axios.create({
-  baseURL: 'https://orbital-kq4q.onrender.com',
+  baseURL: 'http://localhost:5000',
   withCredentials: true,
 });
 
@@ -78,4 +78,16 @@ export async function downloadNotes(fileId) {
   } catch (error) {
     throw error; // Throw error to be handled in the calling component
   }
+}
+
+export async function getPortals() {
+  return await API.get(`/api/portal`);
+}
+
+export async function getPortalByCourseCode(id) {
+  return await API.get(`/api/portal/${id}`);
+}
+
+export async function unMatchPartner(id) {
+  return await API.patch(`/api/portal/${id}/toggle-status`, {});
 }

@@ -15,7 +15,7 @@ require('./middlewares/passport-middleware')
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
-  origin: 'https://nustudyseeker.vercel.app',
+  origin: CLIENT_URL,
   credentials: true
 }));
 app.use(passport.initialize())
@@ -45,3 +45,4 @@ const appStart = () => {
 }
 
 appStart()
+
