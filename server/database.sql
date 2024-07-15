@@ -39,7 +39,7 @@ CREATE TABLE files (
 CREATE TABLE study_activities (
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL,
-  partner_id INTEGER NOT NULL,
+  partner_id INTEGER,
   course_code VARCHAR(255),
   activity_type VARCHAR(255),
   activity_description TEXT,
@@ -61,6 +61,5 @@ CREATE TABLE partners (
   id SERIAL PRIMARY KEY,
   course_code VARCHAR(255),
   partner_1_id INTEGER NOT NULL,
-  partner_2_id INTEGER NOT NULL,
-  status BOOLEAN DEFAULT true
+  partner_2_id INTEGER NOT NULL
 );
