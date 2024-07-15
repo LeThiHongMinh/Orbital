@@ -91,3 +91,7 @@ export async function getPortalByCourseCode(id) {
 export async function unMatchPartner(id) {
   return await API.patch(`/api/portal/${id}/toggle-status`, {});
 }
+
+export async function getMatchedPartner() {
+  return await API.get('/api/yourpartner');
+}

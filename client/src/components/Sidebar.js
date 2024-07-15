@@ -142,6 +142,12 @@ const Sidebar = () => {
           </ListItemIcon>
           <ListItemText primary="Dashboard" />
         </ListItem>
+        <ListItem button onClick={() => handleNavigation('/partner')}>
+          <ListItemText primary="Partner" />
+        </ListItem>
+        <ListItem button onClick={() => handleNavigation('/feedback')}>
+          <ListItemText primary="Feedback" />
+        </ListItem>
         <ListItem button onClick={() => handleNavigation('/library')}>
           <ListItemIcon>
             <LibraryBooksIcon />

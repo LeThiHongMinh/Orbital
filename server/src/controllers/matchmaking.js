@@ -116,4 +116,60 @@ exports.unMatchPartner = async (red, res) => {
     console.log(error.message);
     res.status(500).json({ error: 'Internal server'});
   }
-}
+};
+
+exports.getMatchedUsers = async (req, res) => {
+  const userEmail = req.user.email; // Assuming user's email is extracted from the authenticated user
+
+  try {
+    // Fetch user_id of the authenticated user based on their email
+    const userResult = await db.query('SELECT user_id FROM users WHERE email = $1', [userEmail]);
+    const { user_id } = userResult.rows[0]; // Extract user_id from the query result
+
+    // Fetch all partners where the current user is either partner_1_id or partner_2_id
+    const partners = await db.query(
+      'SELECT * FROM partners WHERE partner_1_id = $1 OR partner_2_id = $1',
+      [user_id]
+    );
+
+    // If no partners found, return empty response or appropriate message
+    if (partners.rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'No partners found' });
+    }
+
+    // Array to store user data of matched users
+    let matchedUsers = [];
+
+    // Loop through each partner entry and fetch user details for partner_1_id and partner_2_id
+    for (const partner of partners.rows) {
+      // Determine which partner ID is not the current user's ID
+      const partner1Id = partner.partner_1_id;
+      const partner2Id = partner.partner_2_id;
+
+      // Fetch details of partner 1 user
+      const user1Data = await db.query(
+        'SELECT user_id, email, full_name, bio FROM users WHERE user_id = $1',
+        [partner1Id]
+      );
+
+      // Fetch details of partner 2 user
+      const user2Data = await db.query(
+        'SELECT user_id, email, full_name, bio FROM users WHERE user_id = $1',
+        [partner2Id]
+      );
+
+      // Add user details to matchedUsers array
+      matchedUsers.push({
+        partner1: user1Data.rows[0], // User details for partner 1
+        partner2: user2Data.rows[0], // User details for partner 2
+        course_code: partner.course_code,
+        status: partner.status
+      });
+    }
+
+    res.status(200).json({ success: true, matchedUsers });
+  } catch (error) {
+    console.error('Error fetching matched users:', error.message);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};

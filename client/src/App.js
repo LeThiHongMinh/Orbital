@@ -36,6 +36,8 @@ import Matchmaking from './pages/Matchmaking';
 import Library from './pages/Library';
 import ProfileForm from './pages/Profile';
 import StudyActivities from './pages/studyActivities';
+import Partner from './components/Partner';
+import FeedbackForm from './components/FeedbackForm';
 
 const PrivateRoutes = () => {
   const { isAuth } = useSelector((state) => state.auth)
@@ -67,6 +69,8 @@ const App = () => {
         <Route path = '/home' element={<Home />} />
         <Route path = '/matchmaking' element={<Matchmaking />} />
         <Route path='/library' element = {<Library />} />
+        <Route path='/partner' element={<Partner />} />
+        <Route path='/feedback' element={<FeedbackForm />} />
         
 
         <Route element={<PrivateRoutes />}>
