@@ -1,6 +1,6 @@
 //const express = require('express');
 
-const { submitForm, getPortals, getPortalByCourseCode, unMatchPartner, getMatchedUsers, matchMaking } = require('../controllers/matchmaking');
+const { submitForm, getPortals, getPortalByCourseCode, unMatchPartner, getMatchedUsers, matchMaking, submitFeedback } = require('../controllers/matchmaking');
 const { Router } = require('express')
 const router = Router()
 const { userAuth } = require('../middlewares/passport-middleware')
@@ -12,5 +12,6 @@ router.get('/portal/:id', userAuth, getPortalByCourseCode);
 router.patch('/portal/:id/toggle-status', userAuth, unMatchPartner);
 router.get('/yourpartner', userAuth, getMatchedUsers);
 router.post('/creatematch', userAuth, matchMaking);
+router.post('/submit-feedback', userAuth, submitFeedback)
 
 module.exports = router;

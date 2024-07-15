@@ -95,7 +95,7 @@ exports.getProfile = async (req, res) => {
   const email = req.user.email; // Use email from decoded JWT token
 
   try {
-    const { rows } = await db.query('SELECT full_name, email, bio FROM users WHERE email = $1', [email]);
+    const { rows } = await db.query('SELECT full_name, email, bio, tele FROM users WHERE email = $1', [email]);
     const user = rows[0] || { email };
 
     if (!user.full_name || !user.bio) {
@@ -124,12 +124,12 @@ exports.getProfile = async (req, res) => {
 
 
 exports.updateProfile = async (req, res) => {
-  const { email, full_name, bio } = req.body; // Extract email, full_name, and bio from req.body
+  const { email, full_name, bio, tele } = req.body; // Extract email, full_name, and bio from req.body
 
   try {
     const result = await db.query(
-      'UPDATE users SET full_name = $1, bio = $2 WHERE email = $3',
-      [full_name, bio, email]
+      'UPDATE users SET full_name = $1, bio = $2, tele = $4 WHERE email = $3',
+      [full_name, bio, email, tele]
     );
 
     if (result.rowCount === 0) {

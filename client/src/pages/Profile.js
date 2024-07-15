@@ -4,7 +4,7 @@ import Layout from '../components/layout'; // Import the Layout component
 import Nav from '../components/Nav';
 
 const ProfilePage = () => {
-  const [profileData, setProfileData] = useState({ full_name: '', email: '', bio: '' });
+  const [profileData, setProfileData] = useState({ full_name: '', email: '', bio: '', tele: '' });
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -70,6 +70,10 @@ const ProfilePage = () => {
                   <label className="block text-3xl font-medium text-gray-700">Bio:</label>
                   <p className="mt-1 text-lg">{profileData.bio}</p>
                 </div>
+                <div>
+                  <label className="block text-3xl font-medium text-gray-700">Telegram Handle:</label>
+                  <p className="mt-1 text-lg">{profileData.tele}</p>
+                </div>
               </div>
               <div className="text-center mt-6">
                 <button 
@@ -126,6 +130,18 @@ const ProfilePage = () => {
                   required
                   className="mt-1 block w-full px-3 py-2 border border-red-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
                 ></textarea>
+              </div>
+              <div>
+                <label htmlFor="tele" className="block text-sm font-medium text-gray-700">Telegram Handle:</label>
+                <input
+                  type="text"
+                  id="tele"
+                  name="tele"
+                  value={profileData.tele}
+                  onChange={handleChange}
+                  required
+                  className="mt-1 block w-full px-3 py-2 border border-red-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                />
               </div>
               <div className="text-center">
                 <button type="submit" className="inline-flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">

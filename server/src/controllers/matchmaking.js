@@ -148,13 +148,13 @@ exports.getMatchedUsers = async (req, res) => {
 
       // Fetch details of partner 1 user
       const user1Data = await db.query(
-        'SELECT user_id, email, full_name, bio FROM users WHERE user_id = $1',
+        'SELECT user_id, full_name FROM users WHERE user_id = $1',
         [partner1Id]
       );
 
       // Fetch details of partner 2 user
       const user2Data = await db.query(
-        'SELECT user_id, email, full_name, bio FROM users WHERE user_id = $1',
+        'SELECT user_id, full_name FROM users WHERE user_id = $1',
         [partner2Id]
       );
 
@@ -170,6 +170,40 @@ exports.getMatchedUsers = async (req, res) => {
     res.status(200).json({ success: true, matchedUsers });
   } catch (error) {
     console.error('Error fetching matched users:', error.message);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+// yourControllerFile.js
+exports.submitFeedback = async (req, res) => {
+  const { partnerId, comments, rating } = req.body;
+  const userEmail = req.user.email; // Assuming user's email is extracted from the authenticated user
+
+  try {
+    // Fetch user_id of the authenticated user based on their email
+    const userResult = await db.query('SELECT user_id FROM users WHERE email = $1', [userEmail]);
+    const { user_id: userId } = userResult.rows[0]; // Extract user_id from the query result
+
+    // Fetch both partner_1_id and partner_2_id from partners where the current user's user_id matches
+    const partnerResult = await db.query(
+      'SELECT partner_1_id, partner_2_id FROM partners WHERE partner_1_id = $1 OR partner_2_id = $1',
+      [userId]
+    );
+
+    if (partnerResult.rows.length === 0) {
+      return res.status(400).json({ error: 'You are not matched with any partner' });
+    }
+
+    const { partner_1_id, partner_2_id } = partnerResult.rows[0];
+
+    // Insert feedback into the feedback table
+    await db.query(
+      'INSERT INTO feedback (user_id, partner_id, comments, rating) VALUES ($1, $2, $3, $4)',
+      [userId, partner_1_id === userId ? partner_2_id : partner_1_id, comments, rating]
+    );
+
+    res.status(201).json({ success: true, message: 'Feedback submitted successfully' });
+  } catch (error) {
+    console.error('Error submitting feedback:', error.message);
     res.status(500).json({ error: 'Internal server error' });
   }
 };

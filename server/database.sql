@@ -4,7 +4,8 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL,
     created_at DATE DEFAULT CURRENT_DATE,
     bio TEXT,
-    full_name VARCHAR(255)
+    full_name VARCHAR(255),
+     tele TEXT
 );
 
 CREATE TABLE tokens (

@@ -95,3 +95,7 @@ export async function unMatchPartner(id) {
 export async function getMatchedPartner() {
   return await API.get('/api/yourpartner');
 }
+
+export async function submitFeedback(feedbackData) {
+  return await API.post('/api/submit-feedback', feedbackData);
+}

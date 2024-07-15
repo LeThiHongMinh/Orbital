@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { getMatchedPartner } from '../api/auth';
 
 const Partner = () => {
   const [matchedUsers, setMatchedUsers] = useState([]);
@@ -10,16 +11,16 @@ const Partner = () => {
   useEffect(() => {
     const fetchMatchedUsers = async () => {
       try {
-        // Retrieve the token from localStorage
-        const token = localStorage.getItem('token');
+        // // Retrieve the token from localStorage
+        // const token = localStorage.getItem('token');
 
         // Include the token in the request headers
-        const response = await axios.get('http://localhost:5000/api/yourpartner', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-
+        // const response = await axios.get('http://localhost:5000/api/yourpartner', {
+        //   headers: {
+        //     Authorization: `Bearer ${token}`
+        //   }
+        // });
+        const response = await getMatchedPartner();
         console.log('Response:', response);
 
         if (response.data.success === false) {
