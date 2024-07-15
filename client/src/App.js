@@ -38,7 +38,7 @@ import ProfileForm from './pages/Profile';
 import StudyActivities from './pages/studyActivities';
 import Partner from './components/Partner';
 import FeedbackForm from './components/FeedbackForm';
-
+import Portals from './pages/portal';
 const PrivateRoutes = () => {
   const { isAuth } = useSelector((state) => state.auth)
 
@@ -77,6 +77,7 @@ const App = () => {
           <Route path='/dashboard' element={<Dashboard />} />
           <Route path='/profile' element={<ProfileForm />} />
           <Route path='/studyActivities' element={<StudyActivities />} />
+          <Route path='/portals' element={<Portals />} />
         </Route>
         
         <Route path="/" element={<CourseList courses={courses} setCourses={setCourses} />} />

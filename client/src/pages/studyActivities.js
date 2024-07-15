@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import Layout from '../components/layout';
-import { createStudyActivity, getStudyActivities, updateStudyActivity, deleteStudyActivity, toggleStudyActivityStatus } from '../api/auth';
+import {
+  createStudyActivity,
+  getStudyActivities,
+  updateStudyActivity,
+  deleteStudyActivity,
+  toggleStudyActivityStatus,
+} from '../api/auth';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { Modal, TextField, Button, Container, Typography, Box } from '@mui/material';
+import {
+  Modal,
+  TextField,
+  Button,
+  Container,
+  Typography,
+  Box,
+} from '@mui/material';
 
 const localizer = momentLocalizer(moment);
 
@@ -16,10 +29,11 @@ const StudyActivities = () => {
 
   const [activities, setActivities] = useState([]);
   const [formValues, setFormValues] = useState({
+    course_code: '',
     activity_type: '',
     activity_description: '',
     start_time: new Date(),
-    end_time: new Date()
+    end_time: new Date(),
   });
   const [selectedActivity, setSelectedActivity] = useState(null);
   const [open, setOpen] = useState(false);
@@ -33,7 +47,8 @@ const StudyActivities = () => {
   const fetchActivities = async () => {
     try {
       const { data } = await getStudyActivities();
-      const formattedActivities = data.activities.map(activity => ({
+      console.log('Fetched activities:', data.activities);  // Debugging fetched data
+      const formattedActivities = data.activities.map((activity) => ({
         ...activity,
         start: new Date(activity.start_time),
         end: new Date(activity.end_time),
@@ -41,17 +56,19 @@ const StudyActivities = () => {
         status: activity.status,
         style: {
           backgroundColor: activity.status ? '#4caf50' : '#e91e63',
-          color: 'white'
-        }
+          color: 'white',
+        },
       }));
+      console.log('Formatted activities:', formattedActivities);  // Debugging formatted activities
       setActivities(formattedActivities);
     } catch (error) {
       console.error('Error fetching activities:', error);
     }
-  };
+  };  
 
   const onChange = (e) => {
-    setFormValues({ ...formValues, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormValues({ ...formValues, [name]: value });
   };
 
   const onDateChange = (name, value) => {
@@ -67,10 +84,11 @@ const StudyActivities = () => {
         await createStudyActivity(formValues);
       }
       setFormValues({
+        course_code: '',
         activity_type: '',
         activity_description: '',
         start_time: new Date(),
-        end_time: new Date()
+        end_time: new Date(),
       });
       setSelectedActivity(null);
       fetchActivities();
@@ -84,6 +102,7 @@ const StudyActivities = () => {
     if (activity) {
       setSelectedActivity(activity);
       setFormValues({
+        course_code: activity.course_code,
         activity_type: activity.activity_type,
         activity_description: activity.activity_description,
         start_time: new Date(activity.start_time),
@@ -91,10 +110,11 @@ const StudyActivities = () => {
       });
     } else {
       setFormValues({
+        course_code: '',
         activity_type: '',
         activity_description: '',
         start_time: new Date(),
-        end_time: new Date()
+        end_time: new Date(),
       });
     }
     setOpen(true);
@@ -108,7 +128,7 @@ const StudyActivities = () => {
   const handleDelete = async (id) => {
     try {
       await deleteStudyActivity(id);
-      fetchActivities();
+      fetchActivities();  // Refresh activities list
       handleClose();
     } catch (error) {
       console.error('Error deleting activity:', error);
@@ -118,8 +138,8 @@ const StudyActivities = () => {
   const handleToggleStatus = async (id) => {
     try {
       await toggleStudyActivityStatus(id);
-      fetchActivities();
-      handleClose(); // Close the modal after toggling status
+      fetchActivities();  // Refresh activities list
+      handleClose();
     } catch (error) {
       console.error('Error toggling activity status:', error);
     }
@@ -132,7 +152,12 @@ const StudyActivities = () => {
           Study Activities
         </Typography>
 
-        <Button variant="contained" color="primary" onClick={() => handleOpen()} style={{ marginBottom: '20px' }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => handleOpen()}
+          style={{ marginBottom: '20px' }}
+        >
           Create Activity
         </Button>
 
@@ -152,11 +177,31 @@ const StudyActivities = () => {
         />
 
         <Modal open={open} onClose={handleClose}>
-          <Box component="form" onSubmit={onSubmit} style={{ padding: '20px', background: 'white', margin: 'auto', marginTop: '10%', borderRadius: '8px', maxWidth: '400px' }}>
+          <Box
+            component="form"
+            onSubmit={onSubmit}
+            style={{
+              padding: '20px',
+              background: 'white',
+              margin: 'auto',
+              marginTop: '10%',
+              borderRadius: '8px',
+              maxWidth: '400px',
+            }}
+          >
             <Typography variant="h5" component="h2" gutterBottom>
               {selectedActivity ? 'Edit Activity' : 'Create Activity'}
             </Typography>
 
+            <TextField
+              label="Course Code"
+              name="course_code"
+              value={formValues.course_code}
+              onChange={onChange}
+              fullWidth
+              required
+              margin="normal"
+            />
             <TextField
               label="Activity Type"
               name="activity_type"
@@ -201,12 +246,21 @@ const StudyActivities = () => {
                 shrink: true,
               }}
             />
-            <Button type="submit" variant="contained" color="primary" style={{ marginRight: '10px' }}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              style={{ marginRight: '10px' }}
+            >
               {selectedActivity ? 'Update Activity' : 'Create Activity'}
             </Button>
             {selectedActivity && (
               <>
-                <Button variant="contained" color="secondary" onClick={() => handleDelete(selectedActivity.id)}>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => handleDelete(selectedActivity.id)}
+                >
                   Delete Activity
                 </Button>
                 <Button

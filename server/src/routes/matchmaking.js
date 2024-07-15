@@ -11,6 +11,6 @@ router.get('/portal', userAuth, getPortals);
 router.get('/portal/:id', userAuth, getPortalByCourseCode);
 router.patch('/portal/:id/toggle-status', userAuth, unMatchPartner);
 router.get('/yourpartner', userAuth, getMatchedUsers);
-router.post('/creatematch', userAuth, matchMaking);
+// router.post('/creatematch', userAuth, matchMaking); matchMaking will be automatically call when for is submitted
 
 module.exports = router;

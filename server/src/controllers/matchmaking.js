@@ -93,30 +93,24 @@ exports.getPortalByCourseCode = async (req, res) => {
   }
 };
 
-exports.unMatchPartner = async (red, res) => {
+exports.unMatchPartner = async (req, res) => {
   const { id } = req.params;
   const user_id = req.user.id;
 
   try {
-    const fetchResult = await db.query(
-      'SELECT * FROM partners WHERE id = $1 AND (partner_1_id = $2 OR partner_2_id = $2)',
+    const result = await db.query(
+      'DELETE FROM partners WHERE id = $1 AND user_id = $2 RETURNING *',
       [id, user_id]
     );
-    if (fetchResult.rows.length === 0) {
+    if (result.rows.length === 0) {
       return res.status(400).json({ error: 'Partner not found'});
     }
-    const currentStatus = fetchResult.rows[0].status;
-    const newStatus = !currentStatus;
-    const updateResult = await db.query(
-      'UPDATE partners SET status = $1 WHERE id = $2 AND user_id = $3 RETURNING *',
-      [newStatus, id, user_id]
-    );
-    res.status(200).json({ success: true, portal: updateResult.rows[0]});
+    res.status(200).json({ success: true, message: 'Activity deleted successfully'});
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ error: 'Internal server'});
   }
-};
+}
 
 exports.getMatchedUsers = async (req, res) => {
   const userEmail = req.user.email; // Assuming user's email is extracted from the authenticated user
