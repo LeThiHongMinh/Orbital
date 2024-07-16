@@ -23,7 +23,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import GroupIcon from '@mui/icons-material/Group';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 
-import { onLogout, profileCheck, getStudyActivities } from '../api/auth'; // Import getStudyActivities
+import { onLogout, profileCheck, getStudyActivities } from '../api/auth';
 import { unauthenticateUser } from '../redux/slices/authSlice';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -160,11 +160,11 @@ const Sidebar = () => {
           </ListItemIcon>
           <ListItemText primary="Study Activities" />
         </ListItem>
-        <ListItem button onClick={() => handleNavigation('/matchmaking')}>
+        <ListItem button onClick={() => handleNavigation('/portals')}>
           <ListItemIcon>
-            <GroupIcon /> {/* Matchmaking Icon */}
+            <GroupIcon /> {/* Portals Icon */}
           </ListItemIcon>
-          <ListItemText primary="Matchmaking" />
+          <ListItemText primary="Portals" />
         </ListItem>
         <ListItem button onClick={handleLogout}>
           <ListItemIcon>
@@ -180,28 +180,27 @@ const Sidebar = () => {
         onClose={handleClose}
         anchorOrigin={{
           vertical: 'bottom',
-          horizontal: 'left',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
         }}
       >
         <Box sx={{ p: 2 }}>
-          <Typography variant="h6">Notifications</Typography>
-          {notifications.length > 0 ? (
-            notifications.map((notification) => (
-              <ListItem key={notification.id}>
+          <Typography variant="h6">Today's Notifications</Typography>
+          <List>
+            {notifications.map((notification, index) => (
+              <ListItem key={index}>
                 <ListItemAvatar>
                   <Avatar>
-                    <SchoolIcon />
+                    <NotificationsIcon />
                   </Avatar>
                 </ListItemAvatar>
-                <ListItemText
-                  primary={notification.activity_type}
-                  secondary={`Due: ${new Date(notification.endTime).toLocaleString()}`}
-                />
+                <ListItemText primary={notification.title} secondary={notification.description} />
               </ListItem>
-            ))
-          ) : (
-            <Typography variant="body2">No notifications</Typography>
-          )}
+            ))}
+          </List>
         </Box>
       </Popover>
     </Drawer>

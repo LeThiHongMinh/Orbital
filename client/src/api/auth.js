@@ -1,3 +1,5 @@
+// api/auth.js
+
 import axios from 'axios';
 
 axios.defaults.withCredentials = true;
@@ -6,7 +8,6 @@ const API = axios.create({
   baseURL: 'http://localhost:5000',
   withCredentials: true,
 });
-
 
 export async function onRegistration(registrationData) {
   return await API.post('/api/register', registrationData);
@@ -18,6 +19,7 @@ export async function onLogin(loginData) {
     return response;
   } catch (error) {
     console.error('Login error:', error);
+    throw error;  // Re-throw the error for the calling component to handle
   }
 }
 
@@ -74,9 +76,9 @@ export async function downloadNotes(fileId) {
     const response = await API.get(`/api/files/${fileId}/download`, {
       responseType: 'blob',
     });
-    return response.data; // Return the blob data
+    return response.data;  // Return the blob data
   } catch (error) {
-    throw error; // Throw error to be handled in the calling component
+    throw error;  // Throw error to be handled in the calling component
   }
 }
 
