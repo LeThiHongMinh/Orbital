@@ -148,13 +148,13 @@ exports.getMatchedUsers = async (req, res) => {
 
       // Fetch details of partner 1 user
       const user1Data = await db.query(
-        'SELECT user_id, full_name FROM users WHERE user_id = $1',
+        'SELECT user_id, email, full_name, bio FROM users WHERE user_id = $1',
         [partner1Id]
       );
 
       // Fetch details of partner 2 user
       const user2Data = await db.query(
-        'SELECT user_id, full_name FROM users WHERE user_id = $1',
+        'SELECT user_id, email, full_name, bio FROM users WHERE user_id = $1',
         [partner2Id]
       );
 

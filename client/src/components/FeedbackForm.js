@@ -51,7 +51,7 @@ const FeedbackForm = () => {
       setRating(1);
 
       // Refresh matched users after submitting feedback
-       // Assuming you have a function to refetch matched users
+      // Assuming you have a function to refetch matched users
 
     } catch (error) {
       console.error('Error submitting feedback:', error.response?.data?.error || error.message);
@@ -61,39 +61,105 @@ const FeedbackForm = () => {
 
   const styles = {
     container: {
-      // Your container styles
+      backgroundColor: '#fff5f5',
+      padding: '20px',
+      borderRadius: '10px',
+      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+      maxWidth: '900px',
+      margin: '0 auto',
+      fontFamily: 'Arial, sans-serif'
     },
     title: {
-      // Your title styles
+      color: '#e60000',
+      textAlign: 'center',
+      marginBottom: '20px',
+      fontSize: '32px'
     },
     noUsers: {
-      // Your no users styles
+      color: '#e60000',
+      textAlign: 'center',
+      fontSize: '20px'
     },
     usersList: {
-      // Your users list styles
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '20px',
     },
     match: {
-      // Your match styles
+      border: '1px solid #e60000',
+      borderRadius: '10px',
+      padding: '30px',
+      backgroundColor: '#ffcccc',
     },
     courseCode: {
-      // Your course code styles
+      color: '#b30000',
+      fontWeight: 'bold',
+      fontSize: '20px',
+      marginBottom: '10px',
     },
     userProfile: {
-      // Your user profile styles
+      marginBottom: '10px',
     },
     userProfileHeader: {
-      // Your user profile header styles
+      color: '#b30000',
+      fontWeight: 'bold',
+      fontSize: '18px',
+      marginBottom: '5px',
     },
     userProfileText: {
-      // Your user profile text styles
+      color: '#800000',
+      marginBottom: '5px',
+      fontSize: '16px'
     },
     status: {
-      // Your status styles
+      color: '#b30000',
+      fontWeight: 'bold',
+      marginBottom: '10px',
+      fontSize: '18px'
     },
     message: {
-      // Your message styles
-    }
-    // Add more styles as needed
+      color: '#e60000',
+      textAlign: 'center',
+      marginTop: '20px',
+      fontSize: '20px'
+    },
+    feedbackForm: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '10px',
+      marginTop: '10px',
+    },
+    feedbackTextarea: {
+      padding: '10px',
+      borderRadius: '5px',
+      border: '1px solid #e60000',
+      resize: 'vertical',
+      fontFamily: 'Arial, sans-serif',
+      fontSize: '16px'
+    },
+    feedbackSelect: {
+      padding: '10px',
+      borderRadius: '5px',
+      border: '1px solid #e60000',
+      fontFamily: 'Arial, sans-serif',
+      fontSize: '16px'
+    },
+    feedbackButton: {
+      padding: '15px 30px',
+      borderRadius: '5px',
+      border: 'none',
+      backgroundColor: '#e60000',
+      color: '#fff',
+      fontWeight: 'bold',
+      cursor: 'pointer',
+      fontFamily: 'Arial, sans-serif',
+      fontSize: '16px'
+    },
+    feedbackSuccess: {
+      color: 'green',
+      marginTop: '10px',
+      fontSize: '18px'
+    },
   };
 
   if (loading) {
@@ -133,9 +199,10 @@ const FeedbackForm = () => {
               <p style={styles.status}>Status: {match.status ? 'Active' : 'Inactive'}</p>
 
               {/* Feedback Form */}
-              <form onSubmit={handleFeedbackSubmit}>
+              <form onSubmit={handleFeedbackSubmit} style={styles.feedbackForm}>
                 <h3>Submit Feedback</h3>
                 <textarea
+                  style={styles.feedbackTextarea}
                   value={comments}
                   onChange={(e) => setComments(e.target.value)}
                   placeholder="Enter your feedback"
@@ -143,7 +210,12 @@ const FeedbackForm = () => {
                 />
                 <label>
                   Rating:
-                  <select value={rating} onChange={(e) => setRating(e.target.value)} required>
+                  <select
+                    style={styles.feedbackSelect}
+                    value={rating}
+                    onChange={(e) => setRating(e.target.value)}
+                    required
+                  >
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -151,10 +223,10 @@ const FeedbackForm = () => {
                     <option value="5">5</option>
                   </select>
                 </label>
-                <button type="submit">Submit Feedback</button>
+                <button type="submit" style={styles.feedbackButton}>Submit Feedback</button>
               </form>
 
-              {feedbackSuccess && <p style={{ color: 'green' }}>{feedbackSuccess}</p>}
+              {feedbackSuccess && <p style={styles.feedbackSuccess}>{feedbackSuccess}</p>}
             </div>
           ))}
         </div>
