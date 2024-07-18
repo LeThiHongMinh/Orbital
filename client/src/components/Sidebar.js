@@ -22,6 +22,7 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import HomeIcon from '@mui/icons-material/Home';
 import GroupIcon from '@mui/icons-material/Group';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import PeopleIcon from '@mui/icons-material/People'; // Icon for matchmaking
 
 import { onLogout, profileCheck, getStudyActivities } from '../api/auth';
 import { unauthenticateUser } from '../redux/slices/authSlice';
@@ -142,9 +143,6 @@ const Sidebar = () => {
           </ListItemIcon>
           <ListItemText primary="Dashboard" />
         </ListItem>
-        <ListItem button onClick={() => handleNavigation('/partner')}>
-          <ListItemText primary="Partner" />
-        </ListItem>
         <ListItem button onClick={() => handleNavigation('/feedback')}>
           <ListItemText primary="Feedback" />
         </ListItem>
@@ -165,6 +163,12 @@ const Sidebar = () => {
             <GroupIcon /> {/* Portals Icon */}
           </ListItemIcon>
           <ListItemText primary="Portals" />
+        </ListItem>
+        <ListItem button onClick={() => handleNavigation('/matchmaking')}>
+          <ListItemIcon>
+            <PeopleIcon /> {/* Matchmaking Icon */}
+          </ListItemIcon>
+          <ListItemText primary="Matchmaking" />
         </ListItem>
         <ListItem button onClick={handleLogout}>
           <ListItemIcon>

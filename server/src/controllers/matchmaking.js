@@ -95,22 +95,24 @@ exports.getPortalByCourseCode = async (req, res) => {
 
 exports.unMatchPartner = async (req, res) => {
   const { id } = req.params;
-  const user_id = req.user.id;
+  const user_id = req.user.id; 
 
   try {
-    const result = await db.query(
-      'DELETE FROM partners WHERE id = $1 AND user_id = $2 RETURNING *',
-      [id, user_id]
+    const deleteResult = await db.query(
+      'DELETE FROM partners WHERE id = $1 RETURNING *',
+      [id]
     );
-    if (result.rows.length === 0) {
-      return res.status(400).json({ error: 'Partner not found'});
+
+    if (deleteResult.rows.length === 0) {
+      return res.status(400).json({ error: 'Failed to delete partner relation.' });
     }
-    res.status(200).json({ success: true, message: 'Activity deleted successfully'});
+
+    res.status(200).json({ success: true, message: 'Partner relation deleted successfully.' });
   } catch (error) {
-    console.log(error.message);
-    res.status(500).json({ error: 'Internal server'});
+    console.error('Error unmatching partner:', error.message);
+    res.status(500).json({ error: 'Internal server error' });
   }
-}
+};
 
 exports.getMatchedUsers = async (req, res) => {
   const userEmail = req.user.email; // Assuming user's email is extracted from the authenticated user
@@ -165,5 +167,94 @@ exports.getMatchedUsers = async (req, res) => {
   } catch (error) {
     console.error('Error fetching matched users:', error.message);
     res.status(500).json({ error: 'Internal server error' });
+  }
+};
+// yourControllerFile.js
+exports.submitFeedback = async (req, res) => {
+  const { partnerId, comments, rating } = req.body;
+  const userEmail = req.user.email; // Assuming user's email is extracted from the authenticated user
+
+  try {
+    // Fetch user_id of the authenticated user based on their email
+    const userResult = await db.query('SELECT user_id FROM users WHERE email = $1', [userEmail]);
+    const { user_id: userId } = userResult.rows[0]; // Extract user_id from the query result
+
+    // Fetch both partner_1_id and partner_2_id from partners where the current user's user_id matches
+    const partnerResult = await db.query(
+      'SELECT partner_1_id, partner_2_id FROM partners WHERE partner_1_id = $1 OR partner_2_id = $1',
+      [userId]
+    );
+
+    if (partnerResult.rows.length === 0) {
+      return res.status(400).json({ error: 'You are not matched with any partner' });
+    }
+
+    const { partner_1_id, partner_2_id } = partnerResult.rows[0];
+
+    // Insert feedback into the feedback table
+    await db.query(
+      'INSERT INTO feedback (user_id, partner_id, comments, rating) VALUES ($1, $2, $3, $4)',
+      [userId, partner_1_id === userId ? partner_2_id : partner_1_id, comments, rating]
+    );
+
+    res.status(201).json({ success: true, message: 'Feedback submitted successfully' });
+  } catch (error) {
+    console.error('Error submitting feedback:', error.message);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+// Assuming you have the necessary imports and setup for your backend
+
+exports.uploadFileForMatchedUsers = async (req, res) => {
+  try {
+    const { name, description, courseCode, email1, email2} = req.body;
+
+    if (!req.file || !req.file.buffer) {
+      return res.status(400).json({ success: false, error: 'No file uploaded' });
+    }
+
+    const fileData = req.file.buffer;
+
+    // Store file info and content into PostgreSQL
+    const result = await db.query(
+      'INSERT INTO matchednotes (name, description, file_data, course_code, email1, email2, upload_date) VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP) RETURNING id',
+      [name, description, fileData, courseCode,  email1, email2]
+    );
+
+    const fileId = result.rows[0].id;
+    res.status(201).json({ success: true, fileId });
+  } catch (error) {
+    console.error('Error uploading file for matched users:', error);
+    res.status(500).json({ success: false, error: 'Error uploading file' });
+  }
+};
+
+exports.getFilesForMatchedUsers = async (req, res) => {
+  const { courseCode } = req.params;
+  const email1 = req.user.email;
+
+  try {
+    const client = await db.connect();
+    console.log('Connected to the database.');
+
+    const result = await client.query(
+      'SELECT name, description, file_data FROM matchednotes WHERE email1 = $1 OR email2 = $1 AND course_code = $2',
+      [email1, courseCode]
+    );
+
+    client.release();
+    console.log('Query executed successfully.');
+
+    if (result.rows.length === 0) {
+      console.log('No files found for the specified email and course');
+      return res.status(404).json({ success: false, error: 'No files found for the specified email and course' });
+    }
+
+    const file = result.rows[0];
+    res.status(200).json({ success: true, file });
+  } catch (error) {
+    console.error('Error fetching files for matched users:', error);
+    res.status(500).json({ success: false, error: 'Error fetching files' });
   }
 };

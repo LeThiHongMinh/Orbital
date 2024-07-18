@@ -29,7 +29,7 @@ exports.register = async (req, res) => {
 
     return res.status(201).json({
       success: true,
-      message: 'The registraion was succefull',
+      message: 'The registration was successful',
     })
   } catch (error) {
     console.log(error.message)
@@ -120,9 +120,6 @@ exports.getProfile = async (req, res) => {
   }
 };
 
-
-
-
 exports.updateProfile = async (req, res) => {
   const { email, full_name, bio } = req.body; // Extract email, full_name, and bio from req.body
 
@@ -169,3 +166,4 @@ exports.authenticateToken = (req, res, next) => {
     next();
   });
 };
+

@@ -8,6 +8,7 @@ const Portals = () => {
   const [portals, setPortals] = useState([]);
   const [selectedPortalId, setSelectedPortalId] = useState(null); // Track selected portal ID
   const [loading, setLoading] = useState(false); // Optional: Add loading state
+  const [viewingProfileId, setViewingProfileId] = useState(null); // Track which profile is currently being viewed
 
   useEffect(() => {
     fetchPortals();
@@ -32,8 +33,12 @@ const Portals = () => {
 
   const handleViewProfile = async (id) => {
     try {
-      const response = await getPortalByCourseCode(id);
-      setSelectedPortalId(id); // Set the selected portal ID
+      if (selectedPortalId === id) {
+        setSelectedPortalId(null); // Unview the profile if already viewed
+      } else {
+        const response = await getPortalByCourseCode(id);
+        setSelectedPortalId(id); // Set the selected portal ID
+      }
     } catch (error) {
       console.error('Error fetching partner profile:', error);
     }
@@ -43,8 +48,10 @@ const Portals = () => {
     try {
       await unMatchPartner(id);
       fetchPortals(); // Refresh portals after unmatching
+      setSelectedPortalId(null); // Reset selectedPortalId after unmatching
     } catch (error) {
       console.error('Error unmatching partner:', error);
+      alert('Error unmatching partner: ' + error.response?.data?.error || error.message); // Display error to the user
     }
   };
 
@@ -67,7 +74,7 @@ const Portals = () => {
                     onClick={() => handleViewProfile(portal.id)}
                     style={{ marginRight: '10px' }}
                   >
-                    View Partner Profile
+                    {selectedPortalId === portal.id ? 'Unview Partner Profile' : 'View Partner Profile'}
                   </Button>
                   <Button
                     variant="contained"
