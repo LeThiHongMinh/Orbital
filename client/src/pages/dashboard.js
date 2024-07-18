@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { LinearProgress, Typography, Grid, Paper } from '@mui/material';
+import { useHistory } from 'react-router-dom';
+import { LinearProgress, Typography, Grid, Paper, Button } from '@mui/material';
 import Layout from '../components/layout'; // Assuming Layout component structure
 import CalendarComponent from '../components/Calendar'; // Custom Calendar component
-import SearchCourse from '../components/Searchcourse'; // Custom Course List search component
-// Replace with mock data or define a placeholder function for getStudyActivities
+import CourseListSearch from '../components/Courselist'; // Custom Course List search component
 import { getStudyActivities } from '../api/auth'; // Import getStudyActivities function
 import './Dashboard.css'; // Custom CSS for styling
-
+import { useNavigate } from 'react-router-dom';
 const Dashboard = () => {
   const [completedCount, setCompletedCount] = useState(0);
   const [incompleteCount, setIncompleteCount] = useState(0);
   const [totalHoursStudied, setTotalHoursStudied] = useState(0);
   const [progress, setProgress] = useState(0);
   const [studyActivities, setStudyActivities] = useState([]);
-
+  //const history = useHistory(); // Access to history object for navigation
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchStudyActivitiesData = async () => {
       try {
@@ -50,7 +51,7 @@ const Dashboard = () => {
   const calculateTaskStats = (tasks) => {
     let completed = 0;
     let incomplete = 0;
-  
+
     if (Array.isArray(tasks)) {
       tasks.forEach((task) => {
         if (task.status === 'completed') {
@@ -62,9 +63,9 @@ const Dashboard = () => {
     } else {
       console.error('Error: Tasks is not an array:', tasks);
     }
-  
+
     return { completedCount: completed, incompleteCount: incomplete };
-  };  
+  };
 
   // Function to calculate total hours studied
   const calculateTotalHoursStudied = (tasks) => {
@@ -75,6 +76,11 @@ const Dashboard = () => {
     });
 
     return totalHours;
+  };
+
+  const handleNavigateToStudyActivities = () => {
+    // Navigate to Study Activities component
+    navigate("/studyActivities");// Use history.push to navigate
   };
 
   return (
@@ -124,20 +130,37 @@ const Dashboard = () => {
           </Grid>
           {/* Bottom Left Section */}
           <Grid item xs={12} sm={6}>
-            <Paper className="dashboard-card">
-              <Typography variant="h6" gutterBottom>
+        <Paper className="dashboard-card">
+        <Typography variant="h6" gutterBottom>
                 Calendar
-              </Typography>
-              <CalendarComponent />
-            </Paper>
-          </Grid>
+              
+          <Button
+            variant="contained"
+            onClick={handleNavigateToStudyActivities}
+            sx={{
+              backgroundColor: 'red',
+              color: 'white',
+              marginTop: '10px',
+              marginLeft: '2px',
+              display: 'block',
+              '&:hover': {
+                backgroundColor: 'darkred', // Adjust hover color if needed
+              },
+            }}
+          >
+            Go to Study Activities
+          </Button>
+          </Typography>
+        </Paper>
+    
+    </Grid>
           {/* Bottom Right Section */}
           <Grid item xs={12} sm={6}>
             <Paper className="dashboard-card">
               <Typography variant="h6" gutterBottom>
                 Course List
               </Typography>
-              {/* <SearchCourse /> */}
+              <CourseListSearch />
             </Paper>
           </Grid>
         </Grid>

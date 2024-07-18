@@ -201,3 +201,58 @@ exports.submitFeedback = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+// Assuming you have the necessary imports and setup for your backend
+
+exports.uploadFileForMatchedUsers = async (req, res) => {
+  try {
+    const { name, description, courseCode, email1, email2} = req.body;
+    
+    if (!req.file || !req.file.buffer) {
+      return res.status(400).json({ success: false, error: 'No file uploaded' });
+    }
+
+    const fileData = req.file.buffer;
+
+    // Store file info and content into PostgreSQL
+    const result = await db.query(
+      'INSERT INTO matchednotes (name, description, file_data, course_code, email1, email2, upload_date) VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP) RETURNING id',
+      [name, description, fileData, courseCode,  email1, email2]
+    );
+
+    const fileId = result.rows[0].id;
+    res.status(201).json({ success: true, fileId });
+  } catch (error) {
+    console.error('Error uploading file for matched users:', error);
+    res.status(500).json({ success: false, error: 'Error uploading file' });
+  }
+};
+
+exports.getFilesForMatchedUsers = async (req, res) => {
+  const { courseCode } = req.params;
+  const email1 = req.user.email;
+
+  try {
+    const client = await db.connect();
+    console.log('Connected to the database.');
+
+    const result = await client.query(
+      'SELECT name, description, file_data FROM matchednotes WHERE email1 = $1 OR email2 = $1 AND course_code = $2',
+      [email1, courseCode]
+    );
+
+    client.release();
+    console.log('Query executed successfully.');
+
+    if (result.rows.length === 0) {
+      console.log('No files found for the specified email and course');
+      return res.status(404).json({ success: false, error: 'No files found for the specified email and course' });
+    }
+
+    const file = result.rows[0];
+    res.status(200).json({ success: true, file });
+  } catch (error) {
+    console.error('Error fetching files for matched users:', error);
+    res.status(500).json({ success: false, error: 'Error fetching files' });
+  }
+};
