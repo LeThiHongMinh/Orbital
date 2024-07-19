@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, Card, CardContent, Box, TextField, Button, IconButton } from '@mui/material';
+import { Container, Typography, Card, CardContent, Box, TextField, Button, IconButton, List, ListItem, ListItemText } from '@mui/material';
 import { uploadFileForMatchedUsers, getPortals, unMatchPartner, getFilesForMatchedUsers } from '../api/auth';
 import Layout from '../components/layout';
 import Partner from '../components/Partner';
 import CloseIcon from '@mui/icons-material/Close';
-
+import { Viewer, Worker } from '@react-pdf-viewer/core';
+import '@react-pdf-viewer/core/lib/styles/index.css';
+import PrivateCourse from '../components/PrivateCourse';
 const Portals = () => {
   const [portals, setPortals] = useState([]);
   const [selectedPortalId, setSelectedPortalId] = useState(null);
@@ -20,6 +22,7 @@ const Portals = () => {
   const [uploadError, setUploadError] = useState(null);
   const [viewingFile, setViewingFile] = useState(null);
   const [fileError, setFileError] = useState(null);
+  const [courseNotes, setCourseNotes] = useState([]);
 
   useEffect(() => {
     fetchPortals();
@@ -40,6 +43,26 @@ const Portals = () => {
       console.error('Error fetching portals:', error);
     }
   };
+
+  useEffect(() => {
+    const fetchPrivateFiles = async () => {
+      try {
+        const response = await getFilesForMatchedUsers();
+        if (response && response.data && response.data.files) {
+          setCourseNotes(response.data.files);
+          setFileError(null);
+        } else {
+          console.error('Invalid response format or missing files data:', response);
+          setFileError('Error fetching file. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error fetching files:', error);
+        setFileError('Error fetching file. Please try again.');
+      }
+    };
+
+    fetchPrivateFiles();
+  }, []);
 
   const handleViewProfile = async (id) => {
     try {
@@ -81,22 +104,30 @@ const Portals = () => {
     }
   };
 
-  const handleViewFile = async (courseCode) => {
+  const handleViewFile = async () => {
     try {
-      const response = await getFilesForMatchedUsers(courseCode);
-      const file = response.file;
-      const fileBlob = new Blob([file.file_data], { type: 'application/pdf' });
-      const fileURL = URL.createObjectURL(fileBlob);
-      setViewingFile(fileURL);
-      setFileError(null);
+      const response = await getFilesForMatchedUsers();
+      if (response && response.data && response.data.files) {
+        setCourseNotes(response.data.files);
+        setFileError(null);
+      } else {
+        console.error('Invalid response format or missing files data:', response);
+        setFileError('Error fetching file. Please try again.');
+      }
     } catch (error) {
-      console.error('Error fetching file:', error);
+      console.error('Error fetching files:', error);
       setFileError('Error fetching file. Please try again.');
     }
   };
 
   const handleCloseFile = () => {
     setViewingFile(null);
+  };
+
+  const handleViewNote = (note) => {
+    const fileBlob = new Blob([note.file_data], { type: 'application/pdf' });
+    const fileURL = URL.createObjectURL(fileBlob);
+    setViewingFile(fileURL);
   };
 
   return (
@@ -175,92 +206,99 @@ const Portals = () => {
           </Card>
 
           {loading && <Typography variant="body1">Loading...</Typography>}
-          {portals.length > 0 ? (
-            portals.map((portal) => (
-              <Card key={portal.id}>
-                <CardContent>
-                  <Typography variant="h6">{portal.course_code}</Typography>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleViewProfile(portal.id)}
-                    style={{ marginRight: '10px', marginTop: '10px' }}
-                  >
-                    View Partner Profile
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => handleUnmatch(portal.email, portal.course_code)}
-                    style={{ marginTop: '10px' }}
-                  >
-                    Unmatch
-                  </Button>
-                  <Button
-                    variant="contained"
-                    onClick={() => handleViewFile(portal.course_code)}
-                    style={{ marginTop: '10px' }}
-                  >
-                    View PDF
-                  </Button>
-                </CardContent>
-              </Card>
-            ))
-          ) : (
-            <Typography variant="body1">No matched courses found</Typography>
-          )}
-        </Box>
+          {portals.map((portal) => (
+            <Card key={portal.id} sx={{ marginTop: 2 }}>
+              <CardContent>
+                <Typography variant="h6">{portal.course_code}</Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handleViewProfile(portal.id)}
+                  style={{ marginRight: '10px', marginTop: '10px' }}
+                >
+                  View Partner Profile
+                </Button>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => handleUnmatch(portal.email, portal.course_code)}
+                  style={{ marginTop: '10px' }}
+                >
+                  Unmatch
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleViewFile}
+                  style={{ marginTop: '10px' }}
+                >
+                  Notes
+                </Button>
+              </CardContent>
+              
+              <CardContent>
+                <Typography variant="h6">Course Notes</Typography>
+                <List>
+                  <PrivateCourse />
+                 
+                </List>
+              </CardContent>
+              
+            </Card>
+          ))}
 
-        {viewingFile && (
-          <Box
-            sx={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100vw',
-              height: '100vh',
-              backgroundColor: 'rgba(0, 0, 0, 0.8)',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              zIndex: 1000,
-            }}
-          >
-            <Card
+          {viewingFile && (
+            <Box
               sx={{
-                width: '90%',
-                height: '90%',
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100vw',
+                height: '100vh',
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
                 display: 'flex',
-                flexDirection: 'column',
-                position: 'relative',
-                overflow: 'hidden',
+                justifyContent: 'center',
+                alignItems: 'center',
+                zIndex: 1000,
               }}
             >
-              <IconButton
-                onClick={handleCloseFile}
+              <Card
                 sx={{
-                  position: 'absolute',
-                  top: 16,
-                  right: 16,
-                  color: 'white',
-                  backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                  '&:hover': {
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                  },
+                  width: '90%',
+                  height: '90%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  position: 'relative',
+                  overflow: 'hidden',
                 }}
               >
-                <CloseIcon />
-              </IconButton>
-              <embed src={viewingFile} type="application/pdf" width="100%" height="100%" />
-            </Card>
-          </Box>
-        )}
+                <IconButton
+                  onClick={handleCloseFile}
+                  sx={{
+                    position: 'absolute',
+                    top: 16,
+                    right: 16,
+                    color: 'white',
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    '&:hover': {
+                      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                    },
+                  }}
+                >
+                  <CloseIcon />
+                </IconButton>
+                <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
+                  <Viewer fileUrl={viewingFile} />
+                </Worker>
+              </Card>
+            </Box>
+          )}
 
-        {selectedPortalId && (
-          <Box sx={{ marginTop: '20px' }}>
-            <Partner portalId={selectedPortalId} />
-          </Box>
-        )}
+          {selectedPortalId && (
+            <Box sx={{ marginTop: '20px' }}>
+              <Partner portalId={selectedPortalId} />
+            </Box>
+          )}
+        </Box>
       </Container>
     </Layout>
   );
