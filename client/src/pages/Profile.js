@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { profileUpdate, profileCheck } from '../api/auth';
-import Layout from '../components/layout'; // Import the Layout component
-import Nav from '../components/Nav';
+import Layout from '../components/layout';
 
 const ProfilePage = () => {
-  const [profileData, setProfileData] = useState({ full_name: '', email: '', bio: '', tele: '' });
+  const [profileData, setProfileData] = useState({
+    full_name: '',
+    email: '',
+    bio: '',
+    tele: '',
+    avatar: ''
+  });
+  const [avatarFile, setAvatarFile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -14,6 +20,10 @@ const ProfilePage = () => {
         const { data } = await profileCheck();
         if (data.user) {
           setProfileData(data.user);
+          if (data.user.avatar) {
+            // Assuming avatar URL is provided by the backend
+            setProfileData(prevData => ({ ...prevData, avatar: data.user.avatar }));
+          }
         }
         setLoading(false);
       } catch (error) {
@@ -33,11 +43,39 @@ const ProfilePage = () => {
     }));
   };
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setAvatarFile(file);
+
+    // Display the selected avatar file as a preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setProfileData(prevData => ({ ...prevData, avatar: reader.result }));
+    };
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+  
+    const formData = new FormData();
+    formData.append('full_name', profileData.full_name);
+    formData.append('bio', profileData.bio);
+    formData.append('tele', profileData.tele);
+  
+    if (avatarFile) {
+      formData.append('avatar', avatarFile); // Append the actual file, not the Base64 string
+    }
+  
+    // Log the FormData entries for debugging
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+  
     try {
-      await profileUpdate(profileData);
+      await profileUpdate(formData);
       alert('Profile updated successfully');
       setIsEditing(false);
     } catch (error) {
@@ -45,6 +83,7 @@ const ProfilePage = () => {
       alert('Error updating profile');
     }
   };
+  
 
   if (loading) {
     return <div className="flex justify-center items-center h-screen text-lg font-semibold">Loading...</div>;
@@ -52,12 +91,21 @@ const ProfilePage = () => {
 
   if (!isEditing) {
     return (
-      <Layout> {/* Wrap the profile page content in Layout */}
+      <Layout>
         <div className="bg-red-100 min-h-screen">
           <div className="max-w-lg mx-auto py-12 px-4 sm:px-6 lg:px-8">
             <div className="bg-red-100 rounded-lg p-6">
               <h2 className="text-4xl mt-8 font-bold mb-6 text-center text-red-700">User Profile</h2>
               <div className="space-y-4">
+                <div className="text-center">
+                  {profileData.avatar && (
+                    <img
+                      src={profileData.avatar}
+                      alt="User Avatar"
+                      className="w-32 h-32 rounded-full mx-auto"
+                    />
+                  )}
+                </div>
                 <div>
                   <label className="block text-3xl font-medium text-gray-700">Full Name:</label>
                   <p className="mt-1 text-lg">{profileData.full_name}</p>
@@ -90,12 +138,27 @@ const ProfilePage = () => {
   }
 
   return (
-    <Layout> {/* Wrap the edit profile form in Layout */}
+    <Layout>
       <div className="bg-gray-100 min-h-screen">
         <div className="max-w-lg mx-auto py-12 px-4 sm:px-6 lg:px-8">
           <div className="bg-red-100 rounded-lg p-6">
             <h2 className="text-2xl font-bold mb-6 text-center text-red-700">Edit Profile</h2>
             <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="text-center">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="mb-4"
+                />
+                {profileData.avatar && (
+                  <img
+                    src={profileData.avatar}
+                    alt="Selected Avatar"
+                    className="w-32 h-32 rounded-full mx-auto"
+                  />
+                )}
+              </div>
               <div>
                 <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">Full Name:</label>
                 <input

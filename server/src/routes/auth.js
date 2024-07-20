@@ -18,6 +18,9 @@ const {
 } = require('../middlewares/validations-middleware')
 const { registerValidation, loginValidation } = require('../validators/auth')
 const { userAuth } = require('../middlewares/auth-middleware')
+const multer = require('multer');
+const storage = multer.memoryStorage(); // Store files in memory as buffers
+const upload = multer({ storage });
 
 router.get('/get-users', getUsers)
 router.get('/protected', userAuth, protected)
@@ -25,7 +28,7 @@ router.post('/register', registerValidation, validationMiddleware, register)
 router.post('/login', loginValidation, validationMiddleware, login)
 router.get('/logout', logout)
 router.get('/profile', userAuth, getProfile)
-router.put('/profileupdate', userAuth,  updateProfile)
+router.put('/profileupdate', userAuth, upload.single('avatar'), updateProfile);
 router.get("/:id/verify/:token/", async (req, res) => {
 	try {
 	  const userId = req.params.id;

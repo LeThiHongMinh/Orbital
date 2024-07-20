@@ -95,8 +95,9 @@ exports.getProfile = async (req, res) => {
   const email = req.user.email; // Use email from decoded JWT token
 
   try {
-    const { rows } = await db.query('SELECT full_name, email, bio, tele FROM users WHERE email = $1', [email]);
-    const user = rows[0] || { email };
+    // Fetch user details
+    const { rows: userRows } = await db.query('SELECT full_name, email, bio, tele, avatar FROM users WHERE email = $1', [email]);
+    const user = userRows[0] || { email };
 
     if (!user.full_name || !user.bio) {
       return res.status(200).json({
@@ -105,6 +106,11 @@ exports.getProfile = async (req, res) => {
         profileComplete: false,
         user: user,
       });
+    }
+
+    // Convert avatar from BYTEA to Base64 if it exists
+    if (user.avatar) {
+      user.avatar = `data:image/png;base64,${user.avatar.toString('base64')}`;
     }
 
     return res.status(200).json({
@@ -126,14 +132,20 @@ exports.getProfile = async (req, res) => {
 exports.updateProfile = async (req, res) => {
   const { email, full_name, bio, tele } = req.body; // Extract email, full_name, and bio from req.body
 
+  let avatar = null;
+
+  if (req.file && req.file.buffer) {
+    avatar = req.file.buffer;
+  }
+
   try {
+    // Update user profile including avatar if provided
     const result = await db.query(
-      'UPDATE users SET full_name = $1, bio = $2, tele = $4 WHERE email = $3',
-      [full_name, bio, email, tele]
+      'UPDATE users SET full_name = $1, bio = $2, tele = $3, avatar = $4 WHERE email = $5',
+      [full_name, bio, tele, avatar, email]
     );
 
     if (result.rowCount === 0) {
-      // If no rows were updated, it means the email wasn't found in the database
       return res.status(404).json({
         success: false,
         message: 'User not found with the provided email.',
@@ -150,22 +162,4 @@ exports.updateProfile = async (req, res) => {
       error: error.message,
     });
   }
-};
-
-
-exports.authenticateToken = (req, res, next) => {
-  const token = req.headers['authorization']?.split(' ')[1];
-
-  if (!token) return res.sendStatus(401);
-
-  jwt.verify(token, SECRET, (err, user) => {
-    if (err) {
-      if (err.name === 'TokenExpiredError') {
-        return res.status(401).json({ error: 'Token expired' });
-      }
-      return res.sendStatus(403); // Other JWT verification errors
-    }
-    req.user = user;
-    next();
-  });
 };
