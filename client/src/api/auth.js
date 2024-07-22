@@ -126,3 +126,6 @@ export async function uploadFileForMatchedUsers(formData) {
   }
 }
 
+export async function contactUs(formData) {
+  return await API.post(`/api/contact-us`, formData);
+}

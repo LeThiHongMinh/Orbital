@@ -33,6 +33,7 @@ const Sidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [fullName, setFullName] = useState('');
+  const [avatar, setAvatar] = useState(''); // State to store avatar Base64 string
   const [notifications, setNotifications] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -42,6 +43,7 @@ const Sidebar = () => {
         const { data } = await profileCheck();
         if (data.user) {
           setFullName(data.user.full_name);
+          setAvatar(data.user.avatar || ''); // Set avatar Base64 string if available
         }
       } catch (error) {
         console.error('Error fetching profile:', error);
@@ -115,7 +117,7 @@ const Sidebar = () => {
       >
         <Avatar
           alt="Profile Image"
-          src="https://i.pinimg.com/564x/40/27/ef/4027ef3433c0541374a41c841d9c26eb.jpg" // replace with the path to your profile image
+          src={avatar || 'https://i.pinimg.com/564x/40/27/ef/4027ef3433c0541374a41c841d9c26eb.jpg'} // Default or placeholder image if avatar is not available
           sx={{ width: 100, height: 100, mb: 2 }}
         />
         <Typography variant="h6">{fullName}</Typography>

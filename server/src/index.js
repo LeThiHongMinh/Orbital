@@ -26,12 +26,14 @@ const authRoutes = require('./routes/auth')
 const formRoutes = require('./routes/matchmaking')
 const uploadRouter = require('./routes/uploadRouter')
 const studyActivitiesRoutes = require('./routes/study-activities');
+const homeRoutes = require('./routes/home')
 
 //initialize routes
 app.use('/api', authRoutes)
 app.use('/api', formRoutes)
 app.use('/api', uploadRouter)
 app.use('/api', studyActivitiesRoutes);
+app.use('/api', homeRoutes)
 
 //app start
 const appStart = () => {

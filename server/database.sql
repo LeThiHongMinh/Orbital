@@ -1,11 +1,11 @@
-CREATE TABLE users (
+ALTER TABLE users (
     user_id SERIAL PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
     created_at DATE DEFAULT CURRENT_DATE,
     bio TEXT,
     full_name VARCHAR(255),
-     tele TEXT
+    tele TEXT
 );
 
 CREATE TABLE tokens (
@@ -62,8 +62,7 @@ CREATE TABLE partners (
   id SERIAL PRIMARY KEY,
   course_code VARCHAR(255),
   partner_1_id INTEGER NOT NULL,
-  partner_2_id INTEGER NOT NULL,
-  status BOOLEAN DEFAULT true
+  partner_2_id INTEGER NOT NULL
 );
 
 CREATE TABLE feedback (
@@ -76,6 +75,7 @@ CREATE TABLE feedback (
   FOREIGN KEY (user_id) REFERENCES users(user_id),
   FOREIGN KEY (partner_id) REFERENCES users(user_id)
 );
+
 CREATE TABLE matched_files (
    id SERIAL PRIMARY KEY,
    name VARCHAR(255),
@@ -85,4 +85,11 @@ CREATE TABLE matched_files (
    email1 VARCHAR(255),
    email2 VARCHAR(255),  
    upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
+);
+
+CREATE TABLE contact (
+  id SERIAL PRIMARY KEY,
+  full_name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  message TEXT NOT NULL
 );
