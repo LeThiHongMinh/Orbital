@@ -95,8 +95,9 @@ export async function getPortalByCourseCode(id) {
 }
 
 export async function unMatchPartner(id) {
-  return await API.patch(`/api/portal/${id}/toggle-status`, {});
+  return await API.delete(`/api/portal/${id}/unmatch`); 
 }
+
 
 export async function getMatchedPartner() {
   return await API.get('/api/yourpartner');
@@ -105,6 +106,7 @@ export async function getMatchedPartner() {
 export async function submitFeedback(feedbackData) {
   return await API.post('/api/submit-feedback', feedbackData);
 }
+
 export const getFilesForMatchedUsers = async () => {
     return await API.get('/api/matched-files');
 

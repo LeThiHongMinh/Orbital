@@ -95,22 +95,24 @@ exports.getPortalByCourseCode = async (req, res) => {
 
 exports.unMatchPartner = async (req, res) => {
   const { id } = req.params;
-  const user_id = req.user.id;
+  const user_id = req.user.id; 
 
   try {
-    const result = await db.query(
-      'DELETE FROM partners WHERE id = $1 AND user_id = $2 RETURNING *',
-      [id, user_id]
+    const deleteResult = await db.query(
+      'DELETE FROM partners WHERE id = $1 RETURNING *',
+      [id]
     );
-    if (result.rows.length === 0) {
-      return res.status(400).json({ error: 'Partner not found'});
+
+    if (deleteResult.rows.length === 0) {
+      return res.status(400).json({ error: 'Failed to delete partner relation.' });
     }
-    res.status(200).json({ success: true, message: 'Activity deleted successfully'});
+
+    res.status(200).json({ success: true, message: 'Partner relation deleted successfully.' });
   } catch (error) {
-    console.log(error.message);
-    res.status(500).json({ error: 'Internal server'});
+    console.error('Error unmatching partner:', error.message);
+    res.status(500).json({ error: 'Internal server error' });
   }
-}
+};
 
 exports.getMatchedUsers = async (req, res) => {
   const userEmail = req.user.email; // Assuming user's email is extracted from the authenticated user
@@ -208,6 +210,7 @@ exports.uploadFileForMatchedUsers = async (req, res) => {
   try {
     const { name, description, courseCode, email1, email2} = req.body;
     
+
     if (!req.file || !req.file.buffer) {
       return res.status(400).json({ success: false, error: 'No file uploaded' });
     }
@@ -229,7 +232,6 @@ exports.uploadFileForMatchedUsers = async (req, res) => {
 };
 
 exports.getFilesForMatchedUsers = async (req, res) => {
- 
   const email1 = req.user.email;
 
   try {
@@ -251,10 +253,10 @@ exports.getFilesForMatchedUsers = async (req, res) => {
 
     const file = result.rows;
     res.status(200).json({ success: true, files: file });
+
   } catch (error) {
     console.error('Error fetching files for matched users:', error);
     res.status(500).json({ success: false, error: 'Error fetching files' });
   }
 };
-
 

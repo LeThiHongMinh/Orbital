@@ -66,7 +66,12 @@ const Portals = () => {
 
   const handleViewProfile = async (id) => {
     try {
-      setSelectedPortalId(id);
+      if (selectedPortalId === id) {
+        setSelectedPortalId(null); // Unview the profile if already viewed
+      } else {
+        const response = await getPortalByCourseCode(id);
+        setSelectedPortalId(id); // Set the selected portal ID
+      }
     } catch (error) {
       console.error('Error fetching partner profile:', error);
     }
@@ -97,10 +102,12 @@ const Portals = () => {
 
   const handleUnmatch = async (email, courseCode) => {
     try {
-      await unMatchPartner(email, courseCode);
-      fetchPortals();
+      await unMatchPartner(id);
+      fetchPortals(); // Refresh portals after unmatching
+      setSelectedPortalId(null); // Reset selectedPortalId after unmatching
     } catch (error) {
-      console.error('Error unmatching users:', error);
+      console.error('Error unmatching partner:', error);
+      alert('Error unmatching partner: ' + error.response?.data?.error || error.message); // Display error to the user
     }
   };
 

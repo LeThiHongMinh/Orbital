@@ -1,3 +1,4 @@
+const express = require('express');
 const { submitForm, getPortals, getPortalByCourseCode, unMatchPartner, getMatchedUsers, matchMaking, submitFeedback, getFilesForMatchedUsers, uploadFileForMatchedUsers } = require('../controllers/matchmaking');
 const { Router } = require('express');
 const router = Router();
@@ -16,7 +17,7 @@ router.get('/portal', userAuth, getPortals);
 router.get('/portal/:id', userAuth, getPortalByCourseCode);
 
 // Route to unmatch partner
-router.patch('/portal/:id/toggle-status', userAuth, unMatchPartner);
+router.delete('/portal/:id/unmatch', userAuth, unMatchPartner);
 
 // Route to get matched users
 router.get('/yourpartner', userAuth, getMatchedUsers);

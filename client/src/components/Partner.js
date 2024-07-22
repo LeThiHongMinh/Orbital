@@ -1,33 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { getMatchedPartner } from '../api/auth';
+import { getPortalByCourseCode } from '../api/auth';
 
-const Partner = () => {
-  const [matchedUsers, setMatchedUsers] = useState([]);
+const Partner = ({ portalId }) => {
+  const [matchedUsers, setMatchedUsers] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     const fetchMatchedUsers = async () => {
       try {
-        // // Retrieve the token from localStorage
-        // const token = localStorage.getItem('token');
-
-        // Include the token in the request headers
-        // const response = await axios.get('http://localhost:5000/api/yourpartner', {
-        //   headers: {
-        //     Authorization: `Bearer ${token}`
-        //   }
-        // });
-        const response = await getMatchedPartner();
-        console.log('Response:', response);
-
-        if (response.data.success === false) {
-          setMessage(response.data.message);
-        } else {
-          setMatchedUsers(response.data.matchedUsers);
-        }
+        const response = await getPortalByCourseCode(portalId);
+        setMatchedUsers(response.data.portal); // Assuming response structure matches expected data
         setLoading(false);
       } catch (error) {
         console.error('Error fetching matched users:', error);
@@ -36,8 +20,12 @@ const Partner = () => {
       }
     };
 
-    fetchMatchedUsers();
-  }, []);
+    if (portalId) {
+      fetchMatchedUsers();
+    } else {
+      setLoading(false); // If no portalId, set loading to false
+    }
+  }, [portalId]);
 
   const styles = {
     container: {
@@ -110,37 +98,31 @@ const Partner = () => {
     return <div style={styles.message}>Error: {error}</div>;
   }
 
-  if (message) {
-    return <div style={styles.message}>{message}</div>;
+  if (!matchedUsers) {
+    return <div style={styles.message}>No matched users found</div>;
   }
 
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>Matched Users</h1>
-      {matchedUsers.length === 0 ? (
-        <div style={styles.noUsers}>No matched users found</div>
-      ) : (
-        <div style={styles.usersList}>
-          {matchedUsers.map((match, index) => (
-            <div key={index} style={styles.match}>
-              <h2 style={styles.courseCode}>Course: {match.course_code}</h2>
-              <div style={styles.userProfile}>
-                <h3 style={styles.userProfileHeader}>Partner 1</h3>
-                <p style={styles.userProfileText}>Name: {match.partner1.full_name}</p>
-                <p style={styles.userProfileText}>Email: {match.partner1.email}</p>
-                <p style={styles.userProfileText}>Bio: {match.partner1.bio}</p>
-              </div>
-              <div style={styles.userProfile}>
-                <h3 style={styles.userProfileHeader}>Partner 2</h3>
-                <p style={styles.userProfileText}>Name: {match.partner2.full_name}</p>
-                <p style={styles.userProfileText}>Email: {match.partner2.email}</p>
-                <p style={styles.userProfileText}>Bio: {match.partner2.bio}</p>
-              </div>
-              <p style={styles.status}>Status: {match.status ? 'Active' : 'Inactive'}</p>
-            </div>
-          ))}
+      <div style={styles.usersList}>
+        <div style={styles.match}>
+          <h2 style={styles.courseCode}>Course: {matchedUsers.course_code}</h2>
+          <div style={styles.userProfile}>
+            <h3 style={styles.userProfileHeader}>Partner 1</h3>
+            <p style={styles.userProfileText}>Name: {matchedUsers.partner1?.full_name || 'Unknown'}</p>
+            <p style={styles.userProfileText}>Email: {matchedUsers.partner1?.email || 'Unknown'}</p>
+            <p style={styles.userProfileText}>Bio: {matchedUsers.partner1?.bio || 'No bio provided'}</p>
+          </div>
+          <div style={styles.userProfile}>
+            <h3 style={styles.userProfileHeader}>Partner 2</h3>
+            <p style={styles.userProfileText}>Name: {matchedUsers.partner2?.full_name || 'Unknown'}</p>
+            <p style={styles.userProfileText}>Email: {matchedUsers.partner2?.email || 'Unknown'}</p>
+            <p style={styles.userProfileText}>Bio: {matchedUsers.partner2?.bio || 'No bio provided'}</p>
+          </div>
+          <p style={styles.status}>Status: {matchedUsers.status ? 'Active' : 'Inactive'}</p>
         </div>
-      )}
+      </div>
     </div>
   );
 };

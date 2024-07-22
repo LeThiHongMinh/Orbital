@@ -82,6 +82,7 @@ CREATE TABLE matched_files (
    description TEXT,
    file_data BYTEA ,
    course_code VARCHAR(50) ,
-                 email1 VARCHAR(255),
-                 email2 VARCHAR(255),  
-                 upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP );
+   email1 VARCHAR(255),
+   email2 VARCHAR(255),  
+   upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
+);
