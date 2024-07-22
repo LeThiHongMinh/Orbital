@@ -36,7 +36,11 @@ export async function submitForm(formData) {
 }
 
 export async function profileUpdate(profileData) {
-  return await API.put('/api/profileupdate', profileData);
+  return await API.put('/api/profileupdate', profileData,{
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  } );
 }
 
 export async function profileCheck() {
@@ -103,14 +107,9 @@ export async function submitFeedback(feedbackData) {
   return await API.post('/api/submit-feedback', feedbackData);
 }
 
-export const getFilesForMatchedUsers = async (courseCode) => {
-  try {
-    const response = await API.get(`/api/matched-files/${courseCode}`);
-    return response.data; // Assuming backend returns { success: true, file: { file_data: ... } }
-  } catch (error) {
-    console.error('Error fetching files:', error);
-    throw error; // Handle errors in the calling component
-  }
+export const getFilesForMatchedUsers = async () => {
+    return await API.get('/api/matched-files');
+
 };
 export async function uploadFileForMatchedUsers(formData) {
   try {
@@ -126,3 +125,4 @@ export async function uploadFileForMatchedUsers(formData) {
     throw error; // Handle errors in the calling component
   }
 }
+

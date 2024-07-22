@@ -1,4 +1,4 @@
-//const express = require('express');
+const express = require('express');
 const { submitForm, getPortals, getPortalByCourseCode, unMatchPartner, getMatchedUsers, matchMaking, submitFeedback, getFilesForMatchedUsers, uploadFileForMatchedUsers } = require('../controllers/matchmaking');
 const { Router } = require('express');
 const router = Router();
@@ -26,7 +26,7 @@ router.get('/yourpartner', userAuth, getMatchedUsers);
 router.post('/upload-matched-file', userAuth, upload.single('file'), uploadFileForMatchedUsers);
 
 // Route to get files for matched users by course code
-router.get('/matched-files/:courseCode', userAuth, getFilesForMatchedUsers);
+router.get('/matched-files', userAuth, getFilesForMatchedUsers);
 
 // Route to submit feedback
 router.post('/submit-feedback', userAuth, submitFeedback);

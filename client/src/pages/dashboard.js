@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { LinearProgress, Typography, Grid, Paper, Button } from '@mui/material';
-import Layout from '../components/layout'; 
-import CalendarComponent from '../components/Calendar'; 
+import Layout from '../components/layout'; // Assuming Layout component structure
+import CalendarComponent from '../components/Calendar'; // Custom Calendar component
 import CourseListSearch from '../components/Courselist'; // Custom Course List search component
-import { getStudyActivities } from '../api/auth';
+import { getStudyActivities } from '../api/auth'; // Import getStudyActivities function
+import './Dashboard.css'; // Custom CSS for styling
 import { useNavigate } from 'react-router-dom';
-import './Dashboard.css';
 
 const Dashboard = () => {
   const [completedCount, setCompletedCount] = useState(0);
@@ -14,8 +15,9 @@ const Dashboard = () => {
   const [progress, setProgress] = useState(0);
   const [studyActivities, setStudyActivities] = useState([]);
 
+  //const history = useHistory(); // Access to history object for navigation
   const navigate = useNavigate();
-
+  
   useEffect(() => {
     const fetchStudyActivitiesData = async () => {
       try {
@@ -88,7 +90,8 @@ const Dashboard = () => {
 
   const handleNavigateToStudyActivities = () => {
     // Navigate to Study Activities component
-    navigate("/studyActivities");
+    navigate("/studyActivities");// Use history.push to navigate
+
   };
 
   return (
@@ -138,28 +141,30 @@ const Dashboard = () => {
           </Grid>
           {/* Bottom Left Section */}
           <Grid item xs={12} sm={6}>
-            <Paper className="dashboard-card">
-              <Typography variant="h6" gutterBottom>
+        <Paper className="dashboard-card">
+        <Typography variant="h6" gutterBottom>
                 Calendar
-                <Button
-                  variant="contained"
-                  onClick={handleNavigateToStudyActivities}
-                  sx={{
-                    backgroundColor: 'red',
-                    color: 'white',
-                    marginTop: '10px',
-                    marginLeft: '2px',
-                    display: 'block',
-                    '&:hover': {
-                      backgroundColor: 'darkred', // Adjust hover color if needed
-                    },
-                  }}
-                >
-                  Go to Study Activities
-                </Button>
-              </Typography>
-            </Paper>
-          </Grid>
+              
+          <Button
+            variant="contained"
+            onClick={handleNavigateToStudyActivities}
+            sx={{
+              backgroundColor: 'red',
+              color: 'white',
+              marginTop: '10px',
+              marginLeft: '2px',
+              display: 'block',
+              '&:hover': {
+                backgroundColor: 'darkred', // Adjust hover color if needed
+              },
+            }}
+          >
+            Go to Study Activities
+          </Button>
+          </Typography>
+        </Paper>
+    
+    </Grid>
           {/* Bottom Right Section */}
           <Grid item xs={12} sm={6}>
             <Paper className="dashboard-card">

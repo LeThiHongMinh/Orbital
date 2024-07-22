@@ -72,3 +72,24 @@ exports.downloadFiles = async (req, res) => {
     res.status(500).json({ success: false, error: 'Error fetching file' });
   }
 };
+
+exports.uploadAvatar = async (req, res) => {
+  try {
+      const { userId } = req.body;
+      const fileData = req.file.buffer;
+
+      // Store file info and content into PostgreSQL
+      const client = await db.connect();
+      const result = await client.query(
+          'INSERT INTO avatars (user_id, file_data) VALUES ($1, $2) RETURNING id',
+          [userId, fileData]
+      );
+      const fileId = result.rows[0].id;
+      client.release();
+
+      res.json({ success: true, fileId });
+  } catch (error) {
+      console.error('Error uploading avatar:', error);
+      res.status(500).json({ success: false, error: 'Error uploading avatar' });
+  }
+};

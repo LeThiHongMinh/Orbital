@@ -29,6 +29,7 @@ const CourseListSearch = () => {
 
     fetchMatchedCourses();
   }, []);
+
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -75,7 +76,7 @@ const CourseListSearch = () => {
   }
 
   return (
-      <div style={styles.container}>
+    <div style={styles.container}>
       <Typography style={styles.title}>Course List Search</Typography>
       <TextField
         variant="outlined"

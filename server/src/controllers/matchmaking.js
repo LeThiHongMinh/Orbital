@@ -209,6 +209,7 @@ exports.submitFeedback = async (req, res) => {
 exports.uploadFileForMatchedUsers = async (req, res) => {
   try {
     const { name, description, courseCode, email1, email2} = req.body;
+    
 
     if (!req.file || !req.file.buffer) {
       return res.status(400).json({ success: false, error: 'No file uploaded' });
@@ -231,7 +232,6 @@ exports.uploadFileForMatchedUsers = async (req, res) => {
 };
 
 exports.getFilesForMatchedUsers = async (req, res) => {
-  const { courseCode } = req.params;
   const email1 = req.user.email;
 
   try {
@@ -239,8 +239,8 @@ exports.getFilesForMatchedUsers = async (req, res) => {
     console.log('Connected to the database.');
 
     const result = await client.query(
-      'SELECT name, description, file_data FROM matchednotes WHERE email1 = $1 OR email2 = $1 AND course_code = $2',
-      [email1, courseCode]
+      'SELECT id, name, description, course_code, file_data FROM matchednotes WHERE email1 = $1 OR email2 = $1',
+      [email1]
     );
 
     client.release();
@@ -251,10 +251,12 @@ exports.getFilesForMatchedUsers = async (req, res) => {
       return res.status(404).json({ success: false, error: 'No files found for the specified email and course' });
     }
 
-    const file = result.rows[0];
-    res.status(200).json({ success: true, file });
+    const file = result.rows;
+    res.status(200).json({ success: true, files: file });
+
   } catch (error) {
     console.error('Error fetching files for matched users:', error);
     res.status(500).json({ success: false, error: 'Error fetching files' });
   }
 };
+
