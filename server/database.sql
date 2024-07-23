@@ -5,7 +5,8 @@ ALTER TABLE users (
     created_at DATE DEFAULT CURRENT_DATE,
     bio TEXT,
     full_name VARCHAR(255),
-    tele TEXT
+    tele TEXT,
+    avatar BYTEA
 );
 
 CREATE TABLE tokens (
@@ -92,4 +93,11 @@ CREATE TABLE contact (
   full_name VARCHAR(255) NOT NULL,
   email VARCHAR(255) NOT NULL,
   message TEXT NOT NULL
+);
+
+CREATE TABLE noti (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  description TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

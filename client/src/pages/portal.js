@@ -1,12 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, Card, CardContent, Box, TextField, Button, IconButton, List, ListItem, ListItemText } from '@mui/material';
-import { uploadFileForMatchedUsers, getPortals, unMatchPartner, getFilesForMatchedUsers } from '../api/auth';
+import {
+  Container,
+  Typography,
+  Card,
+  CardContent,
+  Box,
+  TextField,
+  Button,
+  IconButton,
+  List,
+} from '@mui/material';
+import {
+  uploadFileForMatchedUsers,
+  getPortals,
+  unMatchPartner,
+  getFilesForMatchedUsers,
+  getPortalByCourseCode
+} from '../api/auth';
 import Layout from '../components/layout';
 import Partner from '../components/Partner';
 import CloseIcon from '@mui/icons-material/Close';
 import { Viewer, Worker } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
-import PrivateCourse from '../components/PrivateCourse';
+import FeedbackForm from '../components/FeedbackForm'; 
+import PrivateCourse from '../components/PrivateCourse'
+
 const Portals = () => {
   const [portals, setPortals] = useState([]);
   const [selectedPortalId, setSelectedPortalId] = useState(null);
@@ -23,6 +41,8 @@ const Portals = () => {
   const [viewingFile, setViewingFile] = useState(null);
   const [fileError, setFileError] = useState(null);
   const [courseNotes, setCourseNotes] = useState([]);
+  const [showFeedbackForm, setShowFeedbackForm] = useState(false); // State to control feedback form visibility
+  const [feedbackPortalId, setFeedbackPortalId] = useState(null); // State to control feedback form for specific portal
 
   useEffect(() => {
     fetchPortals();
@@ -69,7 +89,7 @@ const Portals = () => {
       if (selectedPortalId === id) {
         setSelectedPortalId(null); // Unview the profile if already viewed
       } else {
-        const response = await getPortalByCourseCode(id);
+        await getPortalByCourseCode(id);
         setSelectedPortalId(id); // Set the selected portal ID
       }
     } catch (error) {
@@ -100,14 +120,14 @@ const Portals = () => {
     }
   };
 
-  const handleUnmatch = async (email, courseCode) => {
+  const handleUnmatch = async (id) => {
     try {
       await unMatchPartner(id);
       fetchPortals(); // Refresh portals after unmatching
       setSelectedPortalId(null); // Reset selectedPortalId after unmatching
     } catch (error) {
       console.error('Error unmatching partner:', error);
-      alert('Error unmatching partner: ' + error.response?.data?.error || error.message); // Display error to the user
+      alert('Error unmatching partner: ' + (error.response?.data?.error || error.message)); // Display error to the user
     }
   };
 
@@ -135,6 +155,15 @@ const Portals = () => {
     const fileBlob = new Blob([note.file_data], { type: 'application/pdf' });
     const fileURL = URL.createObjectURL(fileBlob);
     setViewingFile(fileURL);
+  };
+
+  const toggleFeedbackForm = async (id) => {
+    if (feedbackPortalId === id) {
+      setFeedbackPortalId(null); // Hide feedback form if already showing for this portal
+    } else {
+      await getPortalByCourseCode(id);
+      setFeedbackPortalId(id); // Show feedback form for this portal
+    }
   };
 
   return (
@@ -223,12 +252,12 @@ const Portals = () => {
                   onClick={() => handleViewProfile(portal.id)}
                   style={{ marginRight: '10px', marginTop: '10px' }}
                 >
-                  View Partner Profile
+                  {selectedPortalId === portal.id ? 'Hide Partner Profile' : 'View Partner Profile'}
                 </Button>
                 <Button
                   variant="contained"
                   color="secondary"
-                  onClick={() => handleUnmatch(portal.email, portal.course_code)}
+                  onClick={() => handleUnmatch(portal.id)}
                   style={{ marginTop: '10px' }}
                 >
                   Unmatch
@@ -240,16 +269,33 @@ const Portals = () => {
                 >
                   Notes
                 </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => toggleFeedbackForm(portal.id)}
+                  style={{ marginTop: '10px' }}
+                >
+                  {feedbackPortalId === portal.id ? 'Hide Feedback Form' : 'Show Feedback Form'}
+                </Button>
               </CardContent>
-              
+
               <CardContent>
                 <Typography variant="h6">Course Notes</Typography>
                 <List>
                   <PrivateCourse />
-                 
                 </List>
               </CardContent>
-              
+
+              {selectedPortalId === portal.id && (
+                <Box sx={{ marginTop: '20px' }}>
+                  <Partner portalId={selectedPortalId} />
+                </Box>
+              )}
+
+              {feedbackPortalId === portal.id && (
+                <Box sx={{ marginTop: '20px' }}>
+                  <FeedbackForm portalId={portal.id} /> {/* Pass portal ID if needed */}
+                </Box>
+              )}
             </Card>
           ))}
 
@@ -297,12 +343,6 @@ const Portals = () => {
                   <Viewer fileUrl={viewingFile} />
                 </Worker>
               </Card>
-            </Box>
-          )}
-
-          {selectedPortalId && (
-            <Box sx={{ marginTop: '20px' }}>
-              <Partner portalId={selectedPortalId} />
             </Box>
           )}
         </Box>

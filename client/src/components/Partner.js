@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { getPortalByCourseCode } from '../api/auth';
+import { getMatchedPartnerById } from '../api/auth';
 
 const Partner = ({ portalId }) => {
   const [matchedUsers, setMatchedUsers] = useState(null);
@@ -10,12 +9,16 @@ const Partner = ({ portalId }) => {
   useEffect(() => {
     const fetchMatchedUsers = async () => {
       try {
-        const response = await getPortalByCourseCode(portalId);
-        setMatchedUsers(response.data.portal); // Assuming response structure matches expected data
-        setLoading(false);
+        const response = await getMatchedPartnerById(portalId);
+        if (response.data && response.data.matchedUsers) {
+          setMatchedUsers(response.data.matchedUsers);
+        } else {
+          setError('No matched users found');
+        }
       } catch (error) {
         console.error('Error fetching matched users:', error);
-        setError(error.response?.data?.error || 'An error occurred while fetching matched users');
+        setError('Error fetching matched users');
+      } finally {
         setLoading(false);
       }
     };
@@ -23,7 +26,7 @@ const Partner = ({ portalId }) => {
     if (portalId) {
       fetchMatchedUsers();
     } else {
-      setLoading(false); // If no portalId, set loading to false
+      setLoading(false);
     }
   }, [portalId]);
 
@@ -46,29 +49,6 @@ const Partner = ({ portalId }) => {
       color: '#b71c1c',
       fontSize: '1.2em',
     },
-    noUsers: {
-      textAlign: 'center',
-      color: '#b71c1c',
-      fontSize: '1.5em',
-      marginTop: '20px',
-    },
-    usersList: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '20px',
-    },
-    match: {
-      backgroundColor: '#fff',
-      border: '2px solid #b71c1c',
-      borderRadius: '10px',
-      padding: '20px',
-      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    },
-    courseCode: {
-      color: '#b71c1c',
-      fontSize: '1.5em',
-      marginBottom: '10px',
-    },
     userProfile: {
       backgroundColor: '#ffebee',
       border: '1px solid #b71c1c',
@@ -88,6 +68,12 @@ const Partner = ({ portalId }) => {
       fontWeight: 'bold',
       textAlign: 'right',
     },
+    avatar: {
+      width: '100px',
+      height: '100px',
+      borderRadius: '50%',
+      border: '2px solid #b71c1c',
+    },
   };
 
   if (loading) {
@@ -102,26 +88,38 @@ const Partner = ({ portalId }) => {
     return <div style={styles.message}>No matched users found</div>;
   }
 
+  const { partner1, partner2, course_code } = matchedUsers;
+
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>Matched Users</h1>
-      <div style={styles.usersList}>
-        <div style={styles.match}>
-          <h2 style={styles.courseCode}>Course: {matchedUsers.course_code}</h2>
-          <div style={styles.userProfile}>
-            <h3 style={styles.userProfileHeader}>Partner 1</h3>
-            <p style={styles.userProfileText}>Name: {matchedUsers.partner1?.full_name || 'Unknown'}</p>
-            <p style={styles.userProfileText}>Email: {matchedUsers.partner1?.email || 'Unknown'}</p>
-            <p style={styles.userProfileText}>Bio: {matchedUsers.partner1?.bio || 'No bio provided'}</p>
-          </div>
-          <div style={styles.userProfile}>
-            <h3 style={styles.userProfileHeader}>Partner 2</h3>
-            <p style={styles.userProfileText}>Name: {matchedUsers.partner2?.full_name || 'Unknown'}</p>
-            <p style={styles.userProfileText}>Email: {matchedUsers.partner2?.email || 'Unknown'}</p>
-            <p style={styles.userProfileText}>Bio: {matchedUsers.partner2?.bio || 'No bio provided'}</p>
-          </div>
-          <p style={styles.status}>Status: {matchedUsers.status ? 'Active' : 'Inactive'}</p>
+      <div style={styles.userProfile}>
+        <h2 style={styles.userProfileHeader}>Course: {course_code}</h2>
+        <div>
+          <h3 style={styles.userProfileHeader}>Partner 1</h3>
+          <p style={styles.userProfileText}>Name: {partner1?.full_name || 'Unknown'}</p>
+          <p style={styles.userProfileText}>Email: {partner1?.email || 'Unknown'}</p>
+          <p style={styles.userProfileText}>Bio: {partner1?.bio || 'No bio provided'}</p>
+          <p style={styles.userProfileText}>Telegram: {partner1?.tele || 'No telegram handle'}</p>
+          <img 
+            src={partner1?.avatar || 'https://i.pinimg.com/564x/40/27/ef/4027ef3433c0541374a41c841d9c26eb.jpg'} 
+            alt="Partner 1 Avatar" 
+            style={styles.avatar} 
+          />
         </div>
+        <div>
+          <h3 style={styles.userProfileHeader}>Partner 2</h3>
+          <p style={styles.userProfileText}>Name: {partner2?.full_name || 'Unknown'}</p>
+          <p style={styles.userProfileText}>Email: {partner2?.email || 'Unknown'}</p>
+          <p style={styles.userProfileText}>Bio: {partner2?.bio || 'No bio provided'}</p>
+          <p style={styles.userProfileText}>Telegram: {partner2?.tele || 'No telegram handle'}</p>
+          <img 
+            src={partner2?.avatar || 'https://i.pinimg.com/564x/40/27/ef/4027ef3433c0541374a41c841d9c26eb.jpg'} 
+            alt="Partner 2 Avatar" 
+            style={styles.avatar} 
+          />
+        </div>
+        <p style={styles.status}>Status: {matchedUsers.status ? 'Active' : 'Inactive'}</p>
       </div>
     </div>
   );

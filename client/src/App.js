@@ -39,6 +39,7 @@ import StudyActivities from './pages/studyActivities';
 import Partner from './components/Partner';
 import FeedbackForm from './components/FeedbackForm';
 import Portals from './pages/portal';
+import NotificationsPage from './pages/Noti';
 const PrivateRoutes = () => {
   const { isAuth } = useSelector((state) => state.auth)
 
@@ -74,6 +75,7 @@ const App = () => {
         
 
         <Route element={<PrivateRoutes />}>
+          <Route path='/noti' element={<NotificationsPage />} />
           <Route path='/dashboard' element={<Dashboard />} />
           <Route path='/profile' element={<ProfileForm />} />
           <Route path='/studyActivities' element={<StudyActivities />} />
