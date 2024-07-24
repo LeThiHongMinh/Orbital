@@ -123,12 +123,14 @@ const Home = () => {
               ></textarea>
             </div>
             <div className="text-center">
-              <button
-                type="submit"
-                className={`font-semibold text-lg px-5 py-2.5 rounded-lg shadow-md hover:bg-red-500 transition-colors ${isDarkMode ? 'bg-red-600 text-white' : 'bg-red-600 text-white'}`}
-              >
-                Send
-              </button>
+            <button
+  type="submit"
+  className={`font-semibold text-lg px-5 py-2.5 rounded-lg shadow-md transition-colors 
+    ${isDarkMode ? 'bg-[#bb86fc] text-white hover:bg-[#8c4dff]' : 'bg-red-600 text-white hover:bg-red-500'}`}
+>
+  Send
+</button>
+
             </div>
             {status && <p className={`mt-4 text-center ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{status}</p>}
           </form>
