@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { LinearProgress, Typography, Grid, Paper, Button } from '@mui/material';
 import Layout from '../components/layout'; // Assuming Layout component structure
 import CalendarComponent from '../components/Calendar'; // Custom Calendar component
 import CourseListSearch from '../components/Courselist'; // Custom Course List search component
 import { getStudyActivities } from '../api/auth'; // Import getStudyActivities function
 import './Dashboard.css'; // Custom CSS for styling
-import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const [completedCount, setCompletedCount] = useState(0);
@@ -15,7 +15,7 @@ const Dashboard = () => {
   const [progress, setProgress] = useState(0);
   const [studyActivities, setStudyActivities] = useState([]);
 
-  //const history = useHistory(); // Access to history object for navigation
+  const isDarkMode = useSelector((state) => state.ui.isDarkMode); // Access dark mode state from Redux store
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -90,19 +90,18 @@ const Dashboard = () => {
 
   const handleNavigateToStudyActivities = () => {
     // Navigate to Study Activities component
-    navigate("/studyActivities");// Use history.push to navigate
-
+    navigate("/studyActivities");
   };
 
   return (
     <Layout>
-      <div className="dashboard-container bg-red-100">
+      <div className={`dashboard-container ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-red-100 text-black'}`}>
         <Grid container spacing={3}>
           {/* Top Section */}
           <Grid item xs={12}>
             <Grid container spacing={3}>
               <Grid item xs={4}>
-                <Paper className="dashboard-card">
+                <Paper className={`dashboard-card ${isDarkMode ? 'bg-gray-800 text-black' : 'bg-white text-black'}`}>
                   <Typography variant="h6" gutterBottom>
                     Completed Tasks
                   </Typography>
@@ -110,7 +109,7 @@ const Dashboard = () => {
                 </Paper>
               </Grid>
               <Grid item xs={4}>
-                <Paper className="dashboard-card">
+                <Paper className={`dashboard-card ${isDarkMode ? 'bg-gray-800 text-black' : 'bg-white text-black'}`}>
                   <Typography variant="h6" gutterBottom>
                     Incomplete Tasks
                   </Typography>
@@ -118,7 +117,7 @@ const Dashboard = () => {
                 </Paper>
               </Grid>
               <Grid item xs={4}>
-                <Paper className="dashboard-card">
+                <Paper className={`dashboard-card ${isDarkMode ? 'bg-gray-800 text-black' : 'bg-white text-black'}`}>
                   <Typography variant="h6" gutterBottom>
                     Total Hours Studied
                   </Typography>
@@ -129,45 +128,43 @@ const Dashboard = () => {
           </Grid>
           {/* Progress Section */}
           <Grid item xs={12}>
-            <Paper className="dashboard-card">
+            <Paper className={`dashboard-card ${isDarkMode ? 'bg-gray-800 text-black' : 'bg-white text-black'}`}>
               <Typography variant="h6" gutterBottom>
                 Progress
               </Typography>
-              <LinearProgress variant="determinate" value={progress} />
-              <Typography variant="body2" color="textSecondary">
+              <LinearProgress variant="determinate" value={progress} sx={{ bgcolor: isDarkMode ? 'gray.700' : 'red' }} />
+              <Typography variant="body2" color={isDarkMode ? 'textSecondary' : 'textPrimary'}>
                 {Math.round(progress)}% Complete
               </Typography>
             </Paper>
           </Grid>
           {/* Bottom Left Section */}
           <Grid item xs={12} sm={6}>
-        <Paper className="dashboard-card">
-        <Typography variant="h6" gutterBottom>
+            <Paper className={`dashboard-card ${isDarkMode ? 'bg-gray-800 text-black' : 'bg-white text-black'}`}>
+              <Typography variant="h6" gutterBottom>
                 Calendar
-              
-          <Button
-            variant="contained"
-            onClick={handleNavigateToStudyActivities}
-            sx={{
-              backgroundColor: 'red',
-              color: 'white',
-              marginTop: '10px',
-              marginLeft: '2px',
-              display: 'block',
-              '&:hover': {
-                backgroundColor: 'darkred', // Adjust hover color if needed
-              },
-            }}
-          >
-            Go to Study Activities
-          </Button>
-          </Typography>
-        </Paper>
-    
-    </Grid>
+              </Typography>
+             <Button
+                variant="contained"
+                onClick={handleNavigateToStudyActivities}
+                sx={{
+                  backgroundColor: isDarkMode ? '#bb86fc' : 'blue', // Set button color based on dark mode
+                  color: 'white',
+                  marginTop: '10px',
+                  marginLeft: '2px',
+                  display: 'block',
+                  '&:hover': {
+                    backgroundColor: isDarkMode ? '#ae8bfc' : 'darkblue', // Adjust hover color if needed
+                  },
+                }}
+              >
+                Go to Study Activities
+              </Button>
+            </Paper>
+          </Grid>
           {/* Bottom Right Section */}
           <Grid item xs={12} sm={6}>
-            <Paper className="dashboard-card">
+            <Paper className={`dashboard-card ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
               <Typography variant="h6" gutterBottom>
                 Course List
               </Typography>

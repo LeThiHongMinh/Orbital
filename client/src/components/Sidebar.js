@@ -13,6 +13,7 @@ import {
   Badge,
   Popover,
   ListItemAvatar,
+  Switch,
 } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
@@ -20,6 +21,7 @@ import SchoolIcon from '@mui/icons-material/School';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import HomeIcon from '@mui/icons-material/Home';
+import FeedbackIcon from '@mui/icons-material/Feedback';
 import GroupIcon from '@mui/icons-material/Group';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import PeopleIcon from '@mui/icons-material/People'; // Icon for matchmaking
@@ -27,9 +29,11 @@ import PeopleIcon from '@mui/icons-material/People'; // Icon for matchmaking
 import { onLogout, profileCheck, getStudyActivities } from '../api/auth';
 import { unauthenticateUser } from '../redux/slices/authSlice';
 import { useSelector, useDispatch } from 'react-redux';
+import { toggleDarkMode } from '../redux/slices/uiSlice'; // Adjust the import path as needed
 
 const Sidebar = () => {
   const { isAuth } = useSelector((state) => state.auth);
+  const isDarkMode = useSelector(state => state.ui.isDarkMode); // Use uiSlice state
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [fullName, setFullName] = useState('');
@@ -77,6 +81,10 @@ const Sidebar = () => {
     navigate(path);
   };
 
+  const handleDarkModeToggle = () => {
+    dispatch(toggleDarkMode()); // Dispatch toggleDarkMode action
+  };
+
   const handleLogout = async () => {
     try {
       await onLogout();
@@ -104,7 +112,12 @@ const Sidebar = () => {
       sx={{
         width: 240,
         flexShrink: 0,
-        [`& .MuiDrawer-paper`]: { width: 240, boxSizing: 'border-box' },
+        [`& .MuiDrawer-paper`]: { 
+          width: 240, 
+          boxSizing: 'border-box',
+          backgroundColor: isDarkMode ? '#333' : '#fff', // Dark mode background
+          color: isDarkMode ? '#fff' : '#000', // Dark mode text color
+        },
       }}
     >
       <Box
@@ -123,58 +136,62 @@ const Sidebar = () => {
         <Typography variant="h6">{fullName}</Typography>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <IconButton onClick={() => handleNavigation('/profile')}>
-            <SettingsIcon />
+            <SettingsIcon sx={{ color: isDarkMode ? '#fff' : '#000' }} />
           </IconButton>
           <IconButton onClick={handleNotificationClick}>
             <Badge badgeContent={notifications.length} color="secondary">
-              <NotificationsIcon />
+              <NotificationsIcon sx={{ color: isDarkMode ? '#fff' : '#000' }} />
             </Badge>
           </IconButton>
+          <Switch checked={isDarkMode} onChange={handleDarkModeToggle} />
         </Box>
       </Box>
       <List>
         <ListItem button onClick={() => handleNavigation('/')}>
           <ListItemIcon>
-            <HomeIcon />
+            <HomeIcon sx={{ color: isDarkMode ? '#fff' : '#000' }} />
           </ListItemIcon>
           <ListItemText primary="Home" />
         </ListItem>
         <ListItem button onClick={() => handleNavigation('/dashboard')}>
           <ListItemIcon>
-            <DashboardIcon />
+            <DashboardIcon sx={{ color: isDarkMode ? '#fff' : '#000' }} />
           </ListItemIcon>
           <ListItemText primary="Dashboard" />
         </ListItem>
         <ListItem button onClick={() => handleNavigation('/feedback')}>
+          <ListItemIcon>
+            <FeedbackIcon sx={{ color: isDarkMode ? '#fff' : '#000' }} />
+          </ListItemIcon>
           <ListItemText primary="Feedback" />
         </ListItem>
         <ListItem button onClick={() => handleNavigation('/library')}>
           <ListItemIcon>
-            <LibraryBooksIcon />
+            <LibraryBooksIcon sx={{ color: isDarkMode ? '#fff' : '#000' }} />
           </ListItemIcon>
           <ListItemText primary="Library" />
         </ListItem>
         <ListItem button onClick={() => handleNavigation('/studyActivities')}>
           <ListItemIcon>
-            <SchoolIcon />
+            <SchoolIcon sx={{ color: isDarkMode ? '#fff' : '#000' }} />
           </ListItemIcon>
           <ListItemText primary="Study Activities" />
         </ListItem>
         <ListItem button onClick={() => handleNavigation('/portals')}>
           <ListItemIcon>
-            <GroupIcon /> {/* Portals Icon */}
+            <GroupIcon sx={{ color: isDarkMode ? '#fff' : '#000' }} />
           </ListItemIcon>
           <ListItemText primary="Portals" />
         </ListItem>
         <ListItem button onClick={() => handleNavigation('/matchmaking')}>
           <ListItemIcon>
-            <PeopleIcon /> {/* Matchmaking Icon */}
+            <PeopleIcon sx={{ color: isDarkMode ? '#fff' : '#000' }} />
           </ListItemIcon>
           <ListItemText primary="Matchmaking" />
         </ListItem>
         <ListItem button onClick={handleLogout}>
           <ListItemIcon>
-            <ExitToAppIcon />
+            <ExitToAppIcon sx={{ color: isDarkMode ? '#fff' : '#000' }} />
           </ListItemIcon>
           <ListItemText primary="Logout" />
         </ListItem>
@@ -193,14 +210,14 @@ const Sidebar = () => {
           horizontal: 'center',
         }}
       >
-        <Box sx={{ p: 2 }}>
+        <Box sx={{ p: 2, backgroundColor: isDarkMode ? '#444' : '#fff', color: isDarkMode ? '#fff' : '#000' }}>
           <Typography variant="h6">Today's Notifications</Typography>
           <List>
             {notifications.map((notification, index) => (
               <ListItem key={index}>
                 <ListItemAvatar>
                   <Avatar>
-                    <NotificationsIcon />
+                    <NotificationsIcon sx={{ color: isDarkMode ? '#fff' : '#000' }} />
                   </Avatar>
                 </ListItemAvatar>
                 <ListItemText primary={notification.title} secondary={notification.description} />
