@@ -36,7 +36,10 @@ import Matchmaking from './pages/Matchmaking';
 import Library from './pages/Library';
 import ProfileForm from './pages/Profile';
 import StudyActivities from './pages/studyActivities';
-
+import Partner from './components/Partner';
+import FeedbackForm from './components/FeedbackForm';
+import Portals from './pages/portal';
+import NotificationsPage from './pages/Noti';
 const PrivateRoutes = () => {
   const { isAuth } = useSelector((state) => state.auth)
 
@@ -67,12 +70,16 @@ const App = () => {
         <Route path = '/home' element={<Home />} />
         <Route path = '/matchmaking' element={<Matchmaking />} />
         <Route path='/library' element = {<Library />} />
+        <Route path='/partner' element={<Partner />} />
+        <Route path='/feedback' element={<FeedbackForm />} />
         
 
         <Route element={<PrivateRoutes />}>
+          <Route path='/noti' element={<NotificationsPage />} />
           <Route path='/dashboard' element={<Dashboard />} />
           <Route path='/profile' element={<ProfileForm />} />
           <Route path='/studyActivities' element={<StudyActivities />} />
+          <Route path='/portals' element={<Portals />} />
         </Route>
         
         <Route path="/" element={<CourseList courses={courses} setCourses={setCourses} />} />

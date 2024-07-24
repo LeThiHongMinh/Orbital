@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { useSelector } from 'react-redux';
 import TextField from '@mui/material/TextField';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -19,6 +19,8 @@ const Matchmaking = () => {
   });
 
   const [notification, setNotification] = useState('');
+  const [error, setError] = useState('');
+  const isAuth = useSelector(state => state.auth.isAuth); 
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -26,6 +28,12 @@ const Matchmaking = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!isAuth) {
+      setError('Please login to submit the form.');
+      setTimeout(() => setError(''), 3000);
+      return;
+    }
+
     try {
       await submitForm(formData);
       console.log('Form submitted successfully!');
@@ -44,6 +52,8 @@ const Matchmaking = () => {
       setTimeout(() => setNotification(''), 3000);
     } catch (err) {
       console.error(err);
+      setError('Failed to submit the form. Please try again later.');
+      setTimeout(() => setError(''), 3000);
     }
   };
 
@@ -134,6 +144,11 @@ const Matchmaking = () => {
               {notification && (
                 <div className="text-center p-2 w-full mt-4 text-green-500 font-bold">
                   {notification}
+                </div>
+              )}
+              {error && (
+                <div className="text-center p-2 w-full mt-4 text-red-500 font-bold">
+                  {error}
                 </div>
               )}
             </form>

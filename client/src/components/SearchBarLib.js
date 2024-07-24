@@ -8,7 +8,7 @@ const SearchBarLib = () => {
 
   const handleSearch = async () => {
     try {
-      const response = await axios.get(`https://orbital-kq4q.onrender.com/api/search?query=${query}`);
+      const response = await axios.get(`http://localhost:5000/api/search?query=${query}`);
       setResults(response.data);
     } catch (error) {
       console.error('Error searching for files:', error);

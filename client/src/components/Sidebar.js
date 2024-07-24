@@ -22,8 +22,9 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import HomeIcon from '@mui/icons-material/Home';
 import GroupIcon from '@mui/icons-material/Group';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import PeopleIcon from '@mui/icons-material/People';
 
-import { onLogout, profileCheck, getStudyActivities } from '../api/auth'; // Import getStudyActivities
+import { onLogout, profileCheck, getNotifications } from '../api/auth';
 import { unauthenticateUser } from '../redux/slices/authSlice';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -32,6 +33,7 @@ const Sidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [fullName, setFullName] = useState('');
+  const [avatar, setAvatar] = useState('');
   const [notifications, setNotifications] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -41,6 +43,7 @@ const Sidebar = () => {
         const { data } = await profileCheck();
         if (data.user) {
           setFullName(data.user.full_name);
+          setAvatar(data.user.avatar || '');
         }
       } catch (error) {
         console.error('Error fetching profile:', error);
@@ -49,18 +52,12 @@ const Sidebar = () => {
 
     const fetchNotifications = async () => {
       try {
-        const { data } = await getStudyActivities();
-        const activities = Array.isArray(data.activities) ? data.activities : [];
-
-        const today = new Date().toISOString().split('T')[0];
-        const todayNotifications = activities.filter(activity => {
-          if (activity.endTime) {
-            const activityEndTime = new Date(activity.endTime).toISOString().split('T')[0];
-            return activityEndTime === today;
-          }
-          return false;
+        const response = await getNotifications();
+        const notificationsToday = response.data.filter(notification => {
+          const today = new Date().toISOString().split('T')[0];
+          return new Date(notification.created_at).toISOString().split('T')[0] === today;
         });
-        setNotifications(todayNotifications);
+        setNotifications(notificationsToday);
       } catch (error) {
         console.error('Error fetching notifications:', error);
       }
@@ -114,7 +111,7 @@ const Sidebar = () => {
       >
         <Avatar
           alt="Profile Image"
-          src="https://i.pinimg.com/564x/40/27/ef/4027ef3433c0541374a41c841d9c26eb.jpg" // replace with the path to your profile image
+          src={avatar || 'https://i.pinimg.com/564x/40/27/ef/4027ef3433c0541374a41c841d9c26eb.jpg'}
           sx={{ width: 100, height: 100, mb: 2 }}
         />
         <Typography variant="h6">{fullName}</Typography>
@@ -154,9 +151,15 @@ const Sidebar = () => {
           </ListItemIcon>
           <ListItemText primary="Study Activities" />
         </ListItem>
+        <ListItem button onClick={() => handleNavigation('/portals')}>
+          <ListItemIcon>
+            <GroupIcon />
+          </ListItemIcon>
+          <ListItemText primary="Portals" />
+        </ListItem>
         <ListItem button onClick={() => handleNavigation('/matchmaking')}>
           <ListItemIcon>
-            <GroupIcon /> {/* Matchmaking Icon */}
+            <PeopleIcon />
           </ListItemIcon>
           <ListItemText primary="Matchmaking" />
         </ListItem>
@@ -174,28 +177,34 @@ const Sidebar = () => {
         onClose={handleClose}
         anchorOrigin={{
           vertical: 'bottom',
-          horizontal: 'left',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
         }}
       >
         <Box sx={{ p: 2 }}>
-          <Typography variant="h6">Notifications</Typography>
-          {notifications.length > 0 ? (
-            notifications.map((notification) => (
-              <ListItem key={notification.id}>
-                <ListItemAvatar>
-                  <Avatar>
-                    <SchoolIcon />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={notification.activity_type}
-                  secondary={`Due: ${new Date(notification.endTime).toLocaleString()}`}
-                />
-              </ListItem>
-            ))
-          ) : (
-            <Typography variant="body2">No notifications</Typography>
-          )}
+          <Typography variant="h6">Today's Notifications</Typography>
+          <List>
+            {notifications.length === 0 ? (
+              <ListItem>No notifications for today.</ListItem>
+            ) : (
+              notifications.map((notification) => (
+                <ListItem key={notification.id}>
+                  <ListItemAvatar>
+                    <Avatar>
+                      <NotificationsIcon />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={notification.description}
+                    secondary={new Date(notification.created_at).toLocaleString()}
+                  />
+                </ListItem>
+              ))
+            )}
+          </List>
         </Box>
       </Popover>
     </Drawer>
