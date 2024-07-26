@@ -10,29 +10,6 @@ const FeedbackForm = ({ portalId }) => { // Receive partnerId as prop
   const [error, setError] = useState(null);
   const isDarkMode = useSelector((state) => state.ui.isDarkMode); // Access dark mode state from Redux store
 
-  useEffect(() => {
-    const fetchMatchedUsers = async () => {
-      try {
-        const response = await getMatchedPartner();
-        console.log('Response:', response);
-
-        if (response.data.success === false) {
-          setMessage(response.data.message);
-        } else {
-          setMatchedUsers(response.data.matchedUsers);
-        }
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching matched users:', error);
-        setError(error.response?.data?.error || 'An error occurred while fetching matched users');
-        setLoading(false);
-      }
-    };
-
-    fetchMatchedUsers();
-  }, []);
-
-
   const handleFeedbackSubmit = async (e) => {
     e.preventDefault();
   
@@ -224,16 +201,8 @@ const FeedbackForm = ({ portalId }) => { // Receive partnerId as prop
   // Use dark mode styles if dark mode is enabled
   const styles = isDarkMode ? darkModeStyles : lightModeStyles;
 
-  if (loading) {
-    return <div style={styles.message}>Loading...</div>;
-  }
-
   if (error) {
     return <div style={styles.message}>Error: {error}</div>;
-  }
-
-  if (message) {
-    return <div style={styles.message}>{message}</div>;
   }
 
   return (
