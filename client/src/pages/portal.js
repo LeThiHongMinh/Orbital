@@ -21,7 +21,7 @@ import {
   getFilesForMatchedUsers,
   getPortalByCourseCode
 } from '../api/auth';
-
+import Partner from '../components/Partner';
 import Layout from '../components/layout';
 import PrivateCourse from '../components/PrivateCourse';
 import CloseIcon from '@mui/icons-material/Close';
