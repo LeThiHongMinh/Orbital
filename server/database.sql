@@ -1,4 +1,4 @@
-ALTER TABLE users (
+CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
@@ -49,7 +49,6 @@ CREATE TABLE study_activities (
   start_time TIMESTAMP,
   end_time TIMESTAMP,
   status BOOLEAN DEFAULT false, --Pending
-  file_data BYTEA,
   FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 

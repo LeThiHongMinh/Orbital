@@ -28,8 +28,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Viewer, Worker } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import FeedbackForm from '../components/FeedbackForm'; 
-import PrivateCourse from '../components/PrivateCourse'
-
+import Partner from '../components/Partner'
 
 const Portals = () => {
   const isDarkMode = useSelector((state) => state.ui.isDarkMode);  // Access dark mode state from Redux
