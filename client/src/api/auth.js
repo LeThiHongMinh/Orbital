@@ -1,11 +1,9 @@
-// api/auth.js
-
 import axios from 'axios';
 
 axios.defaults.withCredentials = true;
 
 const API = axios.create({
-  baseURL: 'http://localhost:5000',
+  baseURL: 'https://orbital-kq4q.onrender.com',
   withCredentials: true,
 });
 
@@ -100,11 +98,15 @@ export async function unMatchPartner(id) {
 
 
 export async function getMatchedPartner() {
-  return await API.get('/api/yourpartner');
+  return await API.get(`/api/yourpartner`);
 }
 
-export async function submitFeedback(feedbackData) {
-  return await API.post('/api/submit-feedback', feedbackData);
+export async function getMatchedPartnerById(id) {
+  return await API.get(`/api/yourpartner/${id}`);
+}
+
+export async function submitFeedback(id, feedbackData) {
+  return await API.post(`/api/submit-feedback/${id}`, feedbackData);
 }
 
 export const getFilesForMatchedUsers = async () => {
@@ -128,4 +130,8 @@ export async function uploadFileForMatchedUsers(formData) {
 
 export async function contactUs(formData) {
   return await API.post(`/api/contact-us`, formData);
+}
+
+export async function getNotifications() {
+  return await API.get(`/api/noti`);
 }

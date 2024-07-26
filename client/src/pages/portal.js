@@ -1,12 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, Card, CardContent, Box, TextField, Button, List, CircularProgress, Alert, Stack } from '@mui/material';
+import {
+  Container,
+  Typography,
+  Card,
+  CardContent,
+  Box,
+  TextField,
+  Button,
+  IconButton,
+  List,
+  CircularProgress, 
+  Alert, 
+  Stack
+} from '@mui/material';
 import { useSelector } from 'react-redux';  // Import useSelector for Redux
-import { uploadFileForMatchedUsers, getPortals, unMatchPartner, getFilesForMatchedUsers, getPortalByCourseCode } from '../api/auth';
+import {
+  uploadFileForMatchedUsers,
+  getPortals,
+  unMatchPartner,
+  getFilesForMatchedUsers,
+  getPortalByCourseCode
+} from '../api/auth';
+
 import Layout from '../components/layout';
 import PrivateCourse from '../components/PrivateCourse';
 import CloseIcon from '@mui/icons-material/Close';
 import { Viewer, Worker } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
+import FeedbackForm from '../components/FeedbackForm'; 
+import PrivateCourse from '../components/PrivateCourse'
+
 
 const Portals = () => {
   const isDarkMode = useSelector((state) => state.ui.isDarkMode);  // Access dark mode state from Redux
@@ -25,6 +48,8 @@ const Portals = () => {
   const [viewingFile, setViewingFile] = useState(null);
   const [fileError, setFileError] = useState(null);
   const [courseNotes, setCourseNotes] = useState([]);
+  const [showFeedbackForm, setShowFeedbackForm] = useState(false); // State to control feedback form visibility
+  const [feedbackPortalId, setFeedbackPortalId] = useState(null); // State to control feedback form for specific portal
 
   useEffect(() => {
     fetchPortals();
@@ -51,7 +76,7 @@ const Portals = () => {
       if (selectedPortalId === id) {
         setSelectedPortalId(null); // Unview the profile if already viewed
       } else {
-        const response = await getPortalByCourseCode(id);
+        await getPortalByCourseCode(id);
         setSelectedPortalId(id); // Set the selected portal ID
       }
     } catch (error) {
@@ -82,14 +107,14 @@ const Portals = () => {
     }
   };
 
-  const handleUnmatch = async (id, email, courseCode) => {
+  const handleUnmatch = async (id) => {
     try {
       await unMatchPartner(id);
       fetchPortals(); // Refresh portals after unmatching
       setSelectedPortalId(null); // Reset selectedPortalId after unmatching
     } catch (error) {
       console.error('Error unmatching partner:', error);
-      alert('Error unmatching partner: ' + error.response?.data?.error || error.message); // Display error to the user
+      alert('Error unmatching partner: ' + (error.response?.data?.error || error.message)); // Display error to the user
     }
   };
 
@@ -122,6 +147,14 @@ const Portals = () => {
   const backgroundColor = isDarkMode ? '#1a202c' : 'white';
   const color = isDarkMode ? 'white' : 'black';
   const buttonColor = isDarkMode ? '#bb86fc' : '#3f51b5';
+  const toggleFeedbackForm = async (id) => {
+    if (feedbackPortalId === id) {
+      setFeedbackPortalId(null); // Hide feedback form if already showing for this portal
+    } else {
+      await getPortalByCourseCode(id);
+      setFeedbackPortalId(id); // Show feedback form for this portal
+    }
+  };
 
   return (
     <Layout>
@@ -217,8 +250,10 @@ const Portals = () => {
               <CardContent>
                 <Typography variant="h6">{portal.course_code}</Typography>
                 <Button
-  onClick={() => handleViewProfile(portal.id)}
-  sx={{
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handleViewProfile(portal.id)}
+                    sx={{
     backgroundColor: isDarkMode ? '#6a1b9a' : '#f44336', // Purple for dark mode, Red for light mode
     color: 'white',
     marginRight: 1,
@@ -226,13 +261,14 @@ const Portals = () => {
       backgroundColor: isDarkMode ? '#4a148c' : '#c62828', // Darker shades on hover
     },
   }}
->
-  View Partner Profile
-</Button>
-
-<Button
-  onClick={() => handleUnmatch(portal.id, portal.email, portal.course_code)}
-  sx={{
+                >
+                  {selectedPortalId === portal.id ? 'Hide Partner Profile' : 'View Partner Profile'}
+                </Button>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => handleUnmatch(portal.id)}
+                 sx={{
     backgroundColor: isDarkMode ? '#1e88e5' : '#ffeb3b', // Blue for dark mode, Yellow for light mode
     color: 'black',
     marginRight: 1,
@@ -240,19 +276,92 @@ const Portals = () => {
       backgroundColor: isDarkMode ? '#1565c0' : '#fbc02d', // Darker shades on hover
     },
   }}
->
-  Unmatch
-</Button>
-                
+                >
+                  Unmatch
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleViewFile}
+                  style={{ marginTop: '10px' }}
+                >
+                  Notes
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => toggleFeedbackForm(portal.id)}
+                  style={{ marginTop: '10px' }}
+                >
+                  {feedbackPortalId === portal.id ? 'Hide Feedback Form' : 'Show Feedback Form'}
+                </Button>
               </CardContent>
+
               <CardContent>
                 <Typography variant="h6">Course Notes</Typography>
                 <List>
-                  <PrivateCourse courseCode={portal.course_code} />
+                  <PrivateCourse />
                 </List>
               </CardContent>
+
+              {selectedPortalId === portal.id && (
+                <Box sx={{ marginTop: '20px' }}>
+                  <Partner portalId={selectedPortalId} />
+                </Box>
+              )}
+
+              {feedbackPortalId === portal.id && (
+                <Box sx={{ marginTop: '20px' }}>
+                  <FeedbackForm portalId={portal.id} /> {/* Pass portal ID if needed */}
+                </Box>
+              )}
             </Card>
           ))}
+
+          {viewingFile && (
+            <Box
+              sx={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100vw',
+                height: '100vh',
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                zIndex: 1000,
+              }}
+            >
+              <Card
+                sx={{
+                  width: '90%',
+                  height: '90%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  position: 'relative',
+                  overflow: 'hidden',
+                }}
+              >
+                <IconButton
+                  onClick={handleCloseFile}
+                  sx={{
+                    position: 'absolute',
+                    top: 16,
+                    right: 16,
+                    color: 'white',
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    '&:hover': {
+                      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                    },
+                  }}
+                >
+                  <CloseIcon />
+                </IconButton>
+                <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
+                  <Viewer fileUrl={viewingFile} />
+                </Worker>
+              </Card>
+            </Box>
+          )}
         </Box>
         {viewingFile && (
           <div className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-75 flex justify-center items-center z-50">

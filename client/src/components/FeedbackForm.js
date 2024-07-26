@@ -2,15 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux'; // Import useSelector to access Redux state
 import { getMatchedPartner, submitFeedback } from '../api/auth';
 
-const FeedbackForm = () => {
-  const [matchedUsers, setMatchedUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [message, setMessage] = useState(null);
-  const [feedbackSuccess, setFeedbackSuccess] = useState('');
+
+const FeedbackForm = ({ portalId }) => { // Receive partnerId as prop
   const [comments, setComments] = useState('');
   const [rating, setRating] = useState(1);
-
+  const [feedbackSuccess, setFeedbackSuccess] = useState('');
+  const [error, setError] = useState(null);
   const isDarkMode = useSelector((state) => state.ui.isDarkMode); // Access dark mode state from Redux store
 
   useEffect(() => {
@@ -35,19 +32,16 @@ const FeedbackForm = () => {
     fetchMatchedUsers();
   }, []);
 
+
   const handleFeedbackSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
-      const selectedMatch = matchedUsers[0]; // Assuming you're selecting the first match
-      const partnerId = selectedMatch.partner2.user_id; // Adjust this based on your logic
-
-      await submitFeedback({
-        partnerId,
+      await submitFeedback(portalId, {
         comments,
         rating,
       });
-
+  
       setFeedbackSuccess('Feedback submitted successfully');
       setComments('');
       setRating(1);
@@ -55,7 +49,7 @@ const FeedbackForm = () => {
       console.error('Error submitting feedback:', error.response?.data?.error || error.message);
       setError('Error submitting feedback. Please try again later.');
     }
-  };
+  };  
 
   // Define styles for light and dark modes
   const lightModeStyles = {
@@ -73,54 +67,6 @@ const FeedbackForm = () => {
       textAlign: 'center',
       marginBottom: '20px',
       fontSize: '32px'
-    },
-    noUsers: {
-      color: '#e60000',
-      textAlign: 'center',
-      fontSize: '20px'
-    },
-    usersList: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '20px',
-    },
-    match: {
-      border: '1px solid #e60000',
-      borderRadius: '10px',
-      padding: '30px',
-      backgroundColor: '#ffcccc',
-    },
-    courseCode: {
-      color: '#b30000',
-      fontWeight: 'bold',
-      fontSize: '20px',
-      marginBottom: '10px',
-    },
-    userProfile: {
-      marginBottom: '10px',
-    },
-    userProfileHeader: {
-      color: '#b30000',
-      fontWeight: 'bold',
-      fontSize: '18px',
-      marginBottom: '5px',
-    },
-    userProfileText: {
-      color: '#800000',
-      marginBottom: '5px',
-      fontSize: '16px'
-    },
-    status: {
-      color: '#b30000',
-      fontWeight: 'bold',
-      marginBottom: '10px',
-      fontSize: '18px'
-    },
-    message: {
-      color: '#e60000',
-      textAlign: 'center',
-      marginTop: '20px',
-      fontSize: '20px'
     },
     feedbackForm: {
       display: 'flex',
@@ -159,6 +105,12 @@ const FeedbackForm = () => {
       marginTop: '10px',
       fontSize: '18px'
     },
+    message: {
+      color: '#e60000',
+      textAlign: 'center',
+      marginTop: '20px',
+      fontSize: '20px'
+    }
   };
 
   const darkModeStyles = {
@@ -286,61 +238,36 @@ const FeedbackForm = () => {
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.title}>Matched Users</h1>
-      {matchedUsers.length === 0 ? (
-        <div style={styles.noUsers}>No matched users found</div>
-      ) : (
-        <div style={styles.usersList}>
-          {matchedUsers.map((match, index) => (
-            <div key={index} style={styles.match}>
-              <h2 style={styles.courseCode}>Course: {match.course_code}</h2>
-              <div style={styles.userProfile}>
-                <h3 style={styles.userProfileHeader}>Partner 1</h3>
-                <p style={styles.userProfileText}>Name: {match.partner1.full_name}</p>
-                <p style={styles.userProfileText}>Email: {match.partner1.email}</p>
-                <p style={styles.userProfileText}>Bio: {match.partner1.bio}</p>
-              </div>
-              <div style={styles.userProfile}>
-                <h3 style={styles.userProfileHeader}>Partner 2</h3>
-                <p style={styles.userProfileText}>Name: {match.partner2.full_name}</p>
-                <p style={styles.userProfileText}>Email: {match.partner2.email}</p>
-                <p style={styles.userProfileText}>Bio: {match.partner2.bio}</p>
-              </div>
-              <p style={styles.status}>Status: {match.status ? 'Active' : 'Inactive'}</p>
+      <h1 style={styles.title}>Submit Feedback</h1>
+      
+      <form onSubmit={handleFeedbackSubmit} style={styles.feedbackForm}>
+        <textarea
+          style={styles.feedbackTextarea}
+          value={comments}
+          onChange={(e) => setComments(e.target.value)}
+          placeholder="Enter your feedback"
+          required
+        />
+        <label>
+          Rating:
+          <select
+            style={styles.feedbackSelect}
+            value={rating}
+            onChange={(e) => setRating(Number(e.target.value))} // Ensure rating is a number
+            required
+          >
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </label>
+        <button type="submit" style={styles.feedbackButton}>Submit Feedback</button>
+      </form>
 
-              {/* Feedback Form */}
-              <form onSubmit={handleFeedbackSubmit} style={styles.feedbackForm}>
-                <h3>Submit Feedback</h3>
-                <textarea
-                  style={styles.feedbackTextarea}
-                  value={comments}
-                  onChange={(e) => setComments(e.target.value)}
-                  placeholder="Enter your feedback"
-                  required
-                />
-                <label>
-                  Rating:
-                  <select
-                    style={styles.feedbackSelect}
-                    value={rating}
-                    onChange={(e) => setRating(e.target.value)}
-                    required
-                  >
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                  </select>
-                </label>
-                <button type="submit" style={styles.feedbackButton}>Submit Feedback</button>
-              </form>
-
-              {feedbackSuccess && <p style={styles.feedbackSuccess}>{feedbackSuccess}</p>}
-            </div>
-          ))}
-        </div>
-      )}
+      {feedbackSuccess && <p style={styles.feedbackSuccess}>{feedbackSuccess}</p>}
+      {error && <p style={styles.message}>{error}</p>}
     </div>
   );
 };

@@ -40,6 +40,7 @@ import Partner from './components/Partner';
 import FeedbackForm from './components/FeedbackForm';
 import Portals from './pages/portal';
 import { DarkModeProvider } from './components/DarkModeContext'; // Import DarkModeProvider
+import NotificationsPage from './pages/Noti';
 
 const PrivateRoutes = () => {
   const { isAuth } = useSelector((state) => state.auth)
@@ -79,12 +80,16 @@ const App = () => {
           <Route path='/partner' element={<Partner />} />
           <Route path='/feedback' element={<FeedbackForm />} />
 
-          <Route element={<PrivateRoutes />}>
-            <Route path='/dashboard' element={<Dashboard />} />
-            <Route path='/profile' element={<ProfileForm />} />
-            <Route path='/studyActivities' element={<StudyActivities />} />
-            <Route path='/portals' element={<Portals />} />
-          </Route>
+        <Route element={<PrivateRoutes />}>
+          <Route path='/noti' element={<NotificationsPage />} />
+          <Route path='/dashboard' element={<Dashboard />} />
+          <Route path='/profile' element={<ProfileForm />} />
+          <Route path='/studyActivities' element={<StudyActivities />} />
+          <Route path='/portals' element={<Portals />} />
+        </Route>
+        
+        <Route path="/" element={<CourseList courses={courses} setCourses={setCourses} />} />
+        <Route path="/course/:courseCode" element={<CourseDetail courses={courses} />} />
 
           <Route path="/" element={<CourseList courses={courses} setCourses={setCourses} />} />
           <Route path="/course/:courseCode" element={<CourseDetail courses={courses} />} />
