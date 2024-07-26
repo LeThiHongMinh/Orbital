@@ -14,6 +14,7 @@ import {
   Popover,
   ListItemAvatar,
   Switch,
+  Button, // Import Button component
 } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
@@ -202,7 +203,20 @@ const Sidebar = () => {
           <Typography variant="h6">Today's Notifications</Typography>
           <List>
             {notifications.length === 0 ? (
-              <ListItem>No notifications for today.</ListItem>
+              <Box>
+                <ListItem>No notifications for today.</ListItem>
+                <ListItem>
+                  <Button
+                    onClick={() => handleNavigation('/noti')}
+                    variant="contained" // Use MUI Button component
+                    color="primary" // Adjust color as needed
+                    fullWidth
+                    sx={{ mt: 2, textAlign: 'center' }} // Add margin top for spacing
+                  >
+                    See all notifications
+                  </Button>
+                </ListItem>
+              </Box>
             ) : (
               notifications.map((notification) => (
                 <ListItem key={notification.id}>
