@@ -28,7 +28,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Viewer, Worker } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import FeedbackForm from '../components/FeedbackForm'; 
-import PrivateCourse from '../components/PrivateCourse'
 
 
 const Portals = () => {
