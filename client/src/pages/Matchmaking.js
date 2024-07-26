@@ -20,7 +20,9 @@ const Matchmaking = () => {
 
   const [notification, setNotification] = useState('');
   const [error, setError] = useState('');
-  const isAuth = useSelector(state => state.auth.isAuth); 
+  const isAuth = useSelector(state => state.auth.isAuth);
+  const isDarkMode = useSelector(state => state.ui?.isDarkMode ?? false);
+
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -59,7 +61,7 @@ const Matchmaking = () => {
 
   return (
     <Layout>
-      <div className='ml-3 flex flex-col justify-center bg-cover min-h-screen bg-red-100 bg-center relative'>
+      <div className={`ml-3 flex flex-col justify-center min-h-screen bg-cover bg-center relative ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-red-100 text-red-900'}`}>
         <div className="ml-10 py-10 flex items-center">
           <img 
             src={star}
@@ -68,24 +70,28 @@ const Matchmaking = () => {
             height={100}
             className="relative z-10"
           />
-          <div className="text-black mt-10 font-palanquin text-8xl ml-10 max-sm:text-[72px] max-sm:leading-[82] font-bold shadow-lg xl:whitespace-nowrap relative z-10 pr-10">Matchmaking</div>
+          <div className={`text-8xl mt-10 font-palanquin ml-10 max-sm:text-[72px] max-sm:leading-[82] font-bold shadow-lg xl:whitespace-nowrap relative z-10 pr-10 ${isDarkMode ? 'text-white' : 'text-black'}`}>
+            Matchmaking
+          </div>
         </div>
-        <section className="text-red-900 font-bold font-palanquin">
+        <section className="font-bold font-palanquin">
           <div className='w-full'>
             <form className="p-2 w-full" onSubmit={handleSubmit}>
-              <span className=""> Full Name </span>
+              <span className={`${isDarkMode ? 'text-white' : 'text-black'}`}>Full Name</span>
               <TextField
                 required
-                sx={{ width: 20 }} style={{ width: '100%' }} id="outlined-basic"
+                sx={{ width: 20 }}
+                style={{ width: '100%' }}
+                id="outlined-basic"
                 variant="outlined"
                 label="Full Name"
                 name="fullName"
                 value={formData.fullName}
                 onChange={handleChange}
-                className="block fullWidth bg-transparent text-sm border-0 rounded-md focus:outline-none focus:outline-transparent p-2 ring-inset focus:ring-2 focus:ring-inset ring-1 disabled:text-slate-900 disabled:dark:text-slate-900 disabled:bg-slate-200 disabled:dark:bg-slate-800 disabled:cursor-not-allowed text-slate-700 dark:text-slate-900 placeholder:text-slate-900 placeholder:dark:text-slate-900 ring-slate-300 dark:ring-slate-700 focus:ring-red-950 focus:dark:ring-red-900 shadow-xl"
+                className={`block fullWidth bg-transparent text-sm border-0 rounded-md focus:outline-none focus:outline-transparent p-2 ring-inset focus:ring-2 focus:ring-inset ring-1 ${isDarkMode ? 'text-white placeholder:text-gray-400 ring-gray-700' : 'text-slate-700 placeholder:text-slate-900 ring-slate-300'} shadow-xl`}
               />
               <br />
-              <span> Course code you want to find study partner </span>
+              <span className={`${isDarkMode ? 'text-white' : 'text-black'}`}>Course code you want to find study partner</span>
               <TextField
                 required
                 multiline
@@ -95,10 +101,10 @@ const Matchmaking = () => {
                 onChange={handleChange}
                 id="outlined-basic"
                 variant="outlined"
-                className="block w-full bg-transparent text-sm border-0 rounded-md focus:outline-none focus:outline-transparent p-2 ring-inset focus:ring-2 focus:ring-inset ring-1 disabled:text-slate-900 disabled:dark:text-slate-900 disabled:bg-slate-200 disabled:dark:bg-slate-800 disabled:cursor-not-allowed text-slate-700 dark:text-slate-900 placeholder:text-slate-900 placeholder:dark:text-slate-900 ring-slate-300 dark:ring-slate-700 focus:ring-red-950 focus:dark:ring-red-900 shadow-xl"
+                className={`block w-full bg-transparent text-sm border-0 rounded-md focus:outline-none focus:outline-transparent p-2 ring-inset focus:ring-2 focus:ring-inset ring-1 ${isDarkMode ? 'text-white placeholder:text-gray-400 ring-gray-700' : 'text-slate-700 placeholder:text-slate-900 ring-slate-300'} shadow-xl`}
               />
               <br />
-              <span className=""> Any expectations </span>
+              <span className={`${isDarkMode ? 'text-white' : 'text-black'}`}>Any expectations</span>
               <br />
               <TextField
                 required
@@ -108,11 +114,11 @@ const Matchmaking = () => {
                 id="outlined-basic"
                 value={formData.expectations}
                 onChange={handleChange}
-                className="block w-full bg-transparent text-sm border-0 rounded-md focus:outline-none focus:outline-transparent p-2 ring-inset focus:ring-2 focus:ring-inset ring-1 disabled:text-slate-900 disabled:dark:text-slate-900 disabled:bg-slate-200 disabled:dark:bg-slate-800 disabled:cursor-not-allowed text-slate-700 dark:text-slate-900 placeholder:text-slate-900 placeholder:dark:text-slate-900 ring-slate-300 dark:ring-slate-700 focus:ring-red-950 focus:dark:ring-red-900 shadow-xl"
+                className={`block w-full bg-transparent text-sm border-0 rounded-md focus:outline-none focus:outline-transparent p-2 ring-inset focus:ring-2 focus:ring-inset ring-1 ${isDarkMode ? 'text-white placeholder:text-gray-400 ring-gray-700' : 'text-slate-700 placeholder:text-slate-900 ring-slate-300'} shadow-xl`}
               />
               <div className='space-x-96 py-5'>
                 <FormControl>
-                  <span className="text-red-900 font-bold font-palanquin" id="demo-radio-buttons-group-label"> Current Academic Level</span>
+                  <span className={`${isDarkMode ? 'text-white' : 'text-black'}`} id="demo-radio-buttons-group-label">Current Academic Level</span>
                   <RadioGroup
                     aria-labelledby="demo-radio-buttons-group-label"
                     name="academicLevel"
@@ -124,7 +130,7 @@ const Matchmaking = () => {
                   </RadioGroup>
                 </FormControl>
                 <FormControl>
-                  <span className="text-red-900 font-bold font-palanquin" id="expect"> Study Goal</span>
+                  <span className={`${isDarkMode ? 'text-white' : 'text-black'}`} id="expect">Study Goal</span>
                   <RadioGroup
                     aria-labelledby="expect"
                     name="studyGoal"
@@ -137,17 +143,17 @@ const Matchmaking = () => {
                 </FormControl>
               </div>
               <div className="text-center p-2 w-full">
-                <button className="inline-flex items-center justify-center py-2.5 px-5 gap-x-2 text-base whitespace-nowrap rounded-md font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 text-slate-50 dark:text-slate-950 bg-red-500 dark:bg-red-500 outline-indigo-500 dark:outline-indigo-500 hover:bg-red-300 hover:dark:bg-red-300 active:bg-red-900 active:dark:bg-red-900 focus-visible:bg-red-900 focus-visible:dark:bg-red-900 disabled:text-white disabled:border-transparent disabled:bg-slate-300 disabled:dark:bg-slate-700 disabled:cursor-not-allowed shadow-xl" type="submit">
+                <button className={`inline-flex items-center justify-center py-2.5 px-5 gap-x-2 text-base whitespace-nowrap rounded-md font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${isDarkMode ? 'text-slate-950 bg-red-500 outline-indigo-500 hover:bg-red-300 active:bg-red-900' : 'text-slate-50 bg-red-500 outline-indigo-500 hover:bg-red-300 active:bg-red-900'} shadow-xl`} type="submit">
                   <div>Submit</div>
                 </button>
               </div>
               {notification && (
-                <div className="text-center p-2 w-full mt-4 text-green-500 font-bold">
+                <div className={`text-center p-2 w-full mt-4 ${isDarkMode ? 'text-green-300' : 'text-green-500'} font-bold`}>
                   {notification}
                 </div>
               )}
               {error && (
-                <div className="text-center p-2 w-full mt-4 text-red-500 font-bold">
+                <div className={`text-center p-2 w-full mt-4 ${isDarkMode ? 'text-red-300' : 'text-red-500'} font-bold`}>
                   {error}
                 </div>
               )}

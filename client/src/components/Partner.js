@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { getPortalByCourseCode } from '../api/auth';
 import { getMatchedPartnerById } from '../api/auth';
 
 const Partner = ({ portalId }) => {
   const [matchedUsers, setMatchedUsers] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const isDarkMode = useSelector((state) => state.ui.isDarkMode);
 
   useEffect(() => {
     const fetchMatchedUsers = async () => {
@@ -36,35 +39,60 @@ const Partner = ({ portalId }) => {
       margin: '0 auto',
       padding: '20px',
       fontFamily: 'Arial, sans-serif',
-      backgroundColor: '#f5f5f5',
+      backgroundColor: isDarkMode ? '#121212' : '#f5f5f5',
+      color: isDarkMode ? '#e0e0e0' : '#000',
     },
     title: {
       textAlign: 'center',
-      color: '#b71c1c',
+      color: isDarkMode ? '#bb86fc' : '#b71c1c',
       fontSize: '2.5em',
       marginBottom: '20px',
     },
     message: {
       textAlign: 'center',
-      color: '#b71c1c',
+      color: isDarkMode ? '#bb86fc' : '#b71c1c',
       fontSize: '1.2em',
     },
+    noUsers: {
+      textAlign: 'center',
+      color: isDarkMode ? '#bb86fc' : '#b71c1c',
+      fontSize: '1.5em',
+      marginTop: '20px',
+    },
+    usersList: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '20px',
+    },
+    match: {
+      backgroundColor: isDarkMode ? '#1f1f1f' : '#fff',
+      border: `2px solid ${isDarkMode ? '#bb86fc' : '#b71c1c'}`,
+      borderRadius: '10px',
+      padding: '20px',
+      boxShadow: isDarkMode ? '0 4px 8px rgba(0, 0, 0, 0.5)' : '0 4px 8px rgba(0, 0, 0, 0.1)',
+    },
+    courseCode: {
+      color: isDarkMode ? '#bb86fc' : '#b71c1c',
+      fontSize: '1.5em',
+      marginBottom: '10px',
+    },
+    
     userProfile: {
-      backgroundColor: '#ffebee',
-      border: '1px solid #b71c1c',
+      backgroundColor: isDarkMode ? '#333' : '#ffebee',
+      border: `1px solid ${isDarkMode ? '#bb86fc' : '#b71c1c'}`,
       borderRadius: '5px',
       padding: '15px',
       marginBottom: '10px',
     },
     userProfileHeader: {
-      color: '#b71c1c',
+      color: isDarkMode ? '#bb86fc' : '#b71c1c',
       marginBottom: '5px',
     },
     userProfileText: {
       margin: '5px 0',
     },
     status: {
-      color: '#b71c1c',
+      color: isDarkMode ? '#bb86fc' : '#b71c1c',
       fontWeight: 'bold',
       textAlign: 'right',
     },

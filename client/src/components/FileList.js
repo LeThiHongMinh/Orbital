@@ -3,12 +3,12 @@ import axios from 'axios';
 import { getNotes, downloadNotes } from '../api/auth';
 import { Viewer, Worker } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
-
+import { useSelector } from 'react-redux';
 const FileList = () => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedFile, setSelectedFile] = useState(null);
-
+  const isDarkMode = useSelector((state) => state.ui.isDarkMode);
   useEffect(() => {
     const fetchFiles = async () => {
       try {
@@ -59,11 +59,12 @@ const FileList = () => {
                   <p>{file.description}</p>
                 </div>
                 <button
-                  onClick={() => handleViewPDF(file.id)}
-                  className="bg-red-500 hover:bg-red-700 ml-72 text-white font-bold py-2 px-10 rounded focus:outline-none focus:shadow-outline"
-                >
-                  View PDF
-                </button>
+  onClick={() => handleViewPDF(file.id)}
+  className={`ml-72 text-white font-bold py-2 px-10 rounded focus:outline-none focus:shadow-outline ${isDarkMode ? 'bg-[#bb86fc] hover:bg-[#9e63f7]' : 'bg-red-500 hover:bg-red-700'}`}
+>
+  View PDF
+</button>
+
               </div>
             </div>
           </li>

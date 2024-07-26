@@ -23,6 +23,7 @@ import {
 const localizer = momentLocalizer(moment);
 
 const StudyActivities = () => {
+  const isDarkMode = useSelector((state) => state.ui.isDarkMode); // Access dark mode state from Redux
   const { isAuth } = useSelector((state) => state.auth);
 
   console.log('Current isAuth state:', isAuth);
@@ -145,10 +146,32 @@ const StudyActivities = () => {
     }
   };
 
+  const calendarStyle = {
+    height: 500,
+    margin: '50px 0',
+    backgroundColor: isDarkMode ? '#1a202c' : 'white', // bg-gray-900
+    color: isDarkMode ? 'white' : 'black',
+  };
+
+  const modalStyle = {
+    padding: '20px',
+    background: isDarkMode ? '#222' : 'white',
+    margin: 'auto',
+    marginTop: '10%',
+    borderRadius: '8px',
+    maxWidth: '400px',
+    color: isDarkMode ? 'white' : 'black',
+  };
+
   return (
     <Layout>
       <Container>
-        <Typography variant="h4" component="h1" gutterBottom>
+        <Typography
+          variant="h4"
+          component="h1"
+          gutterBottom
+          style={{ color: isDarkMode ? 'white' : 'black' }}
+        >
           Study Activities
         </Typography>
 
@@ -156,7 +179,10 @@ const StudyActivities = () => {
           variant="contained"
           color="primary"
           onClick={() => handleOpen()}
-          style={{ marginBottom: '20px' }}
+          style={{
+            marginBottom: '20px',
+            backgroundColor: isDarkMode ? '#bb86fc' : '#3f51b5',
+          }}
         >
           Create Activity
         </Button>
@@ -166,11 +192,11 @@ const StudyActivities = () => {
           events={activities}
           startAccessor="start"
           endAccessor="end"
-          style={{ height: 500, margin: '50px 0', backgroundColor: 'white' }}
+          style={calendarStyle}
           onSelectEvent={(event) => handleOpen(event)}
           eventPropGetter={(event) => ({
             style: {
-              backgroundColor: event.status ? '#4caf50' : '#e91e63',
+              backgroundColor: event.status ? 'grey' : '#e91e63',
               color: 'white',
             },
           })}
@@ -180,16 +206,14 @@ const StudyActivities = () => {
           <Box
             component="form"
             onSubmit={onSubmit}
-            style={{
-              padding: '20px',
-              background: 'white',
-              margin: 'auto',
-              marginTop: '10%',
-              borderRadius: '8px',
-              maxWidth: '400px',
-            }}
+            style={modalStyle}
           >
-            <Typography variant="h5" component="h2" gutterBottom>
+            <Typography
+              variant="h5"
+              component="h2"
+              gutterBottom
+              style={{ color: isDarkMode ? 'white' : 'black' }}
+            >
               {selectedActivity ? 'Edit Activity' : 'Create Activity'}
             </Typography>
 
@@ -201,6 +225,13 @@ const StudyActivities = () => {
               fullWidth
               required
               margin="normal"
+              InputProps={{
+                style: { color: isDarkMode ? 'white' : 'black' },
+              }}
+              InputLabelProps={{
+                style: { color: isDarkMode ? 'white' : 'black' },
+              }}
+              style={{ backgroundColor: isDarkMode ? '#333' : 'white' }}
             />
             <TextField
               label="Activity Type"
@@ -210,6 +241,13 @@ const StudyActivities = () => {
               fullWidth
               required
               margin="normal"
+              InputProps={{
+                style: { color: isDarkMode ? 'white' : 'black' },
+              }}
+              InputLabelProps={{
+                style: { color: isDarkMode ? 'white' : 'black' },
+              }}
+              style={{ backgroundColor: isDarkMode ? '#333' : 'white' }}
             />
             <TextField
               label="Activity Description"
@@ -219,6 +257,13 @@ const StudyActivities = () => {
               fullWidth
               required
               margin="normal"
+              InputProps={{
+                style: { color: isDarkMode ? 'white' : 'black' },
+              }}
+              InputLabelProps={{
+                style: { color: isDarkMode ? 'white' : 'black' },
+              }}
+              style={{ backgroundColor: isDarkMode ? '#333' : 'white' }}
             />
             <TextField
               type="datetime-local"
@@ -231,7 +276,12 @@ const StudyActivities = () => {
               margin="normal"
               InputLabelProps={{
                 shrink: true,
+                style: { color: isDarkMode ? 'white' : 'black' },
               }}
+              InputProps={{
+                style: { color: isDarkMode ? 'white' : 'black' },
+              }}
+              style={{ backgroundColor: isDarkMode ? '#333' : 'white' }}
             />
             <TextField
               type="datetime-local"
@@ -244,37 +294,45 @@ const StudyActivities = () => {
               margin="normal"
               InputLabelProps={{
                 shrink: true,
+                style: { color: isDarkMode ? 'white' : 'black' },
               }}
+              InputProps={{
+                style: { color: isDarkMode ? 'white' : 'black' },
+              }}
+              style={{ backgroundColor: isDarkMode ? '#333' : 'white' }}
             />
             <Button
               type="submit"
               variant="contained"
               color="primary"
-              style={{ marginRight: '10px' }}
+              style={{
+                marginTop: '20px',
+                backgroundColor: isDarkMode ? '#bb86fc' : '#3f51b5',
+              }}
             >
               {selectedActivity ? 'Update Activity' : 'Create Activity'}
             </Button>
             {selectedActivity && (
-              <>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => handleDelete(selectedActivity.id)}
-                >
-                  Delete Activity
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={() => handleToggleStatus(selectedActivity.id)}
-                  style={{
-                    marginLeft: '10px',
-                    backgroundColor: selectedActivity.status ? '#4caf50' : '#e91e63',
-                    color: 'white',
-                  }}
-                >
-                  {selectedActivity.status ? 'Unmark as Complete' : 'Mark as Complete'}
-                </Button>
-              </>
+              <Button
+                type="button"
+                variant="outlined"
+                color="error"
+                onClick={() => handleDelete(selectedActivity.id)}
+                style={{ marginTop: '10px' }}
+              >
+                Delete
+              </Button>
+            )}
+            {selectedActivity && (
+              <Button
+                type="button"
+                variant="outlined"
+                color="success"
+                onClick={() => handleToggleStatus(selectedActivity.id)}
+                style={{ marginTop: '10px' }}
+              >
+                Toggle Status
+              </Button>
             )}
           </Box>
         </Modal>

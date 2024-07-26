@@ -39,40 +39,46 @@ import StudyActivities from './pages/studyActivities';
 import Partner from './components/Partner';
 import FeedbackForm from './components/FeedbackForm';
 import Portals from './pages/portal';
+import { DarkModeProvider } from './components/DarkModeContext'; // Import DarkModeProvider
 import NotificationsPage from './pages/Noti';
+
 const PrivateRoutes = () => {
   const { isAuth } = useSelector((state) => state.auth)
-
   return <>{isAuth ? <Outlet /> : <Navigate to='/login' />}</>
 }
 
 const RestrictedRoutes = () => {
   const { isAuth } = useSelector((state) => state.auth)
-
   return <>{!isAuth ? <Outlet /> : <Navigate to='/' />}</>
 }
-
-
 
 const App = () => {
   const [courses, setCourses] = useState(() => {
     const storedCourses = localStorage.getItem('courses');
     return storedCourses ? JSON.parse(storedCourses) : [];
   });
-  
+
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const handleToggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
   useEffect(() => {
     localStorage.setItem('courses', JSON.stringify(courses));
   }, [courses]);
+
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path = '/home' element={<Home />} />
-        <Route path = '/matchmaking' element={<Matchmaking />} />
-        <Route path='/library' element = {<Library />} />
-        <Route path='/partner' element={<Partner />} />
-        <Route path='/feedback' element={<FeedbackForm />} />
-        
+    <DarkModeProvider>
+      <BrowserRouter>
+       
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path = '/home' element={<Home />} />
+          <Route path = '/matchmaking' element={<Matchmaking />} />
+          <Route path='/library' element = {<Library />} />
+          <Route path='/partner' element={<Partner />} />
+          <Route path='/feedback' element={<FeedbackForm />} />
 
         <Route element={<PrivateRoutes />}>
           <Route path='/noti' element={<NotificationsPage />} />
@@ -85,12 +91,18 @@ const App = () => {
         <Route path="/" element={<CourseList courses={courses} setCourses={setCourses} />} />
         <Route path="/course/:courseCode" element={<CourseDetail courses={courses} />} />
 
-        <Route element={<RestrictedRoutes />}>
-          <Route path='/register' element={<Register />} />
-          <Route path='/login' element={<Login />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+          <Route path="/" element={<CourseList courses={courses} setCourses={setCourses} />} />
+          <Route path="/course/:courseCode" element={<CourseDetail courses={courses} />} />
+
+          <Route element={<RestrictedRoutes />}>
+            <Route path='/register' element={<Register />} />
+            <Route path='/login' element={<Login />} />
+          </Route>
+        </Routes>
+        
+      </BrowserRouter>
+      </DarkModeProvider>
+  
   )
 }
 
