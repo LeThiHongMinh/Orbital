@@ -28,6 +28,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Viewer, Worker } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import FeedbackForm from '../components/FeedbackForm'; 
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 
 
 const Portals = () => {
@@ -49,6 +53,9 @@ const Portals = () => {
   const [courseNotes, setCourseNotes] = useState([]);
   const [showFeedbackForm, setShowFeedbackForm] = useState(false); // State to control feedback form visibility
   const [feedbackPortalId, setFeedbackPortalId] = useState(null); // State to control feedback form for specific portal
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [confirmUnmatchId, setConfirmUnmatchId] = useState(null);
+
 
   useEffect(() => {
     fetchPortals();
@@ -106,16 +113,6 @@ const Portals = () => {
     }
   };
 
-  const handleUnmatch = async (id) => {
-    try {
-      await unMatchPartner(id);
-      fetchPortals(); // Refresh portals after unmatching
-      setSelectedPortalId(null); // Reset selectedPortalId after unmatching
-    } catch (error) {
-      console.error('Error unmatching partner:', error);
-      alert('Error unmatching partner: ' + (error.response?.data?.error || error.message)); // Display error to the user
-    }
-  };
 
   const handleViewFile = async () => {
     try {
@@ -132,6 +129,33 @@ const Portals = () => {
       setFileError('Error fetching file. Please try again.');
     }
   };
+
+  const handleUnmatch = (id) => {
+    // Set the ID to be confirmed and open the dialog
+    setConfirmUnmatchId(id);
+    setOpenConfirmDialog(true);
+  };
+  
+  const handleConfirmUnmatch = async () => {
+    if (confirmUnmatchId) {
+      try {
+        await unMatchPartner(confirmUnmatchId);
+        fetchPortals(); // Refresh portals after unmatching
+        setSelectedPortalId(null); // Reset selectedPortalId after unmatching
+      } catch (error) {
+        console.error('Error unmatching partner:', error);
+        alert('Error unmatching partner: ' + (error.response?.data?.error || error.message)); // Display error to the user
+      }
+      setConfirmUnmatchId(null);
+    }
+    setOpenConfirmDialog(false);
+  };
+  
+  
+  const handleCancelUnmatch = () => {
+    setConfirmUnmatchId(null);
+    setOpenConfirmDialog(false);
+  };  
 
   const handleCloseFile = () => {
     setViewingFile(null);
@@ -249,10 +273,10 @@ const Portals = () => {
               <CardContent>
                 <Typography variant="h6">{portal.course_code}</Typography>
                 <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => handleViewProfile(portal.id)}
-                    sx={{
+  variant="contained"
+  color="primary"
+  onClick={() => handleViewProfile(portal.id)}
+  sx={{
     backgroundColor: isDarkMode ? '#6a1b9a' : '#f44336', // Purple for dark mode, Red for light mode
     color: 'white',
     marginRight: 1,
@@ -260,14 +284,14 @@ const Portals = () => {
       backgroundColor: isDarkMode ? '#4a148c' : '#c62828', // Darker shades on hover
     },
   }}
-                >
-                  {selectedPortalId === portal.id ? 'Hide Partner Profile' : 'View Partner Profile'}
-                </Button>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => handleUnmatch(portal.id)}
-                 sx={{
+>
+  {selectedPortalId === portal.id ? 'Hide Partner Profile' : 'View Partner Profile'}
+</Button>
+<Button
+  variant="contained"
+  color="secondary"
+  onClick={() => handleUnmatch(portal.id)}
+  sx={{
     backgroundColor: isDarkMode ? '#1e88e5' : '#ffeb3b', // Blue for dark mode, Yellow for light mode
     color: 'black',
     marginRight: 1,
@@ -275,9 +299,12 @@ const Portals = () => {
       backgroundColor: isDarkMode ? '#1565c0' : '#fbc02d', // Darker shades on hover
     },
   }}
-                >
-                  Unmatch
-                </Button>
+>
+  Unmatch
+</Button>
+
+
+
                 <Button
                   variant="contained"
                   onClick={handleViewFile}
@@ -379,6 +406,27 @@ const Portals = () => {
             </div>
           </div>
         )}
+        <Dialog
+  open={openConfirmDialog}
+  onClose={handleCancelUnmatch}
+  aria-labelledby="confirm-unmatch-dialog-title"
+>
+  <DialogTitle id="confirm-unmatch-dialog-title">
+    Are you sure you want to unmatch?
+  </DialogTitle>
+  <DialogContent>
+    <Typography>Do you really want to unmatch this partner? This action cannot be undone.</Typography>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleCancelUnmatch} color="primary">
+      No
+    </Button>
+    <Button onClick={handleConfirmUnmatch} color="secondary">
+      Yes
+    </Button>
+  </DialogActions>
+</Dialog>
+
       </Container>
     </Layout>
   );

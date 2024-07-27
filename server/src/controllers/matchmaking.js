@@ -119,6 +119,15 @@ exports.unMatchPartner = async (req, res) => {
     if (deleteResult.rows.length === 0) {
       return res.status(400).json({ error: 'Failed to delete partner relation.' });
     }
+    await db.query(
+      'INSERT INTO noti (user_id, description) VALUES ($1, $2)',
+      [deleteResult.rows[0].partner_1_id, 'Your match are successfully deleted !']
+    );
+
+    await db.query(
+      'INSERT INTO noti (user_id, description) VALUES ($1, $2)',
+      [deleteResult.rows[0].partner_2_id, 'Your match are successfully deleted !']
+    );
 
     res.status(200).json({ success: true, message: 'Partner relation deleted successfully.' });
   } catch (error) {

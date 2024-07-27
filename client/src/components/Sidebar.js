@@ -186,55 +186,69 @@ const Sidebar = () => {
         </ListItem>
       </List>
       <Popover
-        id={id}
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-      >
-        <Box sx={{ p: 2, backgroundColor: isDarkMode ? '#444' : '#fff', color: isDarkMode ? '#fff' : '#000' }}>
-          <Typography variant="h6">Today's Notifications</Typography>
-          <List>
-            {notifications.length === 0 ? (
-              <Box>
-                <ListItem>No notifications for today.</ListItem>
-                <ListItem>
-                  <Button
-                    onClick={() => handleNavigation('/noti')}
-                    variant="contained" // Use MUI Button component
-                    color="primary" // Adjust color as needed
-                    fullWidth
-                    sx={{ mt: 2, textAlign: 'center' }} // Add margin top for spacing
-                  >
-                    See all notifications
-                  </Button>
-                </ListItem>
-              </Box>
-            ) : (
-              notifications.map((notification) => (
-                <ListItem key={notification.id}>
-                  <ListItemAvatar>
-                    <Avatar>
-                      <NotificationsIcon sx={{ color: isDarkMode ? '#fff' : '#000' }} />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={notification.description}
-                    secondary={new Date(notification.created_at).toLocaleString()}
-                  />
-                </ListItem>
-              ))
-            )}
-          </List>
+  id={id}
+  open={open}
+  anchorEl={anchorEl}
+  onClose={handleClose}
+  anchorOrigin={{
+    vertical: 'bottom',
+    horizontal: 'center',
+  }}
+  transformOrigin={{
+    vertical: 'top',
+    horizontal: 'center',
+  }}
+>
+  <Box sx={{ p: 2, backgroundColor: isDarkMode ? '#444' : '#fff', color: isDarkMode ? '#fff' : '#000' }}>
+    <Typography variant="h6">Today's Notifications</Typography>
+    <List>
+      {notifications.length === 0 ? (
+        <Box>
+          <ListItem>No notifications for today.</ListItem>
+          <ListItem>
+            <Button
+              onClick={() => handleNavigation('/noti')}
+              variant="contained" // Use MUI Button component
+              color="primary" // Adjust color as needed
+              fullWidth
+              sx={{ mt: 2, textAlign: 'center' }} // Add margin top for spacing
+            >
+              See all notifications
+            </Button>
+          </ListItem>
         </Box>
-      </Popover>
+      ) : (
+        <>
+          {notifications.map((notification) => (
+            <ListItem key={notification.id}>
+              <ListItemAvatar>
+                <Avatar>
+                  <NotificationsIcon sx={{ color: isDarkMode ? '#fff' : '#000' }} />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText
+                primary={notification.description}
+                secondary={new Date(notification.created_at).toLocaleString()}
+              />
+            </ListItem>
+          ))}
+          <ListItem>
+            <Button
+              onClick={() => handleNavigation('/noti')}
+              variant="contained" // Use MUI Button component
+              color="primary" // Adjust color as needed
+              fullWidth
+              sx={{ mt: 2, textAlign: 'center' }} // Add margin top for spacing
+            >
+              See all notifications
+            </Button>
+          </ListItem>
+        </>
+      )}
+    </List>
+  </Box>
+</Popover>
+
     </Drawer>
   );
 };
