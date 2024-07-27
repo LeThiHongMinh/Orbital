@@ -17,3 +17,18 @@ exports.contactForm = async (req, res) => {
         res.status(500).json({ error: 'Internal Server error' });
     }
 };
+exports.getNoti = async (req, res) => {
+    const userId = req.user.id;
+    
+    try {
+      const result = await db.query(
+        'SELECT * FROM noti WHERE user_id = $1 ORDER BY created_at DESC',
+        [userId]
+      );
+  
+      res.status(200).json(result.rows);
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+      res.status(500).json({ error: 'An error occurred while fetching notifications' });
+    }
+  }
