@@ -1,5 +1,6 @@
 const express = require('express');
-const { submitForm, getPortals, getPortalByCourseCode, unMatchPartner, getMatchedUsers, matchMaking, submitFeedback, getFilesForMatchedUsers, uploadFileForMatchedUsers, downloadmatchedFiles } = require('../controllers/matchmaking');
+
+const { submitForm, getPortals, getPortalByCourseCode, unMatchPartner, getMatchedUsers, matchMaking, submitFeedback, getFilesForMatchedUsers, uploadFileForMatchedUsers, getMatchedUserById, getNoti } = require('../controllers/matchmaking');
 const { Router } = require('express');
 const router = Router();
 const { userAuth } = require('../middlewares/passport-middleware');
@@ -22,6 +23,9 @@ router.delete('/portal/:id/unmatch', userAuth, unMatchPartner);
 // Route to get matched users
 router.get('/yourpartner', userAuth, getMatchedUsers);
 
+// Route to get matched users by ID
+router.get('/yourpartner/:id', userAuth, getMatchedUserById);
+
 // Route to upload file for matched users
 router.post('/upload-matched-file', userAuth, upload.single('file'), uploadFileForMatchedUsers);
 
@@ -29,7 +33,9 @@ router.post('/upload-matched-file', userAuth, upload.single('file'), uploadFileF
 router.get('/matched-files', userAuth, getFilesForMatchedUsers);
 
 // Route to submit feedback
-router.post('/submit-feedback', userAuth, submitFeedback);
+router.post('/submit-feedback/:id', userAuth, submitFeedback);
+
+router.get('/noti', userAuth, getNoti);
 
 // Note: The matchMaking route is handled automatically when the form is submitted
 router.get('/matchedfiles/:id/download', downloadmatchedFiles);

@@ -38,6 +38,10 @@ exports.matchMaking = async (user_id, courseCode, studyGoal, res) => {
 
     if (number_of_partner === 0) {
       console.log("No partner was found");
+      await db.query(
+        'INSERT INTO noti (user_id, description, course_code) VALUES ($1, $2, $3)',
+        [user_id, 'No partner found for the given criteria.', courseCode]
+      );
       res.status(200).json({ success: true, message: 'No partner found' });
     } else {
       const result = data.rows[0];
@@ -47,10 +51,21 @@ exports.matchMaking = async (user_id, courseCode, studyGoal, res) => {
         'INSERT INTO partners (course_code, partner_1_id, partner_2_id) VALUES ($1, $2, $3) RETURNING *',
         [courseCode, user_id, result.user_id]
       );
-      const move = await db.query(
+      await db.query(
         'DELETE FROM matchform WHERE (user_id = $1 OR user_id = $2) AND coursecode = $3 ',
         [user_id, result.user_id, courseCode]
-      )
+      );
+
+      // Notify both users about the successful match
+      await db.query(
+        'INSERT INTO noti (user_id, description, course_code) VALUES ($1, $2, $3)',
+        [user_id, 'You have been successfully matched with a partner!', courseCode]
+      );
+      await db.query(
+        'INSERT INTO noti (user_id, description, course_code) VALUES ($1, $2, $3)',
+        [result.user_id, 'You have been successfully matched with a partner!', courseCode]
+      );
+      
       console.log("Portal created successfully", portal.rows[0]);
       res.status(201).json({ success: true, message: 'Matched successfully', data: portal.rows[0] });
     }
@@ -95,17 +110,24 @@ exports.getPortalByCourseCode = async (req, res) => {
 
 exports.unMatchPartner = async (req, res) => {
   const { id } = req.params;
-  const user_id = req.user.id; 
 
   try {
     const deleteResult = await db.query(
       'DELETE FROM partners WHERE id = $1 RETURNING *',
       [id]
     );
-
     if (deleteResult.rows.length === 0) {
       return res.status(400).json({ error: 'Failed to delete partner relation.' });
     }
+    await db.query(
+      'INSERT INTO noti (user_id, description, course_code) VALUES ($1, $2, $3)',
+      [deleteResult.rows[0].partner_1_id, 'Your match are successfully deleted !', deleteResult.rows[0].course_code]
+    );
+
+    await db.query(
+      'INSERT INTO noti (user_id, description, course_code) VALUES ($1, $2, $3)',
+      [deleteResult.rows[0].partner_2_id, 'Your match are successfully deleted !', deleteResult.rows[0].course_code]
+    );
 
     res.status(200).json({ success: true, message: 'Partner relation deleted successfully.' });
   } catch (error) {
@@ -115,49 +137,22 @@ exports.unMatchPartner = async (req, res) => {
 };
 
 exports.getMatchedUsers = async (req, res) => {
-  const userEmail = req.user.email; // Assuming user's email is extracted from the authenticated user
+  const user_id = req.user.id;
 
   try {
-    // Fetch user_id of the authenticated user based on their email
-    const userResult = await db.query('SELECT user_id FROM users WHERE email = $1', [userEmail]);
-    const { user_id } = userResult.rows[0]; // Extract user_id from the query result
-
-    // Fetch all partners where the current user is either partner_1_id or partner_2_id
-    const partners = await db.query(
-      'SELECT * FROM partners WHERE partner_1_id = $1 OR partner_2_id = $1',
-      [user_id]
-    );
-
-    // If no partners found, return empty response or appropriate message
+    const partners = await db.query('SELECT * FROM partners WHERE partner_1_id = $1 OR partner_2_id = $1', [user_id]);
     if (partners.rows.length === 0) {
       return res.status(404).json({ success: false, message: 'No partners found' });
     }
 
-    // Array to store user data of matched users
     let matchedUsers = [];
-
-    // Loop through each partner entry and fetch user details for partner_1_id and partner_2_id
     for (const partner of partners.rows) {
-      // Determine which partner ID is not the current user's ID
-      const partner1Id = partner.partner_1_id;
-      const partner2Id = partner.partner_2_id;
+      const partner1Data = await db.query('SELECT user_id, email, full_name, bio FROM users WHERE user_id = $1', [partner.partner_1_id]);
+      const partner2Data = await db.query('SELECT user_id, email, full_name, bio FROM users WHERE user_id = $1', [partner.partner_2_id]);
 
-      // Fetch details of partner 1 user
-      const user1Data = await db.query(
-        'SELECT user_id, email, full_name, bio FROM users WHERE user_id = $1',
-        [partner1Id]
-      );
-
-      // Fetch details of partner 2 user
-      const user2Data = await db.query(
-        'SELECT user_id, email, full_name, bio FROM users WHERE user_id = $1',
-        [partner2Id]
-      );
-
-      // Add user details to matchedUsers array
       matchedUsers.push({
-        partner1: user1Data.rows[0], // User details for partner 1
-        partner2: user2Data.rows[0], // User details for partner 2
+        partner1: partner1Data.rows[0],
+        partner2: partner2Data.rows[0],
         course_code: partner.course_code,
         status: partner.status
       });
@@ -174,27 +169,89 @@ exports.submitFeedback = async (req, res) => {
   const { partnerId, comments, rating } = req.body;
   const userEmail = req.user.email; // Assuming user's email is extracted from the authenticated user
 
-  try {
-    // Fetch user_id of the authenticated user based on their email
-    const userResult = await db.query('SELECT user_id FROM users WHERE email = $1', [userEmail]);
-    const { user_id: userId } = userResult.rows[0]; // Extract user_id from the query result
 
-    // Fetch both partner_1_id and partner_2_id from partners where the current user's user_id matches
-    const partnerResult = await db.query(
-      'SELECT partner_1_id, partner_2_id FROM partners WHERE partner_1_id = $1 OR partner_2_id = $1',
-      [userId]
+  try {
+    const partners = await db.query(
+      'SELECT * FROM partners WHERE (partner_1_id = $1 OR partner_2_id = $1) AND id = $2',
+      [user_id, id]
     );
 
+    if (partners.rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'No partners found' });
+    }
+
+    const partner = partners.rows[0];
+    
+    const user1Data = await db.query(
+      'SELECT user_id, email, full_name, bio, tele, avatar FROM users WHERE user_id = $1',
+      [partner.partner_1_id]
+    );
+    
+    const user2Data = await db.query(
+      'SELECT user_id, email, full_name, bio, tele, avatar FROM users WHERE user_id = $1',
+      [partner.partner_2_id]
+    );
+
+    // Encode avatar if available
+    if (user1Data.rows[0].avatar) {
+      user1Data.rows[0].avatar = `data:image/png;base64,${user1Data.rows[0].avatar.toString('base64')}`;
+    }
+
+    if (user2Data.rows[0].avatar) {
+      user2Data.rows[0].avatar = `data:image/png;base64,${user2Data.rows[0].avatar.toString('base64')}`;
+    }
+
+    res.status(200).json({
+      success: true,
+      matchedUsers: {
+        partner1: user1Data.rows[0], 
+        partner2: user2Data.rows[0], 
+        course_code: partner.course_code,
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching matched users:', error.message);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+exports.submitFeedback = async (req, res) => {
+  const id = req.params.id; 
+  const { comments, rating } = req.body;
+  const user_id = req.user.id;
+
+  try {
+    // Query the partners table to find the partner IDs for the given ID
+    const partnerResult = await db.query(
+      'SELECT partner_1_id, partner_2_id FROM partners WHERE id = $1',
+      [id]
+    );
+
+    // Check if the query returned any rows
     if (partnerResult.rows.length === 0) {
       return res.status(400).json({ error: 'You are not matched with any partner' });
     }
 
+    // Determine the partner ID based on the current user ID
     const { partner_1_id, partner_2_id } = partnerResult.rows[0];
+    let partnerID;
+    if (partner_1_id === user_id) {
+      partnerID = partner_2_id;
+    } else if (partner_2_id === user_id) {
+      partnerID = partner_1_id;
+    } else {
+      return res.status(400).json({ error: 'Invalid user ID' });
+    }
 
-    // Insert feedback into the feedback table
+    // Ensure the partner ID is valid
+    if (partnerID !== partner_1_id && partnerID !== partner_2_id) {
+      return res.status(400).json({ error: 'Invalid partner ID' });
+    }
+
+    // Insert feedback into the database
     await db.query(
       'INSERT INTO feedback (user_id, partner_id, comments, rating) VALUES ($1, $2, $3, $4)',
-      [userId, partner_1_id === userId ? partner_2_id : partner_1_id, comments, rating]
+      [user_id, partnerID, comments, rating]
     );
 
     res.status(201).json({ success: true, message: 'Feedback submitted successfully' });
@@ -202,9 +259,7 @@ exports.submitFeedback = async (req, res) => {
     console.error('Error submitting feedback:', error.message);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
-
-// Assuming you have the necessary imports and setup for your backend
+}
 
 exports.uploadFileForMatchedUsers = async (req, res) => {
   try {
@@ -216,10 +271,8 @@ exports.uploadFileForMatchedUsers = async (req, res) => {
     }
 
     const fileData = req.file.buffer;
-
-    // Store file info and content into PostgreSQL
     const result = await db.query(
-      'INSERT INTO matchednotes (name, description, file_data, course_code, email1, email2, upload_date) VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP) RETURNING id',
+      'INSERT INTO matched_files (name, description, file_data, course_code, email1, email2, upload_date) VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP) RETURNING id',
       [name, description, fileData, courseCode,  email1, email2]
     );
 
@@ -239,7 +292,7 @@ exports.getFilesForMatchedUsers = async (req, res) => {
     console.log('Connected to the database.');
 
     const result = await client.query(
-      'SELECT id, name, description, course_code, file_data FROM matchednotes WHERE email1 = $1 OR email2 = $1',
+      'SELECT id, name, description, course_code, file_data FROM matched_files WHERE email1 = $1 OR email2 = $1',
       [email1]
     );
 
@@ -259,6 +312,7 @@ exports.getFilesForMatchedUsers = async (req, res) => {
     res.status(500).json({ success: false, error: 'Error fetching files' });
   }
 };
+
 
 exports.downloadmatchedFiles = async (req, res) => {
   const fileId = req.params.id;
@@ -282,3 +336,20 @@ exports.downloadmatchedFiles = async (req, res) => {
     res.status(500).json({ success: false, error: 'Error fetching file' });
   }
 };
+
+exports.getNoti = async (req, res) => {
+  const userId = req.user.id;
+  
+  try {
+    const result = await db.query(
+      'SELECT * FROM noti WHERE user_id = $1 ORDER BY created_at DESC',
+      [userId]
+    );
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error('Error fetching notifications:', error);
+    res.status(500).json({ error: 'An error occurred while fetching notifications' });
+  }
+}
+

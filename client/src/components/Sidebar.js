@@ -14,6 +14,7 @@ import {
   Popover,
   ListItemAvatar,
   Switch,
+  Button,
 } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
@@ -24,20 +25,19 @@ import HomeIcon from '@mui/icons-material/Home';
 import FeedbackIcon from '@mui/icons-material/Feedback';
 import GroupIcon from '@mui/icons-material/Group';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import PeopleIcon from '@mui/icons-material/People'; // Icon for matchmaking
-
-import { onLogout, profileCheck, getStudyActivities } from '../api/auth';
+import PeopleIcon from '@mui/icons-material/People';
+import { onLogout, profileCheck, getNotifications } from '../api/auth';
 import { unauthenticateUser } from '../redux/slices/authSlice';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleDarkMode } from '../redux/slices/uiSlice'; // Adjust the import path as needed
+import { toggleDarkMode } from '../redux/slices/uiSlice';
 
 const Sidebar = () => {
   const { isAuth } = useSelector((state) => state.auth);
-  const isDarkMode = useSelector(state => state.ui.isDarkMode); // Use uiSlice state
+  const isDarkMode = useSelector(state => state.ui.isDarkMode);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [fullName, setFullName] = useState('');
-  const [avatar, setAvatar] = useState(''); // State to store avatar Base64 string
+  const [avatar, setAvatar] = useState('');
   const [notifications, setNotifications] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -47,7 +47,7 @@ const Sidebar = () => {
         const { data } = await profileCheck();
         if (data.user) {
           setFullName(data.user.full_name);
-          setAvatar(data.user.avatar || ''); // Set avatar Base64 string if available
+          setAvatar(data.user.avatar || '');
         }
       } catch (error) {
         console.error('Error fetching profile:', error);
@@ -56,18 +56,12 @@ const Sidebar = () => {
 
     const fetchNotifications = async () => {
       try {
-        const { data } = await getStudyActivities();
-        const activities = Array.isArray(data.activities) ? data.activities : [];
-
-        const today = new Date().toISOString().split('T')[0];
-        const todayNotifications = activities.filter(activity => {
-          if (activity.endTime) {
-            const activityEndTime = new Date(activity.endTime).toISOString().split('T')[0];
-            return activityEndTime === today;
-          }
-          return false;
+        const response = await getNotifications();
+        const notificationsToday = response.data.filter(notification => {
+          const today = new Date().toISOString().split('T')[0];
+          return new Date(notification.created_at).toISOString().split('T')[0] === today;
         });
-        setNotifications(todayNotifications);
+        setNotifications(notificationsToday);
       } catch (error) {
         console.error('Error fetching notifications:', error);
       }
@@ -82,7 +76,7 @@ const Sidebar = () => {
   };
 
   const handleDarkModeToggle = () => {
-    dispatch(toggleDarkMode()); // Dispatch toggleDarkMode action
+    dispatch(toggleDarkMode());
   };
 
   const handleLogout = async () => {
@@ -112,11 +106,11 @@ const Sidebar = () => {
       sx={{
         width: 240,
         flexShrink: 0,
-        [`& .MuiDrawer-paper`]: { 
-          width: 240, 
+        [`& .MuiDrawer-paper`]: {
+          width: 240,
           boxSizing: 'border-box',
-          backgroundColor: isDarkMode ? '#333' : '#fff', // Dark mode background
-          color: isDarkMode ? '#fff' : '#000', // Dark mode text color
+          backgroundColor: isDarkMode ? '#333' : '#fff',
+          color: isDarkMode ? '#fff' : '#000',
         },
       }}
     >
@@ -130,7 +124,7 @@ const Sidebar = () => {
       >
         <Avatar
           alt="Profile Image"
-          src={avatar || 'https://i.pinimg.com/564x/40/27/ef/4027ef3433c0541374a41c841d9c26eb.jpg'} // Default or placeholder image if avatar is not available
+          src={avatar || 'https://i.pinimg.com/564x/40/27/ef/4027ef3433c0541374a41c841d9c26eb.jpg'}
           sx={{ width: 100, height: 100, mb: 2 }}
         />
         <Typography variant="h6">{fullName}</Typography>
@@ -158,12 +152,6 @@ const Sidebar = () => {
             <DashboardIcon sx={{ color: isDarkMode ? '#fff' : '#000' }} />
           </ListItemIcon>
           <ListItemText primary="Dashboard" />
-        </ListItem>
-        <ListItem button onClick={() => handleNavigation('/feedback')}>
-          <ListItemIcon>
-            <FeedbackIcon sx={{ color: isDarkMode ? '#fff' : '#000' }} />
-          </ListItemIcon>
-          <ListItemText primary="Feedback" />
         </ListItem>
         <ListItem button onClick={() => handleNavigation('/library')}>
           <ListItemIcon>
@@ -197,35 +185,73 @@ const Sidebar = () => {
         </ListItem>
       </List>
       <Popover
-        id={id}
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-      >
-        <Box sx={{ p: 2, backgroundColor: isDarkMode ? '#444' : '#fff', color: isDarkMode ? '#fff' : '#000' }}>
-          <Typography variant="h6">Today's Notifications</Typography>
-          <List>
-            {notifications.map((notification, index) => (
-              <ListItem key={index}>
-                <ListItemAvatar>
-                  <Avatar>
-                    <NotificationsIcon sx={{ color: isDarkMode ? '#fff' : '#000' }} />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText primary={notification.title} secondary={notification.description} />
-              </ListItem>
-            ))}
-          </List>
+  id={id}
+  open={open}
+  anchorEl={anchorEl}
+  onClose={handleClose}
+  anchorOrigin={{
+    vertical: 'bottom',
+    horizontal: 'center',
+  }}
+  transformOrigin={{
+    vertical: 'top',
+    horizontal: 'center',
+  }}
+>
+  <Box sx={{ p: 2, backgroundColor: isDarkMode ? '#444' : '#fff', color: isDarkMode ? '#fff' : '#000' }}>
+    <div style={{ fontWeight: 'bold', fontSize: '1.5rem' }}>Today's Notifications</div>
+    <List>
+      {notifications.length === 0 ? (
+        <Box>
+          <ListItem>No notifications for today.</ListItem>
+          <ListItem>
+            <Button
+              onClick={() => handleNavigation('/noti')}
+              variant="contained"
+              color="primary"
+              fullWidth
+              sx={{ mt: 2, textAlign: 'center' }}
+            >
+              See all notifications
+            </Button>
+          </ListItem>
         </Box>
-      </Popover>
+      ) : (
+        <>
+          {notifications.map((notification) => (
+            <ListItem key={notification.id}>
+              <ListItemAvatar>
+                <Avatar>
+                  <NotificationsIcon sx={{ color: isDarkMode ? '#fff' : '#000' }} />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText
+                primary={notification.description}
+                secondary={
+                  <>
+                    <div>{new Date(notification.created_at).toLocaleString()}</div>
+                    {notification.course_code && <div>Course: {notification.course_code}</div>}
+                  </>
+                }
+              />
+            </ListItem>
+          ))}
+          <ListItem>
+            <Button
+              onClick={() => handleNavigation('/noti')}
+              variant="contained"
+              color="primary"
+              fullWidth
+              sx={{ mt: 2, textAlign: 'center' }}
+            >
+              See all notifications
+            </Button>
+          </ListItem>
+        </>
+      )}
+    </List>
+  </Box>
+</Popover>
     </Drawer>
   );
 };

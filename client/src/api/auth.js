@@ -1,11 +1,9 @@
-// api/auth.js
-
 import axios from 'axios';
 
 axios.defaults.withCredentials = true;
 
 const API = axios.create({
-  baseURL: 'http://localhost:5000',
+  baseURL: 'https://orbital-kq4q.onrender.com',
   withCredentials: true,
 });
 
@@ -75,16 +73,24 @@ export async function getNotes() {
   return await API.get('/api/files');
 }
 
-export async function downloadNotes(fileId) {
+export const downloadNotes = async (fileId) => {
   try {
     const response = await API.get(`/api/files/${fileId}/download`, {
-      responseType: 'blob',
+      responseType: 'blob', // Ensure the response type is set to 'blob'
     });
-    return response.data;  // Return the blob data
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      console.error(`Error downloading notes: ${response.statusText}`);
+      throw new Error('Failed to download notes');
+    }
   } catch (error) {
-    throw error;  // Throw error to be handled in the calling component
+    console.error(`Error downloading notes: ${error.message}`);
+    throw error;
   }
-}
+};
+
 
 export async function getPortals() {
   return await API.get(`/api/portal`);
@@ -100,11 +106,15 @@ export async function unMatchPartner(id) {
 
 
 export async function getMatchedPartner() {
-  return await API.get('/api/yourpartner');
+  return await API.get(`/api/yourpartner`);
 }
 
-export async function submitFeedback(feedbackData) {
-  return await API.post('/api/submit-feedback', feedbackData);
+export async function getMatchedPartnerById(id) {
+  return await API.get(`/api/yourpartner/${id}`);
+}
+
+export async function submitFeedback(id, feedbackData) {
+  return await API.post(`/api/submit-feedback/${id}`, feedbackData);
 }
 
 export const getFilesForMatchedUsers = async () => {
@@ -130,6 +140,7 @@ export async function contactUs(formData) {
   return await API.post(`/api/contact-us`, formData);
 }
 
+
 export async function downloadmatchedNotes(fileId) {
   try {
     const response = await API.get(`/api/matchedfiles/${fileId}/download`, {
@@ -140,3 +151,4 @@ export async function downloadmatchedNotes(fileId) {
     throw error;  // Throw error to be handled in the calling component
   }
 }
+
