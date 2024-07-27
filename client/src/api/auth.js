@@ -129,3 +129,14 @@ export async function uploadFileForMatchedUsers(formData) {
 export async function contactUs(formData) {
   return await API.post(`/api/contact-us`, formData);
 }
+
+export async function downloadmatchedNotes(fileId) {
+  try {
+    const response = await API.get(`/api/matchedfiles/${fileId}/download`, {
+      responseType: 'blob',
+    });
+    return response.data;  // Return the blob data
+  } catch (error) {
+    throw error;  // Throw error to be handled in the calling component
+  }
+}
