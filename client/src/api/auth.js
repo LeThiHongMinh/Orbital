@@ -140,6 +140,10 @@ export async function contactUs(formData) {
   return await API.post(`/api/contact-us`, formData);
 }
 
+export async function getNotifications() {
+  return await API.get(`/api/noti`);
+}
+
 
 export async function downloadmatchedNotes(fileId) {
   try {
@@ -151,4 +155,3 @@ export async function downloadmatchedNotes(fileId) {
     throw error;  // Throw error to be handled in the calling component
   }
 }
-

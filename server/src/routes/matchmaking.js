@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { submitForm, getPortals, getPortalByCourseCode, unMatchPartner, getMatchedUsers, matchMaking, submitFeedback, getFilesForMatchedUsers, uploadFileForMatchedUsers, getMatchedUserById, getNoti } = require('../controllers/matchmaking');
+const { submitForm, getPortals, getPortalByCourseCode, unMatchPartner, getMatchedUsers, matchMaking, submitFeedback, getFilesForMatchedUsers, uploadFileForMatchedUsers, getMatchedUserById, downloadmatchedFiles, getNoti } = require('../controllers/matchmaking');
 const { Router } = require('express');
 const router = Router();
 const { userAuth } = require('../middlewares/passport-middleware');
@@ -37,6 +37,6 @@ router.post('/submit-feedback/:id', userAuth, submitFeedback);
 
 router.get('/noti', userAuth, getNoti);
 
-// Note: The matchMaking route is handled automatically when the form is submitted
-router.get('/matchedfiles/:id/download', downloadmatchedFiles);
+router.get('/matchedfiles/:id/download', userAuth, downloadmatchedFiles);
+
 module.exports = router;

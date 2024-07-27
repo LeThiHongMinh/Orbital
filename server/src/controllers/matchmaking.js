@@ -165,6 +165,56 @@ exports.getMatchedUsers = async (req, res) => {
   }
 };
 
+exports.getMatchedUserById = async (req, res) => {
+  const { id } = req.params;
+  const user_id = req.user.id;
+
+  try {
+    const partners = await db.query(
+      'SELECT * FROM partners WHERE (partner_1_id = $1 OR partner_2_id = $1) AND id = $2',
+      [user_id, id]
+    );
+
+    if (partners.rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'No partners found' });
+    }
+
+    const partner = partners.rows[0];
+    
+    const user1Data = await db.query(
+      'SELECT user_id, email, full_name, bio, tele, avatar FROM users WHERE user_id = $1',
+      [partner.partner_1_id]
+    );
+    
+    const user2Data = await db.query(
+      'SELECT user_id, email, full_name, bio, tele, avatar FROM users WHERE user_id = $1',
+      [partner.partner_2_id]
+    );
+
+    // Encode avatar if available
+    if (user1Data.rows[0].avatar) {
+      user1Data.rows[0].avatar = `data:image/png;base64,${user1Data.rows[0].avatar.toString('base64')}`;
+    }
+
+    if (user2Data.rows[0].avatar) {
+      user2Data.rows[0].avatar = `data:image/png;base64,${user2Data.rows[0].avatar.toString('base64')}`;
+    }
+
+    res.status(200).json({
+      success: true,
+      matchedUsers: {
+        partner1: user1Data.rows[0], 
+        partner2: user2Data.rows[0], 
+        course_code: partner.course_code,
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching matched users:', error.message);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+
 exports.submitFeedback = async (req, res) => {
   const { partnerId, comments, rating } = req.body;
   const userEmail = req.user.email; // Assuming user's email is extracted from the authenticated user

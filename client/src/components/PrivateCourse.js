@@ -35,12 +35,10 @@ const PrivateCourse = ({courseCode}) => {
     try {
       const blobData = await downloadmatchedNotes(fileId);
       setSelectedFile(blobData);
-
     } catch (error) {
-      console.error('Error fetching PDF:', error.message);
+      console.error('Error fetching PDF:', error);
     }
   };
-  
 
   const handleClosePDF = () => {
     setSelectedFile(null);
