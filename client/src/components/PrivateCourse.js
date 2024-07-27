@@ -34,11 +34,16 @@ const PrivateCourse = ({courseCode}) => {
   const handleViewPDF = async (fileId) => {
     try {
       const blobData = await downloadNotes(fileId);
-      setSelectedFile(blobData);
+      if (blobData.type === 'application/pdf') {
+        setSelectedFile(blobData);
+      } else {
+        console.error('The downloaded file is not a PDF.');
+      }
     } catch (error) {
-      console.error('Error fetching PDF:', error);
+      console.error('Error fetching PDF:', error.message);
     }
   };
+  
 
   const handleClosePDF = () => {
     setSelectedFile(null);

@@ -73,16 +73,24 @@ export async function getNotes() {
   return await API.get('/api/files');
 }
 
-export async function downloadNotes(fileId) {
+export const downloadNotes = async (fileId) => {
   try {
     const response = await API.get(`/api/files/${fileId}/download`, {
-      responseType: 'blob',
+      responseType: 'blob', // Ensure the response type is set to 'blob'
     });
-    return response.data;  // Return the blob data
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      console.error(`Error downloading notes: ${response.statusText}`);
+      throw new Error('Failed to download notes');
+    }
   } catch (error) {
-    throw error;  // Throw error to be handled in the calling component
+    console.error(`Error downloading notes: ${error.message}`);
+    throw error;
   }
-}
+};
+
 
 export async function getPortals() {
   return await API.get(`/api/portal`);

@@ -324,7 +324,7 @@ const Portals = () => {
               <CardContent>
                 <Typography variant="h6">Course Notes</Typography>
                 <List>
-                  <PrivateCourse />
+                  <PrivateCourse courseCode={portal.course_code}/>
                 </List>
               </CardContent>
 

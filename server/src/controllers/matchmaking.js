@@ -39,8 +39,8 @@ exports.matchMaking = async (user_id, courseCode, studyGoal, res) => {
     if (number_of_partner === 0) {
       console.log("No partner was found");
       await db.query(
-        'INSERT INTO noti (user_id, description) VALUES ($1, $2)',
-        [user_id, 'No partner found for the given criteria.']
+        'INSERT INTO noti (user_id, description, course_code) VALUES ($1, $2, $3)',
+        [user_id, 'No partner found for the given criteria.', courseCode]
       );
       res.status(200).json({ success: true, message: 'No partner found' });
     } else {
@@ -58,12 +58,12 @@ exports.matchMaking = async (user_id, courseCode, studyGoal, res) => {
 
       // Notify both users about the successful match
       await db.query(
-        'INSERT INTO noti (user_id, description) VALUES ($1, $2)',
-        [user_id, 'You have been successfully matched with a partner!']
+        'INSERT INTO noti (user_id, description, course_code) VALUES ($1, $2, $3)',
+        [user_id, 'You have been successfully matched with a partner!', courseCode]
       );
       await db.query(
-        'INSERT INTO noti (user_id, description) VALUES ($1, $2)',
-        [result.user_id, 'You have been successfully matched with a partner!']
+        'INSERT INTO noti (user_id, description, course_code) VALUES ($1, $2, $3)',
+        [result.user_id, 'You have been successfully matched with a partner!', courseCode]
       );
       
       console.log("Portal created successfully", portal.rows[0]);
@@ -120,13 +120,13 @@ exports.unMatchPartner = async (req, res) => {
       return res.status(400).json({ error: 'Failed to delete partner relation.' });
     }
     await db.query(
-      'INSERT INTO noti (user_id, description) VALUES ($1, $2)',
-      [deleteResult.rows[0].partner_1_id, 'Your match are successfully deleted !']
+      'INSERT INTO noti (user_id, description, course_code) VALUES ($1, $2, $3)',
+      [deleteResult.rows[0].partner_1_id, 'Your match are successfully deleted !', deleteResult.rows[0].course_code]
     );
 
     await db.query(
-      'INSERT INTO noti (user_id, description) VALUES ($1, $2)',
-      [deleteResult.rows[0].partner_2_id, 'Your match are successfully deleted !']
+      'INSERT INTO noti (user_id, description, course_code) VALUES ($1, $2, $3)',
+      [deleteResult.rows[0].partner_2_id, 'Your match are successfully deleted !', deleteResult.rows[0].course_code]
     );
 
     res.status(200).json({ success: true, message: 'Partner relation deleted successfully.' });

@@ -14,7 +14,7 @@ import {
   Popover,
   ListItemAvatar,
   Switch,
-  Button, // Import Button component
+  Button,
 } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
@@ -26,15 +26,14 @@ import FeedbackIcon from '@mui/icons-material/Feedback';
 import GroupIcon from '@mui/icons-material/Group';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import PeopleIcon from '@mui/icons-material/People';
-
 import { onLogout, profileCheck, getNotifications } from '../api/auth';
 import { unauthenticateUser } from '../redux/slices/authSlice';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleDarkMode } from '../redux/slices/uiSlice'; // Adjust the import path as needed
+import { toggleDarkMode } from '../redux/slices/uiSlice';
 
 const Sidebar = () => {
   const { isAuth } = useSelector((state) => state.auth);
-  const isDarkMode = useSelector(state => state.ui.isDarkMode); // Use uiSlice state
+  const isDarkMode = useSelector(state => state.ui.isDarkMode);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [fullName, setFullName] = useState('');
@@ -77,7 +76,7 @@ const Sidebar = () => {
   };
 
   const handleDarkModeToggle = () => {
-    dispatch(toggleDarkMode()); // Dispatch toggleDarkMode action
+    dispatch(toggleDarkMode());
   };
 
   const handleLogout = async () => {
@@ -107,11 +106,11 @@ const Sidebar = () => {
       sx={{
         width: 240,
         flexShrink: 0,
-        [`& .MuiDrawer-paper`]: { 
-          width: 240, 
+        [`& .MuiDrawer-paper`]: {
+          width: 240,
           boxSizing: 'border-box',
-          backgroundColor: isDarkMode ? '#333' : '#fff', // Dark mode background
-          color: isDarkMode ? '#fff' : '#000', // Dark mode text color
+          backgroundColor: isDarkMode ? '#333' : '#fff',
+          color: isDarkMode ? '#fff' : '#000',
         },
       }}
     >
@@ -200,7 +199,7 @@ const Sidebar = () => {
   }}
 >
   <Box sx={{ p: 2, backgroundColor: isDarkMode ? '#444' : '#fff', color: isDarkMode ? '#fff' : '#000' }}>
-    <Typography variant="h6">Today's Notifications</Typography>
+    <div style={{ fontWeight: 'bold', fontSize: '1.5rem' }}>Today's Notifications</div>
     <List>
       {notifications.length === 0 ? (
         <Box>
@@ -208,10 +207,10 @@ const Sidebar = () => {
           <ListItem>
             <Button
               onClick={() => handleNavigation('/noti')}
-              variant="contained" // Use MUI Button component
-              color="primary" // Adjust color as needed
+              variant="contained"
+              color="primary"
               fullWidth
-              sx={{ mt: 2, textAlign: 'center' }} // Add margin top for spacing
+              sx={{ mt: 2, textAlign: 'center' }}
             >
               See all notifications
             </Button>
@@ -228,17 +227,22 @@ const Sidebar = () => {
               </ListItemAvatar>
               <ListItemText
                 primary={notification.description}
-                secondary={new Date(notification.created_at).toLocaleString()}
+                secondary={
+                  <>
+                    <div>{new Date(notification.created_at).toLocaleString()}</div>
+                    {notification.course_code && <div>Course: {notification.course_code}</div>}
+                  </>
+                }
               />
             </ListItem>
           ))}
           <ListItem>
             <Button
               onClick={() => handleNavigation('/noti')}
-              variant="contained" // Use MUI Button component
-              color="primary" // Adjust color as needed
+              variant="contained"
+              color="primary"
               fullWidth
-              sx={{ mt: 2, textAlign: 'center' }} // Add margin top for spacing
+              sx={{ mt: 2, textAlign: 'center' }}
             >
               See all notifications
             </Button>
@@ -248,7 +252,6 @@ const Sidebar = () => {
     </List>
   </Box>
 </Popover>
-
     </Drawer>
   );
 };

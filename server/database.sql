@@ -99,5 +99,6 @@ CREATE TABLE noti (
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL,
   description TEXT NOT NULL,
+  course_code VARCHAR(50),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
