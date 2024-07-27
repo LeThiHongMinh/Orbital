@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { getNotes, downloadNotes } from '../api/auth';
+import { getNotes, downloadNotes, downloadmatchedNotes } from '../api/auth';
 import { Viewer, Worker } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import { getFilesForMatchedUsers } from '../api/auth';
@@ -33,12 +33,9 @@ const PrivateCourse = ({courseCode}) => {
 
   const handleViewPDF = async (fileId) => {
     try {
-      const blobData = await downloadNotes(fileId);
-      if (blobData.type === 'application/pdf') {
-        setSelectedFile(blobData);
-      } else {
-        console.error('The downloaded file is not a PDF.');
-      }
+      const blobData = await downloadmatchedNotes(fileId);
+      setSelectedFile(blobData);
+
     } catch (error) {
       console.error('Error fetching PDF:', error.message);
     }

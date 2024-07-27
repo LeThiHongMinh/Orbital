@@ -148,13 +148,13 @@ const Dashboard = () => {
                 variant="contained"
                 onClick={handleNavigateToStudyActivities}
                 sx={{
-                  backgroundColor: isDarkMode ? '#bb86fc' : 'blue', // Set button color based on dark mode
+                  backgroundColor: isDarkMode ? '#bb86fc' : 'red', // Set button color based on dark mode
                   color: 'white',
                   marginTop: '10px',
                   marginLeft: '2px',
                   display: 'block',
                   '&:hover': {
-                    backgroundColor: isDarkMode ? '#ae8bfc' : 'darkblue', // Adjust hover color if needed
+                    backgroundColor: isDarkMode ? '#ae8bfc' : 'red', // Adjust hover color if needed
                   },
                 }}
               >
