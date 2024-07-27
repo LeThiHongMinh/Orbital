@@ -65,7 +65,7 @@ const StudyActivities = () => {
     } catch (error) {
       console.error('Error fetching activities:', error);
     }
-  };  
+  };
 
   const onChange = (e) => {
     const { name, value } = e.target;
@@ -146,23 +146,6 @@ const StudyActivities = () => {
     }
   };
 
-  const calendarStyle = {
-    height: 500,
-    margin: '50px 0',
-    backgroundColor: isDarkMode ? '#1a202c' : 'white', // bg-gray-900
-    color: isDarkMode ? 'white' : 'black',
-  };
-
-  const modalStyle = {
-    padding: '20px',
-    background: isDarkMode ? '#222' : 'white',
-    margin: 'auto',
-    marginTop: '10%',
-    borderRadius: '8px',
-    maxWidth: '400px',
-    color: isDarkMode ? 'white' : 'black',
-  };
-
   return (
     <Layout>
       <Container>
@@ -170,7 +153,7 @@ const StudyActivities = () => {
           variant="h4"
           component="h1"
           gutterBottom
-          style={{ color: isDarkMode ? 'white' : 'black' }}
+          className={isDarkMode ? 'text-white' : 'text-black'}
         >
           Study Activities
         </Typography>
@@ -179,10 +162,7 @@ const StudyActivities = () => {
           variant="contained"
           color="primary"
           onClick={() => handleOpen()}
-          style={{
-            marginBottom: '20px',
-            backgroundColor: isDarkMode ? '#bb86fc' : '#3f51b5',
-          }}
+          className={`mb-5 ${isDarkMode ? 'bg-purple-600' : 'bg-blue-600'}`}
         >
           Create Activity
         </Button>
@@ -192,7 +172,12 @@ const StudyActivities = () => {
           events={activities}
           startAccessor="start"
           endAccessor="end"
-          style={calendarStyle}
+          style={{
+            height: 500,
+            margin: '50px 0',
+            backgroundColor: isDarkMode ? '#1a202c' : 'white',
+            color: isDarkMode ? 'white' : 'black',
+          }}
           onSelectEvent={(event) => handleOpen(event)}
           eventPropGetter={(event) => ({
             style: {
@@ -206,13 +191,15 @@ const StudyActivities = () => {
           <Box
             component="form"
             onSubmit={onSubmit}
-            style={modalStyle}
+            className={`modal-content ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'} 
+                        p-6 rounded-lg mx-auto my-10 max-w-md`}
+            sx={{ maxHeight: '80vh', overflowY: 'auto' }}
           >
             <Typography
               variant="h5"
               component="h2"
               gutterBottom
-              style={{ color: isDarkMode ? 'white' : 'black' }}
+              className={isDarkMode ? 'text-white' : 'text-black'}
             >
               {selectedActivity ? 'Edit Activity' : 'Create Activity'}
             </Typography>
@@ -231,7 +218,7 @@ const StudyActivities = () => {
               InputLabelProps={{
                 style: { color: isDarkMode ? 'white' : 'black' },
               }}
-              style={{ backgroundColor: isDarkMode ? '#333' : 'white' }}
+              className={isDarkMode ? 'bg-gray-700' : 'bg-white'}
             />
             <TextField
               label="Activity Type"
@@ -247,7 +234,7 @@ const StudyActivities = () => {
               InputLabelProps={{
                 style: { color: isDarkMode ? 'white' : 'black' },
               }}
-              style={{ backgroundColor: isDarkMode ? '#333' : 'white' }}
+              className={isDarkMode ? 'bg-gray-700' : 'bg-white'}
             />
             <TextField
               label="Activity Description"
@@ -263,7 +250,7 @@ const StudyActivities = () => {
               InputLabelProps={{
                 style: { color: isDarkMode ? 'white' : 'black' },
               }}
-              style={{ backgroundColor: isDarkMode ? '#333' : 'white' }}
+              className={isDarkMode ? 'bg-gray-700' : 'bg-white'}
             />
             <TextField
               type="datetime-local"
@@ -281,7 +268,7 @@ const StudyActivities = () => {
               InputProps={{
                 style: { color: isDarkMode ? 'white' : 'black' },
               }}
-              style={{ backgroundColor: isDarkMode ? '#333' : 'white' }}
+              className={isDarkMode ? 'bg-gray-700' : 'bg-white'}
             />
             <TextField
               type="datetime-local"
@@ -299,46 +286,44 @@ const StudyActivities = () => {
               InputProps={{
                 style: { color: isDarkMode ? 'white' : 'black' },
               }}
-              style={{ backgroundColor: isDarkMode ? '#333' : 'white' }}
+              className={isDarkMode ? 'bg-gray-700' : 'bg-white'}
             />
             <Button
               type="submit"
               variant="contained"
               color="primary"
-              style={{
-                marginTop: '20px',
-                backgroundColor: isDarkMode ? '#bb86fc' : '#3f51b5',
-              }}
+              className={`mt-5 ${isDarkMode ? 'bg-purple-600' : 'bg-blue-600'}`}
             >
               {selectedActivity ? 'Update Activity' : 'Create Activity'}
-            </Button>
-            {selectedActivity && (
-              <Button
-                type="button"
-                variant="outlined"
-                color="error"
-                onClick={() => handleDelete(selectedActivity.id)}
-                style={{ marginTop: '10px' }}
-              >
-                Delete
               </Button>
-            )}
-            {selectedActivity && (
-              <Button
-                type="button"
-                variant="outlined"
-                color="success"
-                onClick={() => handleToggleStatus(selectedActivity.id)}
-                style={{ marginTop: '10px' }}
-              >
-                Toggle Status
-              </Button>
-            )}
-          </Box>
-        </Modal>
-      </Container>
-    </Layout>
-  );
-};
-
-export default StudyActivities;
+              {selectedActivity && (
+                <Button
+                  type="button"
+                  variant="outlined"
+                  color="error"
+                  onClick={() => handleDelete(selectedActivity.id)}
+                  className="mt-3"
+                >
+                  Delete
+                </Button>
+              )}
+              {selectedActivity && (
+                <Button
+                  type="button"
+                  variant="outlined"
+                  color="success"
+                  onClick={() => handleToggleStatus(selectedActivity.id)}
+                  className="mt-3"
+                >
+                  Toggle Status
+                </Button>
+              )}
+            </Box>
+          </Modal>
+        </Container>
+      </Layout>
+    );
+  };
+  
+  export default StudyActivities;
+  

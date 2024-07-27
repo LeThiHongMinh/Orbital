@@ -15,3 +15,26 @@
     margin-bottom: 20px;
   }
 }
+
+.dashboard-container {
+  padding: 16px;
+}
+
+.dashboard-card {
+  padding: 16px;
+  margin: 16px 0;
+}
+
+.chart-container {
+  width: 100%;
+  max-width: 350px; /* Responsive width */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 600px) {
+  .chart-container {
+    height: auto;
+  }
+}

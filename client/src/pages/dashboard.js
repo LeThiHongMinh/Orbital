@@ -7,36 +7,43 @@ import CalendarComponent from '../components/Calendar'; // Custom Calendar compo
 import CourseListSearch from '../components/Courselist'; // Custom Course List search component
 import { getStudyActivities } from '../api/auth'; // Import getStudyActivities function
 import './Dashboard.css'; // Custom CSS for styling
+import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 
 const Dashboard = () => {
+  const [progress, setProgress] = useState(0);
+  const [studyActivities, setStudyActivities] = useState([]);
+  const isDarkMode = useSelector((state) => state.ui.isDarkMode); // Access dark mode state from Redux store
+  const navigate = useNavigate();
+  const [tasksDueToday, setTasksDueToday] = useState(0);
+  const [totalCompletedTasks, setTotalCompletedTasks] = useState(0);
+  const [totalIncompleteTasks, setTotalIncompleteTasks] = useState(0);
   const [completedCount, setCompletedCount] = useState(0);
   const [incompleteCount, setIncompleteCount] = useState(0);
   const [totalHoursStudied, setTotalHoursStudied] = useState(0);
-  const [progress, setProgress] = useState(0);
-  const [studyActivities, setStudyActivities] = useState([]);
 
-  const isDarkMode = useSelector((state) => state.ui.isDarkMode); // Access dark mode state from Redux store
-  const navigate = useNavigate();
-  
   useEffect(() => {
     const fetchStudyActivitiesData = async () => {
       try {
         const response = await getStudyActivities();
-        console.log('Fetched activities:', response.data); // Debugging log
+        console.log('Fetched activities:', response.data);
 
         const activities = response.data.activities || [];
-        
-        // Update state with fetched activities
         setStudyActivities(activities);
 
-        // Calculate task stats and total hours studied
+        // Calculate task stats
         const { completedCount, incompleteCount } = calculateTaskStats(activities);
         const totalHours = calculateTotalHoursStudied(activities);
+
+        // Calculate tasks due today
+        const dueTodayCount = calculateTasksDueToday(activities);
 
         // Set state for completed, incomplete tasks, and total hours studied
         setCompletedCount(completedCount);
         setIncompleteCount(incompleteCount);
         setTotalHoursStudied(totalHours);
+        setTotalCompletedTasks(completedCount);
+        setTotalIncompleteTasks(incompleteCount);
+        setTasksDueToday(dueTodayCount);
 
         // Calculate progress percentage
         const totalTasks = completedCount + incompleteCount;
@@ -93,35 +100,108 @@ const Dashboard = () => {
     navigate("/studyActivities");
   };
 
+  const processChartData = (interval) => {
+    const groupedData = {};
+
+    studyActivities.forEach((activity) => {
+      const date = new Date(activity.created_at);
+      let key;
+
+      switch (interval) {
+        case 'day':
+          key = date.toLocaleDateString();
+          break;
+        case 'week':
+          key = `${date.getFullYear()}-W${Math.ceil(date.getDate() / 7)}`;
+          break;
+        case 'month':
+          key = `${date.getFullYear()}-${date.getMonth() + 1}`;
+          break;
+        default:
+          key = date.toLocaleDateString();
+      }
+
+      if (!groupedData[key]) {
+        groupedData[key] = { name: key, completed: 0, incomplete: 0 };
+      }
+
+      if (activity.status === true) {
+        groupedData[key].completed++;
+      } else {
+        groupedData[key].incomplete++;
+      }
+    });
+
+    return Object.values(groupedData);
+  };
+
+  const dailyData = processChartData('day');
+  const weeklyData = processChartData('week');
+  const monthlyData = processChartData('month');
+  const calculateTasksDueToday = (tasks) => {
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+    return tasks.filter(task => {
+      const deadline = new Date(task.deadline); // Adjust this if the deadline field has a different name
+      return deadline.toISOString().split('T')[0] === today;
+    }).length;
+  };
+
   return (
     <Layout>
       <div className={`dashboard-container ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-red-100 text-black'}`}>
-        <Grid container spacing={3}>
+        <Grid container spacing={3} >
           {/* Top Section */}
           <Grid item xs={12}>
             <Grid container spacing={3}>
-              <Grid item xs={4}>
+              <Grid item xs={12} sm={4}>
                 <Paper className={`dashboard-card ${isDarkMode ? 'bg-gray-800 text-black' : 'bg-white text-black'}`}>
                   <Typography variant="h6" gutterBottom>
-                    Completed Tasks
+                    Task Status (Daily)
                   </Typography>
-                  <Typography variant="h4">{completedCount}</Typography>
+                  <div className="chart-container">
+                    <BarChart width={350} height={250} data={dailyData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="completed" fill={isDarkMode ? '#bb86fc' : 'red'} />
+                      <Bar dataKey="incomplete" fill={isDarkMode ? '#ff5722' : '#FFC107'} />
+                    </BarChart>
+                  </div>
                 </Paper>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} sm={4}>
                 <Paper className={`dashboard-card ${isDarkMode ? 'bg-gray-800 text-black' : 'bg-white text-black'}`}>
                   <Typography variant="h6" gutterBottom>
-                    Incomplete Tasks
+                    Task Status (Weekly)
                   </Typography>
-                  <Typography variant="h4">{incompleteCount}</Typography>
+                  <div className="chart-container">
+                    <BarChart width={350} height={250} data={weeklyData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="completed" fill={isDarkMode ? '#bb86fc' : 'red'} />
+                      <Bar dataKey="incomplete" fill={isDarkMode ? '#ff5722' : '#FFC107'} />
+                    </BarChart>
+                  </div>
                 </Paper>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} sm={4}>
                 <Paper className={`dashboard-card ${isDarkMode ? 'bg-gray-800 text-black' : 'bg-white text-black'}`}>
                   <Typography variant="h6" gutterBottom>
-                    Total Hours Studied
+                    Task Status (Monthly)
                   </Typography>
-                  <Typography variant="h4">{totalHoursStudied.toFixed(2)} hours</Typography>
+                  <div className="chart-container">
+                    <BarChart width={350} height={250} data={monthlyData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="completed" fill={isDarkMode ? '#bb86fc' : 'red'} />
+                      <Bar dataKey="incomplete" fill={isDarkMode ? '#ff5722' : '#FFC107'} />
+                    </BarChart>
+                  </div>
                 </Paper>
               </Grid>
             </Grid>
@@ -133,12 +213,14 @@ const Dashboard = () => {
                 Progress
               </Typography>
               <LinearProgress variant="determinate" value={progress} sx={{ bgcolor: isDarkMode ? 'gray.700' : 'red' }} />
-              <Typography variant="body2" color={isDarkMode ? 'textSecondary' : 'textPrimary'}>
-                {Math.round(progress)}% Complete
+              <Typography variant="body1">
+                {progress.toFixed(2)}% completed
               </Typography>
+              <Button variant="contained" color="primary" onClick={handleNavigateToStudyActivities}>
+                View Study Activities
+              </Button>
             </Paper>
           </Grid>
-          {/* Bottom Left Section */}
           <Grid item xs={12} sm={6}>
             <Paper className={`dashboard-card ${isDarkMode ? 'bg-gray-800 text-black' : 'bg-white text-black'}`}>
               <Typography variant="h6" gutterBottom>

@@ -3,6 +3,7 @@ const pool = new Pool({
   connectionString: process.env.POSTGRES_URL,
 })
 
+
 const connect = async () => {
   const client = await pool.connect();
   return client;
