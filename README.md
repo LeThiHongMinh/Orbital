@@ -1,4 +1,4 @@
-![Logo]([https://github.com/your-username/your-repository-name/blob/main/images/qr-code.png](https://github.com/LeThiHongMinh/Orbital/blob/back/NUSTudy.png?raw=true)
+![Logo](https://github.com/your-username/your-repository-name/blob/main/images/qr-code.png](https://github.com/LeThiHongMinh/Orbital/blob/back/NUSTudy.png?raw=true)
 
 # NUS Orbital 2024 (Team Name: Dora The Kids)
 
