@@ -184,3 +184,14 @@ exports.toggleActivityStatus = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+exports.getDeadlines = async (req, res) => {
+  const user_id = req.user.id;
+  try {
+    const result = await db.query('SELECT end_time FROM study_activities WHERE user_id = $1 ORDER BY end_time ASC RETURNING *', [user_id]);
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error fetching deadlines:', error);
+    res.status(500).json({ error: 'Failed to fetch deadlines' });
+  }
+};

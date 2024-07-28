@@ -4,6 +4,35 @@
 
 .dashboard-card {
   padding: 20px;
+  margin-bottom: 20px;
+}
+
+.bg-gray-900 {
+  background-color: #1a202c !important;
+}
+
+.bg-gray-800 {
+  background-color: #2d3748 !important;
+}
+
+.text-white {
+  color: #ffffff !important;
+}
+
+.text-black {
+  color: #000000 !important;
+}
+
+.bg-white {
+  background-color: #ffffff !important;
+}
+
+.bg-red-100 {
+  background-color: #fef2f2 !important;
+}
+
+.dashboard-card {
+  padding: 20px;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -38,3 +67,73 @@
     height: auto;
   }
 }
+
+.progress-container {
+  position: relative;
+  height: 20px;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(to right, #f39c12, #e74c3c);
+  transition: width 0.5s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 10px;
+}
+
+.progress-text {
+  position: absolute;
+  z-index: 1;
+}
+
+.highlighted-date {
+  background-color: #ff5722;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 5px;
+  font-size: 0.8em;
+}
+
+/* Dashboard.css */
+.dashboard-container {
+  padding: 20px;
+}
+
+.dashboard-card {
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.toggle-button-group {
+  margin-bottom: 20px;
+}
+
+.toggle-button {
+  margin-right: 10px;
+}
+
+.toggle-button-dark {
+  background-color: #424242;
+  color: white;
+}
+
+.progress-section {
+  margin: 20px 0;
+}
+
+.study-activities-section {
+  margin: 20px 0;
+}
+
+.course-list-search-section {
+  margin: 20px 0;
+}
+
