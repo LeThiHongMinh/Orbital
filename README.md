@@ -59,9 +59,9 @@ User can unmatch users/ User can be banned when involved in too many unmatching
 
 ### Milestones
 
-- **[Milestone 1](#)**: [Link](#)
-- **[Milestone 2](#)**: [Link](#)
-- **[Milestone 3](#)**: [Link](#)
+- **[Milestone 1](#)**: [Link](https://docs.google.com/document/d/1M46UzGmsY7pkGbCs-TXdIEmiPR4FsCLVevcgYXkFlZ8/edit?usp=sharing)
+- **[Milestone 2](#)**: [Link](https://docs.google.com/document/d/1SzkjIGNPQFqy0kY9zybgmUI_0R3XckeYS8pVp19iZ1Y/edit?usp=sharing)
+- **[Milestone 3](#)**: [Link](https://docs.google.com/document/d/1lA4TssKpQYw0uXctSkeKV6Jcg7iv2Ro3mxzX0KiKy5s/edit?usp=sharing)
 
 ### Documentation
 
