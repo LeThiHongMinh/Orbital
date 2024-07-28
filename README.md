@@ -1,4 +1,4 @@
-# NUS Orbital 2024 (Team Name: NUSConnect)
+# NUS Orbital 2024 (Team Name: Dora The Kids)
 
 ## Project: NUStudy Seeker
 
