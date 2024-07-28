@@ -155,3 +155,7 @@ export async function downloadmatchedNotes(fileId) {
     throw error;  // Throw error to be handled in the calling component
   }
 }
+
+export const getDeadlines = async () => {
+  return await API.get('/api/deadlines');
+};

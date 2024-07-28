@@ -1,9 +1,5 @@
 .calendar-container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
+    margin-top: 20px;
 }
 
 .calendar-container h2 {
@@ -25,4 +21,57 @@
 .react-calendar__tile--now {
     background: #ffeb3b !important;
     color: black;
+}
+
+/* Dark mode enhancements for ToggleButtonGroup and calendar components */
+
+.toggle-button-group {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.toggle-button-dark {
+  color: white !important;
+  background-color: #444 !important;
+}
+
+.toggle-button-dark.Mui-selected {
+  background-color: #555 !important;
+  color: white !important;
+}
+
+.dashboard-container {
+  padding: 16px;
+}
+
+.dashboard-card {
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.calendar-component {
+  background-color: var(--calendar-bg-color, #fff);
+  color: var(--calendar-text-color, #000);
+}
+
+.calendar-component.dark-mode {
+  --calendar-bg-color: #333;
+  --calendar-text-color: #fff;
+}
+
+.calendar-component .rbc-toolbar button {
+  color: inherit;
+}
+
+.calendar-component .rbc-month-view .rbc-off-range-bg {
+  background-color: var(--calendar-off-range-bg-color, #f7f7f7);
+}
+
+.calendar-component.dark-mode .rbc-month-view .rbc-off-range-bg {
+  --calendar-off-range-bg-color: #555;
+}
+
+.calendar-component .rbc-toolbar button.rbc-active {
+  background-color: #007bff;
+  color: white;
 }
