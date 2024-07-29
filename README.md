@@ -75,6 +75,6 @@ User can unmatch users/ User can be banned when involved in too many unmatching
 
 ### Sample Screenshots
 
-![Sample Screenshot 1](https://raw.githubusercontent.com/LeThiHongMinh/Orbital/main/P1.jfif?token=GHSAT0AAAAAACSN7YVDCEBK6ZY7E4TVM2MQZVG6CGQ)
+![Sample Screenshot 1](https://raw.githubusercontent.com/LeThiHongMinh/Orbital/main/P1.jfif?token=GHSAT0AAAAAACSN7YVD7SKVPIJIDO223MC6ZVG6DXQ)
 ![Sample Screenshot 2](https://raw.githubusercontent.com/LeThiHongMinh/Orbital/main/P2.jfif?token=GHSAT0AAAAAACSN7YVDKMTAGIRNEQDUEDJQZVG6CUA)
 ![Sample Screenshot 3](https://raw.githubusercontent.com/LeThiHongMinh/Orbital/main/P3.jfif?token=GHSAT0AAAAAACSN7YVDQUOQYZQB6GRO2LVOZVG6DCA)
