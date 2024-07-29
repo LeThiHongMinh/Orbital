@@ -16,8 +16,8 @@
 
 **NUStudy Seeker** is a platform aiming to help students finding study partners.
 
-- **[Project Poster](#)**: [Link](#)
-- **[Project Video](#)**: [Link](#)
+- **[Project Poster](#)**: [Link](https://drive.google.com/file/d/10rqbtK5mG487Na4yX3usbBZm1IKjxKi1/view?usp=sharing)
+- **[Project Video](#)**: [Link](https://drive.google.com/file/d/11e0bGTWNiwBh_azOxVGIsPtpsbK0XhoV/view?usp=sharing)
 
 ### Motivation
 
@@ -65,7 +65,8 @@ User can unmatch users/ User can be banned when involved in too many unmatching
 
 ### Documentation
 
-- [User's Guide]
+- [User's Guide](https://drive.google.com/file/d/11e0bGTWNiwBh_azOxVGIsPtpsbK0XhoV/view?usp=sharing)
+- [Workflow Documentation](https://docs.google.com/presentation/d/1iAE2IUHib01rg0TnQK7m-v_zSvYdjRrYj1n6rWx_qvU/edit?usp=sharing)
 
 ### Deployment
 
