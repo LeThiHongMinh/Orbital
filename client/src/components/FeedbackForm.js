@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux'; // Import useSelector to access Redux state
 import { getMatchedPartner, submitFeedback } from '../api/auth';
-
+import PropTypes from 'prop-types';
 
 const FeedbackForm = ({ portalId }) => { // Receive partnerId as prop
   const [comments, setComments] = useState('');
@@ -239,6 +239,10 @@ const FeedbackForm = ({ portalId }) => { // Receive partnerId as prop
       {error && <p style={styles.message}>{error}</p>}
     </div>
   );
+};
+
+FeedbackForm.propTypes = {
+  portalId: PropTypes.number.isRequired, 
 };
 
 export default FeedbackForm;

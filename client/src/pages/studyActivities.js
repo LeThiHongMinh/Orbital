@@ -56,7 +56,7 @@ const StudyActivities = () => {
         title: activity.activity_type,
         status: activity.status,
         style: {
-          backgroundColor: activity.status ? '#4caf50' : '#e91e63',
+          backgroundColor: activity.status ? '#4caf50' : '#e91e63', // Green for completed, Pink for pending
           color: 'white',
         },
       }));
@@ -162,7 +162,7 @@ const StudyActivities = () => {
           variant="contained"
           color="primary"
           onClick={() => handleOpen()}
-          className={`mb-5 ${isDarkMode ? 'bg-purple-600' : 'bg-blue-600'}`}
+          className={`mb-5 ${isDarkMode ? 'bg-purple-700' : 'bg-blue-600'} text-white`}
         >
           Create Activity
         </Button>
@@ -181,7 +181,7 @@ const StudyActivities = () => {
           onSelectEvent={(event) => handleOpen(event)}
           eventPropGetter={(event) => ({
             style: {
-              backgroundColor: event.status ? 'grey' : '#e91e63',
+              backgroundColor: event.status ? '#4caf50' : '#e91e63',
               color: 'white',
             },
           })}
@@ -292,38 +292,37 @@ const StudyActivities = () => {
               type="submit"
               variant="contained"
               color="primary"
-              className={`mt-5 ${isDarkMode ? 'bg-purple-600' : 'bg-blue-600'}`}
+              className={`mt-5 ${isDarkMode ? 'bg-purple-700' : 'bg-blue-600'} text-white`}
             >
               {selectedActivity ? 'Update Activity' : 'Create Activity'}
+            </Button>
+            {selectedActivity && (
+              <Button
+                type="button"
+                variant="outlined"
+                color="error"
+                onClick={() => handleDelete(selectedActivity.id)}
+                className="mt-3"
+              >
+                Delete
               </Button>
-              {selectedActivity && (
-                <Button
-                  type="button"
-                  variant="outlined"
-                  color="error"
-                  onClick={() => handleDelete(selectedActivity.id)}
-                  className="mt-3"
-                >
-                  Delete
-                </Button>
-              )}
-              {selectedActivity && (
-                <Button
-                  type="button"
-                  variant="outlined"
-                  color="success"
-                  onClick={() => handleToggleStatus(selectedActivity.id)}
-                  className="mt-3"
-                >
-                  Toggle Status
-                </Button>
-              )}
-            </Box>
-          </Modal>
-        </Container>
-      </Layout>
-    );
-  };
-  
-  export default StudyActivities;
-  
+            )}
+            {selectedActivity && (
+              <Button
+                type="button"
+                variant="outlined"
+                color="success"
+                onClick={() => handleToggleStatus(selectedActivity.id)}
+                className="mt-3"
+              >
+                {selectedActivity.status ? 'Unmark as Completed' : 'Mark as Completed'}
+              </Button>
+            )}
+          </Box>
+        </Modal>
+      </Container>
+    </Layout>
+  );
+};
+
+export default StudyActivities;

@@ -79,7 +79,7 @@ const Dashboard = () => {
     const groupedData = {};
     const now = new Date();
     const startOfCurrentWeek = new Date(now.setDate(now.getDate() - now.getDay() + 1)); // Start of current week (Monday)
-
+  
     const dateToKey = (date, format) => {
       const options = {
         day: { weekday: 'short' },
@@ -88,13 +88,13 @@ const Dashboard = () => {
       };
       return date.toLocaleDateString('en-US', options[format]);
     };
-
+  
     const addDataPoint = (key) => {
       if (!groupedData[key]) {
         groupedData[key] = { name: key, completed: 0, incomplete: 0 };
       }
     };
-
+  
     // Ensure all required periods are included
     if (interval === 'day') {
       for (let i = 0; i < 7; i++) {
@@ -116,18 +116,19 @@ const Dashboard = () => {
         addDataPoint(monthKey);
       }
     }
-
+  
     studyActivities.forEach((activity) => {
       const startDate = new Date(activity.start_time);
       const status = activity.status ? 'completed' : 'incomplete';
-
+  
       switch (interval) {
-        case 'day':
+        case 'day': {
           const dayKey = dateToKey(startDate, 'day');
           addDataPoint(dayKey);
           groupedData[dayKey][status]++;
           break;
-        case 'week':
+        }
+        case 'week': {
           const startOfMonth = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
           const startWeekOffset = (startOfMonth.getDay() + 6) % 7; // Days to offset to reach Monday
           const weekOfMonth = Math.ceil((startDate.getDate() + startWeekOffset) / 7);
@@ -135,16 +136,18 @@ const Dashboard = () => {
           addDataPoint(weekKey);
           groupedData[weekKey][status]++;
           break;
-        case 'month':
+        }
+        case 'month': {
           const monthKey = dateToKey(startDate, 'month');
           addDataPoint(monthKey);
           groupedData[monthKey][status]++;
           break;
+        }
         default:
           break;
       }
     });
-
+  
     const sortedData = Object.values(groupedData).sort((a, b) => {
       switch (interval) {
         case 'day':
@@ -157,9 +160,9 @@ const Dashboard = () => {
           return 0;
       }
     });
-
+  
     return sortedData;
-  };
+  };  
 
   const handleIntervalChange = (event, newInterval) => {
     if (newInterval !== null) {

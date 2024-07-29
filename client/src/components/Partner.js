@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getPortalByCourseCode } from '../api/auth';
 import { getMatchedPartnerById } from '../api/auth';
+import PropTypes from 'prop-types';
 
 const Partner = ({ portalId }) => {
   const [matchedUsers, setMatchedUsers] = useState(null);
@@ -151,6 +152,10 @@ const Partner = ({ portalId }) => {
       </div>
     </div>
   );
+};
+
+Partner.propTypes = {
+  portalId: PropTypes.number.isRequired, 
 };
 
 export default Partner;

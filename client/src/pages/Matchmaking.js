@@ -6,7 +6,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import Radio from '@mui/material/Radio';
 import { star } from '../assets/icons';
-import { submitForm } from "../api/auth";
+import { submitForm } from '../api/auth';
 import Layout from '../components/layout'; // Adjust the path as necessary
 
 const Matchmaking = () => {
@@ -84,7 +84,6 @@ const Matchmaking = () => {
                 style={{ width: '100%' }}
                 id="outlined-basic"
                 variant="outlined"
-                label="Full Name"
                 name="fullName"
                 value={formData.fullName}
                 onChange={handleChange}

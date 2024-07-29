@@ -5,6 +5,8 @@ import { Viewer, Worker } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import { getFilesForMatchedUsers } from '../api/auth';
 import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+
 const PrivateCourse = ({courseCode}) => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -93,6 +95,10 @@ const PrivateCourse = ({courseCode}) => {
       )}
     </div>
   );
+};
+
+PrivateCourse.propTypes = {
+  courseCode: PropTypes.string.isRequired, 
 };
 
 export default PrivateCourse;

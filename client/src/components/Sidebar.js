@@ -106,7 +106,7 @@ const Sidebar = () => {
       sx={{
         width: 240,
         flexShrink: 0,
-        [`& .MuiDrawer-paper`]: {
+        ['& .MuiDrawer-paper']: {
           width: 240,
           boxSizing: 'border-box',
           backgroundColor: isDarkMode ? '#333' : '#fff',
@@ -199,7 +199,7 @@ const Sidebar = () => {
   }}
 >
   <Box sx={{ p: 2, backgroundColor: isDarkMode ? '#444' : '#fff', color: isDarkMode ? '#fff' : '#000' }}>
-    <div style={{ fontWeight: 'bold', fontSize: '1.5rem' }}>Today's Notifications</div>
+   <div style={{ fontWeight: 'bold', fontSize: '1.5rem' }}>Today&#39;s Notifications</div>
     <List>
       {notifications.length === 0 ? (
         <Box>

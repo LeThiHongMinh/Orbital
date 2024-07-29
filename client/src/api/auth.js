@@ -93,7 +93,7 @@ export const downloadNotes = async (fileId) => {
 
 
 export async function getPortals() {
-  return await API.get(`/api/portal`);
+  return await API.get('/api/portal');
 }
 
 export async function getPortalByCourseCode(id) {
@@ -106,7 +106,7 @@ export async function unMatchPartner(id) {
 
 
 export async function getMatchedPartner() {
-  return await API.get(`/api/yourpartner`);
+  return await API.get('/api/yourpartner');
 }
 
 export async function getMatchedPartnerById(id) {
@@ -123,7 +123,7 @@ export const getFilesForMatchedUsers = async () => {
 };
 export async function uploadFileForMatchedUsers(formData) {
   try {
-    const response = await API.post(`/api/upload-matched-file`, formData, {
+    const response = await API.post('/api/upload-matched-file', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -137,23 +137,19 @@ export async function uploadFileForMatchedUsers(formData) {
 }
 
 export async function contactUs(formData) {
-  return await API.post(`/api/contact-us`, formData);
+  return await API.post('/api/contact-us', formData);
 }
 
 export async function getNotifications() {
-  return await API.get(`/api/noti`);
+  return await API.get('/api/noti');
 }
 
 
 export async function downloadmatchedNotes(fileId) {
-  try {
-    const response = await API.get(`/api/matchedfiles/${fileId}/download`, {
-      responseType: 'blob',
-    });
-    return response.data;  // Return the blob data
-  } catch (error) {
-    throw error;  // Throw error to be handled in the calling component
-  }
+  const response = await API.get(`/api/matchedfiles/${fileId}/download`, {
+    responseType: 'blob',
+  });
+  return response.data;  // Return the blob data
 }
 
 export const getDeadlines = async () => {

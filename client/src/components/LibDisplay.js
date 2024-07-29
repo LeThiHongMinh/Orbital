@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux'; // Import useSelector to access dark mode state
 import axios from 'axios';
+import PropTypes from 'prop-types';
 
 const LibDisplay = ({ visible, onClose }) => {
   const [name, setName] = useState('');
@@ -117,6 +118,11 @@ const LibDisplay = ({ visible, onClose }) => {
       </div>
     </div>
   );
+};
+
+LibDisplay.propTypes = {
+  visible: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default LibDisplay;

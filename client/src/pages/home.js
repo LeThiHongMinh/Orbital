@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useSelector } from 'react-redux'; // Import useSelector to access dark mode state
-import Layout from "../components/layout";
+import Layout from '../components/layout';
 import Hero from '../components/Hero';
 import { FaTachometerAlt, FaBook, FaUser } from 'react-icons/fa';
 import { contactUs } from '../api/auth';

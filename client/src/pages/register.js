@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { onRegistration } from '../api/auth';
 import Layout from '../components/layout';
 import { TextField, Button, Alert, Container, Typography, Box } from '@mui/material';

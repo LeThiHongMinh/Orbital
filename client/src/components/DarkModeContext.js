@@ -1,5 +1,5 @@
-// DarkModeProvider.js
 import React, { createContext, useState, useContext } from 'react';
+import PropTypes from 'prop-types';
 
 const DarkModeContext = createContext();
 
@@ -11,6 +11,10 @@ export const DarkModeProvider = ({ children }) => {
       {children}
     </DarkModeContext.Provider>
   );
+};
+
+DarkModeProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 // Custom hook to use dark mode context

@@ -2,6 +2,7 @@ import React from 'react';
 import Navbar from './Nav';
 import Sidebar from './Sidebar';
 import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
 const Layout = ({ children }) => {
   const { isAuth } = useSelector((state) => state.auth);
@@ -17,6 +18,10 @@ const Layout = ({ children }) => {
       </div>
     </div>
   );
+};
+
+Layout.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export default Layout;

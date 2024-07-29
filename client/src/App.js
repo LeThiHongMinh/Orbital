@@ -4,32 +4,32 @@ import {
   Routes,
   Route,
   Outlet,
-} from 'react-router-dom'
+} from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import {
   WelcomePage,
   GitHubBanner,
   Refine,
   Authenticated,
-} from "@refinedev/core";
-import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
-import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
+} from '@refinedev/core';
+import { DevtoolsPanel, DevtoolsProvider } from '@refinedev/devtools';
+import { RefineKbar, RefineKbarProvider } from '@refinedev/kbar';
 import {
   useNotificationProvider,
-} from "@refinedev/antd";
+} from '@refinedev/antd';
 import routerBindings, {
   CatchAllNavigate,
   DocumentTitleHandler,
   UnsavedChangesNotifier,
-} from "@refinedev/react-router-v6";
-import { App as AntdApp } from "antd";
+} from '@refinedev/react-router-v6';
+import { App as AntdApp } from 'antd';
 //import { authProvider, dataProvider, liveProvider } from "./providers";
-import "@refinedev/antd/dist/reset.css";
-import Dashboard from './pages/dashboard'
-import Home from './pages/home'
-import Login from './pages/login'
-import Register from './pages/register'
-import { useSelector } from 'react-redux'
+import '@refinedev/antd/dist/reset.css';
+import Dashboard from './pages/dashboard';
+import Home from './pages/home';
+import Login from './pages/login';
+import Register from './pages/register';
+import { useSelector } from 'react-redux';
 import CourseDetail from './components/Coursedetail';
 import CourseList from './components/Courselist';
 import Matchmaking from './pages/Matchmaking';
@@ -43,14 +43,14 @@ import { DarkModeProvider } from './components/DarkModeContext'; // Import DarkM
 import NotificationsPage from './pages/Noti';
 
 const PrivateRoutes = () => {
-  const { isAuth } = useSelector((state) => state.auth)
-  return <>{isAuth ? <Outlet /> : <Navigate to='/login' />}</>
-}
+  const { isAuth } = useSelector((state) => state.auth);
+  return <>{isAuth ? <Outlet /> : <Navigate to='/login' />}</>;
+};
 
 const RestrictedRoutes = () => {
-  const { isAuth } = useSelector((state) => state.auth)
-  return <>{!isAuth ? <Outlet /> : <Navigate to='/' />}</>
-}
+  const { isAuth } = useSelector((state) => state.auth);
+  return <>{!isAuth ? <Outlet /> : <Navigate to='/' />}</>;
+};
 
 const App = () => {
   const [courses, setCourses] = useState(() => {
@@ -103,7 +103,7 @@ const App = () => {
       </BrowserRouter>
       </DarkModeProvider>
   
-  )
-}
+  );
+};
 
 export default App;
