@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/7d029eb0-cc15-419e-81ed-c2ede64cbaf0)![QR Code](https://github.com/LeThiHongMinh/Orbital/blob/main/NUSTudy.png?raw=true)
+![Logo](https://github.com/LeThiHongMinh/Orbital/blob/main/NUSTudy.png?raw=true)
 
 # NUS Orbital 2024 (Team Name: Dora The Kids)
 
@@ -38,12 +38,9 @@ Authentication: sending token verification to Outlook
 2. Profile creation & management
 Develop profile setup functionality, allowing users to create and customize their profiles.
 3. Form
-Matchmaking form to store users’ data
-about their full name, course code, 
-expectations and study goal
+Matchmaking form to store users’ data about their full name, course code, expectations and study goal
 4. Match Functionality
-Match students according to their desired
-course codes
+Match students according to their desired course codes
 5. Privacy control
 Each user gets private access to their shared courses and their learning processes
 6. Learning map
